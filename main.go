@@ -18,6 +18,7 @@ func main() {
 		client.DefaultSchemes)
 	tr.Consumers["application/json;charset=utf-8"] = runtime.JSONConsumer()
 	tr.Producers["application/json;charset=utf-8"] = runtime.JSONProducer()
+	// tr.DefaultAuthentication =
 
 	c := client.New(tr, strfmt.Default)
 	created, err := c.Payments.CreatePayment(payments.NewCreatePaymentParams())
