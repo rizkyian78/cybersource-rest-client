@@ -1,7 +1,5 @@
 #! /bin/bash
 
-# cd %~dp0
-
 echo Delete the previously generated SDK code
 
 rm -rf ../client
