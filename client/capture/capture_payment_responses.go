@@ -2263,7 +2263,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 128-139
 	// - Field: Total Other Costs
 	//
-	// Maximum: 12
+	// Max Length: 12
 	AdditionalCosts string `json:"additionalCosts,omitempty"`
 
 	// Additional costs divided by the amount funded.
@@ -2284,7 +2284,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 140-143
 	// - Field: Percent of Total Other Costs
 	//
-	// Maximum: 4
+	// Max Length: 4
 	AdditionalCostsPercentage string `json:"additionalCostsPercentage,omitempty"`
 
 	// Amount funded.
@@ -2301,7 +2301,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 48-59
 	// - Field: Total Amount Funded
 	//
-	// Maximum: 12
+	// Max Length: 12
 	AmountFunded string `json:"amountFunded,omitempty"`
 
 	// Amount requested divided by the amount funded.
@@ -2322,7 +2322,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 60-63
 	// - Field: Percent of Amount Requested
 	//
-	// Maximum: 4
+	// Max Length: 4
 	AmountRequestedPercentage string `json:"amountRequestedPercentage,omitempty"`
 
 	// Annual cost of financing the installment payments.
@@ -2339,7 +2339,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 158-164
 	// - Field: Annual Total Cost of Financing
 	//
-	// Maximum: 7
+	// Max Length: 7
 	AnnualFinancingCost string `json:"annualFinancingCost,omitempty"`
 
 	// Annual interest rate.
@@ -2360,7 +2360,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 151-157
 	// - Field: Annual Interest Rate
 	//
-	// Maximum: 7
+	// Max Length: 7
 	AnnualInterestRate string `json:"annualInterestRate,omitempty"`
 
 	// Expenses charged by the issuer to fund the installment payments.
@@ -2377,7 +2377,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 64-75
 	// - Field: Total Expenses
 	//
-	// Maximum: 12
+	// Max Length: 12
 	Expenses string `json:"expenses,omitempty"`
 
 	// Expenses divided by the amount funded.
@@ -2398,7 +2398,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 76-79
 	// - Field: Percent of Total Expenses
 	//
-	// Maximum: 4
+	// Max Length: 4
 	ExpensesPercentage string `json:"expensesPercentage,omitempty"`
 
 	// Fees charged by the issuer to fund the installment payments.
@@ -2415,7 +2415,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 80-91
 	// - Field: Total Fees
 	//
-	// Maximum: 12
+	// Max Length: 12
 	Fees string `json:"fees,omitempty"`
 
 	// Fees divided by the amount funded.
@@ -2436,7 +2436,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 92-95
 	// - Field: Percent of Total Fees
 	//
-	// Maximum: 4
+	// Max Length: 4
 	FeesPercentage string `json:"feesPercentage,omitempty"`
 
 	// Date of the first installment payment. Format: YYMMDD. When you do not include this field, CyberSource sends a
@@ -2450,7 +2450,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 42-47
 	// - Field: Date of First Installment
 	//
-	// Maximum: 6
+	// Max Length: 6
 	FirstInstallmentDate string `json:"firstInstallmentDate,omitempty"`
 
 	// Insurance charged by the issuer to fund the installment payments.
@@ -2467,7 +2467,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 112-123
 	// - Field: Total Insurance
 	//
-	// Maximum: 12
+	// Max Length: 12
 	Insurance string `json:"insurance,omitempty"`
 
 	// Insurance costs divided by the amount funded.
@@ -2488,7 +2488,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 124-127
 	// - Field: Percent Of Total Insurance
 	//
-	// Maximum: 4
+	// Max Length: 4
 	InsurancePercentage string `json:"insurancePercentage,omitempty"`
 
 	// Invoice information that you want to provide to the issuer. This value is similar to a tracking number and is
@@ -2503,7 +2503,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 51-70
 	// - Field: Purchase Identification
 	//
-	// Maximum: 20
+	// Max Length: 20
 	InvoiceData string `json:"invoiceData,omitempty"`
 
 	// Monthly interest rate.
@@ -2524,7 +2524,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 144-150
 	// - Field: Monthly Interest Rate
 	//
-	// Maximum: 7
+	// Max Length: 7
 	MonthlyInterestRate string `json:"monthlyInterestRate,omitempty"`
 
 	// Payment plan for the installments.
@@ -2546,7 +2546,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 9
 	// - Field: Merchant Installment Supporting Information
 	//
-	// Maximum: 1
+	// Max Length: 1
 	PaymentType string `json:"paymentType,omitempty"`
 
 	// Taxes collected by the issuer to fund the installment payments.
@@ -2563,7 +2563,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 96-107
 	// - Field: Total Taxes
 	//
-	// Maximum: 12
+	// Max Length: 12
 	Taxes string `json:"taxes,omitempty"`
 
 	// Taxes divided by the amount funded.
@@ -2584,7 +2584,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// - Position: 108-111
 	// - Field: Percent of Total Taxes
 	//
-	// Maximum: 4
+	// Max Length: 4
 	TaxesPercentage string `json:"taxesPercentage,omitempty"`
 }
 
@@ -2676,7 +2676,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAdditionalCosts
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCosts", "body", float64(o.AdditionalCosts), 12, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCosts", "body", string(o.AdditionalCosts), 12); err != nil {
 		return err
 	}
 
@@ -2689,7 +2689,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAdditionalCosts
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCostsPercentage", "body", float64(o.AdditionalCostsPercentage), 4, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCostsPercentage", "body", string(o.AdditionalCostsPercentage), 4); err != nil {
 		return err
 	}
 
@@ -2702,7 +2702,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAmountFunded(fo
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountFunded", "body", float64(o.AmountFunded), 12, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountFunded", "body", string(o.AmountFunded), 12); err != nil {
 		return err
 	}
 
@@ -2715,7 +2715,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAmountRequested
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountRequestedPercentage", "body", float64(o.AmountRequestedPercentage), 4, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountRequestedPercentage", "body", string(o.AmountRequestedPercentage), 4); err != nil {
 		return err
 	}
 
@@ -2728,7 +2728,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAnnualFinancing
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualFinancingCost", "body", float64(o.AnnualFinancingCost), 7, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualFinancingCost", "body", string(o.AnnualFinancingCost), 7); err != nil {
 		return err
 	}
 
@@ -2741,7 +2741,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAnnualInterestR
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualInterestRate", "body", float64(o.AnnualInterestRate), 7, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualInterestRate", "body", string(o.AnnualInterestRate), 7); err != nil {
 		return err
 	}
 
@@ -2754,7 +2754,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateExpenses(format
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"expenses", "body", float64(o.Expenses), 12, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"expenses", "body", string(o.Expenses), 12); err != nil {
 		return err
 	}
 
@@ -2767,7 +2767,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateExpensesPercent
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"expensesPercentage", "body", float64(o.ExpensesPercentage), 4, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"expensesPercentage", "body", string(o.ExpensesPercentage), 4); err != nil {
 		return err
 	}
 
@@ -2780,7 +2780,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateFees(formats st
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"fees", "body", float64(o.Fees), 12, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"fees", "body", string(o.Fees), 12); err != nil {
 		return err
 	}
 
@@ -2793,7 +2793,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateFeesPercentage(
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"feesPercentage", "body", float64(o.FeesPercentage), 4, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"feesPercentage", "body", string(o.FeesPercentage), 4); err != nil {
 		return err
 	}
 
@@ -2806,7 +2806,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateFirstInstallmen
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"firstInstallmentDate", "body", float64(o.FirstInstallmentDate), 6, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"firstInstallmentDate", "body", string(o.FirstInstallmentDate), 6); err != nil {
 		return err
 	}
 
@@ -2819,7 +2819,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateInsurance(forma
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurance", "body", float64(o.Insurance), 12, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurance", "body", string(o.Insurance), 12); err != nil {
 		return err
 	}
 
@@ -2832,7 +2832,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateInsurancePercen
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurancePercentage", "body", float64(o.InsurancePercentage), 4, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurancePercentage", "body", string(o.InsurancePercentage), 4); err != nil {
 		return err
 	}
 
@@ -2845,7 +2845,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateInvoiceData(for
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"invoiceData", "body", float64(o.InvoiceData), 20, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"invoiceData", "body", string(o.InvoiceData), 20); err != nil {
 		return err
 	}
 
@@ -2858,7 +2858,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateMonthlyInterest
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"monthlyInterestRate", "body", float64(o.MonthlyInterestRate), 7, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"monthlyInterestRate", "body", string(o.MonthlyInterestRate), 7); err != nil {
 		return err
 	}
 
@@ -2871,7 +2871,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validatePaymentType(for
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"paymentType", "body", float64(o.PaymentType), 1, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"paymentType", "body", string(o.PaymentType), 1); err != nil {
 		return err
 	}
 
@@ -2884,7 +2884,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateTaxes(formats s
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxes", "body", float64(o.Taxes), 12, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxes", "body", string(o.Taxes), 12); err != nil {
 		return err
 	}
 
@@ -2897,7 +2897,7 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateTaxesPercentage
 		return nil
 	}
 
-	if err := validate.Maximum("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxesPercentage", "body", float64(o.TaxesPercentage), 4, false); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxesPercentage", "body", string(o.TaxesPercentage), 4); err != nil {
 		return err
 	}
 
