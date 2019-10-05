@@ -37,38 +37,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var walk func(interface{}) error
-	var walkObj func(interface{}) (interface{}, error)
+	var walk func(interface{}) (interface{}, error)
 
-	walk = func(i interface{}) error {
-		switch v := i.(type) {
-		case jwalk.ObjectWalker:
-			return v.Walk(func(key string, value interface{}) (interface{}, error) {
-				return walkObj(value)
-			})
-		case jwalk.ObjectsWalker:
-			return v.Walk(func(obj jwalk.ObjectWalker) error {
-				return obj.Walk(func(key string, value interface{}) (interface{}, error) {
-					return walkObj(value)
-				})
-			})
-		case jwalk.Value:
-			return nil
-		default:
-			return nil
-		}
-	}
-
-	walkObj = func(i interface{}) (interface{}, error) {
+	walk = func(i interface{}) (interface{}, error) {
 		switch v := i.(type) {
 		case jwalk.ObjectWalker:
 			return v, v.Walk(func(key string, value interface{}) (interface{}, error) {
-				return walkObj(value)
+				return walk(value)
 			})
 		case jwalk.ObjectsWalker:
 			return v, v.Walk(func(obj jwalk.ObjectWalker) error {
 				return obj.Walk(func(key string, value interface{}) (interface{}, error) {
-					return walkObj(value)
+					return walk(value)
 				})
 			})
 		case jwalk.Value:
@@ -78,7 +58,7 @@ func main() {
 		}
 	}
 
-	if err := walk(i); err != nil {
+	if _, err := walk(i); err != nil {
 		log.Fatal(err)
 	}
 
