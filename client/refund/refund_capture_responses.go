@@ -6362,7 +6362,6 @@ type RefundCaptureParamsBodyPointOfSaleInformationEmv struct {
 	//
 	// This field is supported only on **Chase Paymentech Solutions** and **GPN**.
 	//
-	// Max Length: 5
 	Fallback *bool `json:"fallback,omitempty"`
 
 	// EMV data that is transmitted from the chip card to the issuer, and from the issuer to the chip card. The EMV
@@ -6409,10 +6408,6 @@ type RefundCaptureParamsBodyPointOfSaleInformationEmv struct {
 func (o *RefundCaptureParamsBodyPointOfSaleInformationEmv) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateFallback(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateTags(formats); err != nil {
 		res = append(res, err)
 	}
@@ -6420,19 +6415,6 @@ func (o *RefundCaptureParamsBodyPointOfSaleInformationEmv) Validate(formats strf
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (o *RefundCaptureParamsBodyPointOfSaleInformationEmv) validateFallback(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Fallback) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("refundCaptureRequest"+"."+"pointOfSaleInformation"+"."+"emv"+"."+"fallback", "body", string(*o.Fallback), 5); err != nil {
-		return err
-	}
-
 	return nil
 }
 

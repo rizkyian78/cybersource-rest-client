@@ -6787,7 +6787,6 @@ type CreateCreditParamsBodyPointOfSaleInformationEmv struct {
 	//
 	// This field is supported only on **Chase Paymentech Solutions** and **GPN**.
 	//
-	// Max Length: 5
 	Fallback *bool `json:"fallback,omitempty"`
 
 	// Reason for the EMV fallback transaction. An EMV fallback transaction occurs when an EMV transaction fails for
@@ -6857,10 +6856,6 @@ type CreateCreditParamsBodyPointOfSaleInformationEmv struct {
 func (o *CreateCreditParamsBodyPointOfSaleInformationEmv) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateFallback(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateTags(formats); err != nil {
 		res = append(res, err)
 	}
@@ -6868,19 +6863,6 @@ func (o *CreateCreditParamsBodyPointOfSaleInformationEmv) Validate(formats strfm
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (o *CreateCreditParamsBodyPointOfSaleInformationEmv) validateFallback(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Fallback) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("createCreditRequest"+"."+"pointOfSaleInformation"+"."+"emv"+"."+"fallback", "body", string(*o.Fallback), 5); err != nil {
-		return err
-	}
-
 	return nil
 }
 

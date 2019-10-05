@@ -1672,7 +1672,6 @@
                                                 },
                                                 "fallback": {
                                                     "type": "boolean",
-                                                    "maxLength": 5,
                                                     "description": "Indicates whether a fallback method was used to enter credit card information into the POS terminal. When a\ntechnical problem prevents a successful exchange of information between a chip card and a chip-capable terminal:\n\n 1. Swipe the card or key the credit card information into the POS terminal.\n 2. Use the pointOfSaleInformation.entryMode field to indicate whether the information was swiped or keyed.\n\nPossible values:\n - **true**\n - **false** (default)\n\nThis field is supported only on **Chase Paymentech Solutions** and **GPN**.\n",
                                                     "default": false
                                                 },
@@ -4579,7 +4578,6 @@
                                                 },
                                                 "fallback": {
                                                     "type": "boolean",
-                                                    "maxLength": 5,
                                                     "description": "Indicates whether a fallback method was used to enter credit card information into the POS terminal. When a\ntechnical problem prevents a successful exchange of information between a chip card and a chip-capable terminal:\n\n 1. Swipe the card or key the credit card information into the POS terminal.\n 2. Use the pointOfSaleInformation.entryMode field to indicate whether the information was swiped or keyed.\n\nPossible values:\n - **true**\n - **false** (default)\n\nThis field is supported only on **Chase Paymentech Solutions** and **GPN**.\n",
                                                     "default": false
                                                 }
@@ -5848,7 +5846,6 @@
                                                 },
                                                 "fallback": {
                                                     "type": "boolean",
-                                                    "maxLength": 5,
                                                     "description": "Indicates whether a fallback method was used to enter credit card information into the POS terminal. When a\ntechnical problem prevents a successful exchange of information between a chip card and a chip-capable terminal:\n\n 1. Swipe the card or key the credit card information into the POS terminal.\n 2. Use the pointOfSaleInformation.entryMode field to indicate whether the information was swiped or keyed.\n\nPossible values:\n - **true**\n - **false** (default)\n\nThis field is supported only on **Chase Paymentech Solutions** and **GPN**.\n",
                                                     "default": false
                                                 }
@@ -6973,7 +6970,6 @@
                                                 },
                                                 "fallback": {
                                                     "type": "boolean",
-                                                    "maxLength": 5,
                                                     "description": "Indicates whether a fallback method was used to enter credit card information into the POS terminal. When a\ntechnical problem prevents a successful exchange of information between a chip card and a chip-capable terminal:\n\n 1. Swipe the card or key the credit card information into the POS terminal.\n 2. Use the pointOfSaleInformation.entryMode field to indicate whether the information was swiped or keyed.\n\nPossible values:\n - **true**\n - **false** (default)\n\nThis field is supported only on **Chase Paymentech Solutions** and **GPN**.\n",
                                                     "default": false
                                                 }
@@ -8153,7 +8149,6 @@
                                                 },
                                                 "fallback": {
                                                     "type": "boolean",
-                                                    "maxLength": 5,
                                                     "description": "Indicates whether a fallback method was used to enter credit card information into the POS terminal. When a\ntechnical problem prevents a successful exchange of information between a chip card and a chip-capable terminal:\n\n 1. Swipe the card or key the credit card information into the POS terminal.\n 2. Use the pointOfSaleInformation.entryMode field to indicate whether the information was swiped or keyed.\n\nPossible values:\n - **true**\n - **false** (default)\n\nThis field is supported only on **Chase Paymentech Solutions** and **GPN**.\n",
                                                     "default": false
                                                 },

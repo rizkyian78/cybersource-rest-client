@@ -7,17 +7,7 @@ import (
 	"os"
 
 	"github.com/tooolbox/jwalk"
-	// "github.com/tooolbox/cybersource-rest-client-go/client"
 )
-
-// func main() {
-
-// 	c := client.Default
-// 	created, err := c.Payments.CreatePayment()
-
-// 	log.Printf("Created: %#v", created)
-// 	log.Printf("Err: %v", err)
-// }
 
 func main() {
 	log.Print("Walking...")
@@ -45,9 +35,10 @@ func main() {
 		return false
 	}
 
-	fixMaximumOnStringTypes := func(name string, obj jwalk.ObjectWalker) (string, interface{}, error) {
+	fixInvalid := func(name string, obj jwalk.ObjectWalker) (string, interface{}, error) {
 
 		hasStringType, hasMaximum := false, false
+		hasBoolType, hasMaxLength := false, false
 
 		err := obj.Walk(func(key string, value interface{}) (string, interface{}, error) {
 
@@ -56,6 +47,13 @@ func main() {
 			}
 			if key == "maximum" {
 				hasMaximum = true
+			}
+
+			if key == "type" && checkStringValue(value, "boolean") {
+				hasBoolType = true
+			}
+			if key == "maxLength" {
+				hasMaxLength = true
 			}
 
 			return key, value, nil
@@ -74,6 +72,16 @@ func main() {
 			})
 		}
 
+		if hasBoolType && hasMaxLength {
+			log.Print("Found a boolean type with a maxLength field")
+			err = obj.Walk(func(key string, value interface{}) (string, interface{}, error) {
+				if key == "maxLength" {
+					return "", nil, jwalk.RemoveField
+				}
+				return key, value, nil
+			})
+		}
+
 		return name, obj, err
 	}
 
@@ -82,7 +90,7 @@ func main() {
 	walk = func(k string, i interface{}) (string, interface{}, error) {
 		switch v := i.(type) {
 		case jwalk.ObjectWalker:
-			kRepl, vRepl, err := fixMaximumOnStringTypes(k, v)
+			kRepl, vRepl, err := fixInvalid(k, v)
 			if err != nil {
 				return k, i, err
 			}
