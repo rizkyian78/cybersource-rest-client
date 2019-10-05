@@ -4,16 +4,14 @@
 
 echo Delete the previously generated SDK code
 
-rm -rf ../docs
-rm -rf ../src
-rm -rf ../test
+rm -rf ../client
+rm -rf ../models
 
 echo Command to generate SDK
 
-swagger generate -i cybersource-rest-spec.json -o ../  -C cybersource-node-config.json
-# swagger generate -t cybersource-go-template -i cybersource-rest-spec.json -o ../  -C cybersource-node-config.json
+swagger generate client -A CyberSource -f cybersource-rest-spec.json -t ../
 
-echo Batch script for changing accept type
+# echo Batch script for changing accept type
 # powershell -Command "(Get-Content ..\src\Api\SearchTransactionsApi.js) | ForEach-Object { $_ -replace 'accepts = \[''application/json;charset=utf-8', 'accepts = [''*/*'} | Set-Content ..\src\Api\SearchTransactionsApi.js"
 
 # REM powershell -Command "(Get-Content ..\src\index.js) | ForEach-Object { $_ -replace \"require\('./api/Download([DTXS]{3})Api'\), \", \"\" } | Set-Content ..\src\index.js"
