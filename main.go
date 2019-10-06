@@ -14,9 +14,9 @@ func main() {
 	cfg := config.Config{
 		AuthenticationType: config.AuthTypeHTTPSignature,
 		RunEnvironment:     config.RunEnvSandbox,
-		MerchantId:         "abc",
-		MerchantKeyId:      "123",
-		MerchantSecretKey:  "abc123",
+		MerchantId:         "testrest",
+		MerchantKeyId:      "08c94330-f618-42a3-b09d-e1e43be5efda",
+		MerchantSecretKey:  "yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE=",
 		DebugLogging:       true,
 	}
 
