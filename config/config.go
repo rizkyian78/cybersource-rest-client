@@ -33,6 +33,9 @@ type Config struct {
 	KeyFileName   string
 	KeyAlias      string
 	KeyPass       string
+
+	// logging
+	DebugLogging bool
 }
 
 func (cfg Config) NewHTTPClient(formats strfmt.Registry) (*client.Cybersource, error) {
@@ -44,7 +47,7 @@ func (cfg Config) NewHTTPClient(formats strfmt.Registry) (*client.Cybersource, e
 	return client.New(tr, formats), nil
 }
 
-func (cfg Config) Transport() (runtime.ClientTransport, error) {
+func (cfg Config) Transport() (*httptransport.Runtime, error) {
 
 	var host string
 	switch strings.ToLower(cfg.RunEnvironment) {
@@ -64,6 +67,7 @@ func (cfg Config) Transport() (runtime.ClientTransport, error) {
 
 	tr.Consumers["application/json;charset=utf-8"] = runtime.JSONConsumer()
 	tr.Producers["application/json;charset=utf-8"] = runtime.JSONProducer()
+	tr.SetDebug(cfg.DebugLogging)
 
 	auth, err := cfg.ClientAuthInfoWriter()
 	if err != nil {
