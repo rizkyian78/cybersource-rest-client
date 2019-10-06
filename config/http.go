@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -14,12 +15,12 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-func (cfg Config) HTTPSignatureAuth() runtime.ClientAuthInfoWriter {
+func (cfg Config) HTTPSignatureAuth(host string) runtime.ClientAuthInfoWriter {
 	f := func(req runtime.ClientRequest, reg strfmt.Registry) error {
 
 		req.SetHeaderParam("v-c-merchant-id", cfg.MerchantId)
 		req.SetHeaderParam("Date", time.Now().Format(time.RFC1123))
-		req.SetHeaderParam("Host")
+		req.SetHeaderParam("Host", host)
 
 		skipDigest := strings.ToUpper(req.GetMethod()) == http.MethodGet
 
@@ -83,7 +84,11 @@ func (cfg Config) generateHTTPSignatureValue(req runtime.ClientRequest, headerNa
 		switch key {
 
 		case "host", "date", "digest", "v-c-merchant-id":
-			keyValuePairs = append(keyValuePairs, []string{key, headers.Get(header)})
+			val := headers.Get(header)
+			if val == "" {
+				return "", fmt.Errorf("Unable to find header '%s' when creating signature value!", header)
+			}
+			keyValuePairs = append(keyValuePairs, []string{key, val})
 
 		case "(request-target)":
 			u := url.URL{Path: req.GetPath(), RawQuery: req.GetQueryParams().Encode()}
@@ -98,6 +103,10 @@ func (cfg Config) generateHTTPSignatureValue(req runtime.ClientRequest, headerNa
 	}
 
 	toSign := strings.Join(lines, "\n")
+	log.Println("-----------------------------------------")
+	log.Println(toSign)
+	log.Println("-----------------------------------------")
+
 	hash := hmac.New(sha256.New, []byte(cfg.MerchantSecretKey))
 
 	if _, err := hash.Write([]byte(toSign)); err != nil {

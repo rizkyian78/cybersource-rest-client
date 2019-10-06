@@ -27,7 +27,30 @@ func main() {
 
 	c := client.New(tr, strfmt.Default)
 
-	created, err := c.Payments.CreatePayment(payments.NewCreatePaymentParams())
+	req := payments.NewCreatePaymentParams().WithCreatePaymentRequest(payments.CreatePaymentBody{
+		ClientReferenceInformation: &payments.CreatePaymentParamsBodyClientReferenceInformation{
+			Code: "TC50171_3",
+		},
+		ProcessingInformation: &payments.CreatePaymentParamsBodyProcessingInformation{
+			CommerceIndicator: "internet",
+		},
+		PaymentInformation: &payments.CreatePaymentParamsBodyPaymentInformation{
+			Card: &payments.CreatePaymentParamsBodyPaymentInformationCard{
+				Number:          "4111111111111111",
+				ExpirationMonth: "12",
+				ExpirationYear:  "2031",
+				SecurityCode:    "123",
+			},
+		},
+		OrderInformation: &payments.CreatePaymentParamsBodyOrderInformation{
+			AmountDetails: &payments.CreatePaymentParamsBodyOrderInformationAmountDetails{
+				TotalAmount: "13.37",
+				Currency:    "USD",
+			},
+		},
+	})
+
+	created, err := c.Payments.CreatePayment(req)
 
 	log.Printf("\n\n")
 	log.Printf("Created: %v\n", created)

@@ -69,7 +69,7 @@ func (cfg Config) Transport() (*httptransport.Runtime, error) {
 	tr.Producers["application/json;charset=utf-8"] = runtime.JSONProducer()
 	tr.SetDebug(cfg.DebugLogging)
 
-	auth, err := cfg.ClientAuthInfoWriter()
+	auth, err := cfg.ClientAuthInfoWriter(host)
 	if err != nil {
 		return nil, err
 	}
@@ -79,12 +79,12 @@ func (cfg Config) Transport() (*httptransport.Runtime, error) {
 	return tr, nil
 }
 
-func (cfg Config) ClientAuthInfoWriter() (runtime.ClientAuthInfoWriter, error) {
+func (cfg Config) ClientAuthInfoWriter(host string) (runtime.ClientAuthInfoWriter, error) {
 	switch cfg.AuthenticationType {
 	case AuthTypeHTTPSignature:
-		return cfg.HTTPSignatureAuth(), nil
+		return cfg.HTTPSignatureAuth(host), nil
 	case AuthTypeJWT:
-		return nil, fmt.Errorf("not implemented")
+		return nil, fmt.Errorf("jwt auth not implemented")
 	default:
 		return nil, fmt.Errorf("Unknown AuthenticationType '%s', please use one of: [%s, %s]", cfg.AuthenticationType, AuthTypeHTTPSignature, AuthTypeJWT)
 	}
