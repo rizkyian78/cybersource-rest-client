@@ -29,7 +29,7 @@ func main() {
 
 	req := payments.NewCreatePaymentParams().WithCreatePaymentRequest(payments.CreatePaymentBody{
 		ClientReferenceInformation: &payments.CreatePaymentParamsBodyClientReferenceInformation{
-			Code: "TC50171_3",
+			Code: "TC50171_3ABC",
 		},
 		ProcessingInformation: &payments.CreatePaymentParamsBodyProcessingInformation{
 			CommerceIndicator: "internet",
@@ -46,6 +46,18 @@ func main() {
 			AmountDetails: &payments.CreatePaymentParamsBodyOrderInformationAmountDetails{
 				TotalAmount: "13.37",
 				Currency:    "USD",
+			},
+			BillTo: &payments.CreatePaymentParamsBodyOrderInformationBillTo{
+				FirstName:          "John",
+				LastName:           "Doe",
+				Address1:           "1 Market St",
+				Address2:           "Address 2",
+				Locality:           "san francisco",
+				AdministrativeArea: "CA",
+				PostalCode:         "94105",
+				Country:            "US",
+				Email:              "test@cybs.com",
+				PhoneNumber:        "4158880000",
 			},
 		},
 	})

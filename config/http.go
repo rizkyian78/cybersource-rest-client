@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
+	// "time"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
@@ -22,11 +22,15 @@ func (cfg Config) HTTPSignatureAuth(host string) runtime.ClientAuthInfoWriter {
 
 		// Removing either version of the merchant-id header causes it to stop working?
 		hdrs["v-c-merchant-id"] = []string{cfg.MerchantId}
-		hdrs.Set("v-c-merchant-id", cfg.MerchantId)
-		hdrs.Set("Date", time.Now().Format(time.RFC1123))
+		// hdrs.Set("v-c-merchant-id", cfg.MerchantId)
+		// hdrs.Set("Date", time.Now().UTC().Format(time.RFC1123))
 		hdrs.Set("Host", host)
 
 		skipDigest := strings.ToUpper(req.GetMethod()) == http.MethodGet
+
+		body := req.GetBody()
+
+		log.Printf("Body: `%s`", string(body))
 
 		if !skipDigest {
 			digest, err := generateDigest(req.GetBody())
@@ -58,7 +62,7 @@ func generateDigest(body []byte) (string, error) {
 
 func (cfg Config) generateHTTPSignatureHeader(req HTTPRequest, skipDigest bool) (string, error) {
 
-	headerNames := []string{"host", "date", "(request-target)", "digest", "v-c-merchant-id"}
+	headerNames := []string{"host" /*"date",*/, "(request-target)", "digest", "v-c-merchant-id"}
 	if skipDigest {
 		headerNames = append(headerNames[:3], headerNames[4:]...)
 	}
