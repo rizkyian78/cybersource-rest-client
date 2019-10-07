@@ -29,7 +29,7 @@ func main() {
 
 	req := payments.NewCreatePaymentParams().WithCreatePaymentRequest(payments.CreatePaymentBody{
 		ClientReferenceInformation: &payments.CreatePaymentParamsBodyClientReferenceInformation{
-			Code: "TC50171_3ABC",
+			Code: "TC50171_3",
 		},
 		ProcessingInformation: &payments.CreatePaymentParamsBodyProcessingInformation{
 			CommerceIndicator: "internet",

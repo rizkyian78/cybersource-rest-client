@@ -1,10 +1,7 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"log"
 	"strings"
 
 	"github.com/go-openapi/runtime"
@@ -69,7 +66,7 @@ func (cfg Config) Transport() (*httptransport.Runtime, error) {
 	)
 
 	tr.Consumers["application/json;charset=utf-8"] = runtime.JSONConsumer()
-	tr.Producers["application/json;charset=utf-8"] = jsonProducer()
+	tr.Producers["application/json;charset=utf-8"] = runtime.JSONProducer()
 	tr.SetDebug(cfg.DebugLogging)
 
 	auth, err := cfg.ClientAuthInfoWriter(host)
@@ -97,17 +94,4 @@ type AuthenticateRequestFunc func(req runtime.ClientRequest, reg strfmt.Registry
 
 func (f AuthenticateRequestFunc) AuthenticateRequest(req runtime.ClientRequest, reg strfmt.Registry) error {
 	return f(req, reg)
-}
-
-// Use a custom JSON marshaller to handle https://github.com/golang/go/issues/26866
-func jsonProducer() runtime.Producer {
-	return runtime.ProducerFunc(func(writer io.Writer, data interface{}) error {
-		log.Printf("Running custom JSON producer...")
-		b, err := json.Marshal(data)
-		if err != nil {
-			return err
-		}
-		_, err = writer.Write(b)
-		return err
-	})
 }

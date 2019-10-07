@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	// "time"
+	"time"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
@@ -20,11 +20,17 @@ func (cfg Config) HTTPSignatureAuth(host string) runtime.ClientAuthInfoWriter {
 
 		hdrs := req.GetHeaderParams()
 
-		// Removing either version of the merchant-id header causes it to stop working?
+		// The response is application/hal+json, and if our Accept
+		// header is application/json, we get a 404.
+		//
+		// Ideally go-swagger would put application/hal+json on
+		// the Accept header, but I'm not sure how to accomplish that.
+		//
+		hdrs.Del("Accept")
+
 		hdrs["v-c-merchant-id"] = []string{cfg.MerchantId}
-		// hdrs.Set("v-c-merchant-id", cfg.MerchantId)
-		// hdrs.Set("Date", time.Now().UTC().Format(time.RFC1123))
-		hdrs.Set("Host", host)
+		hdrs["date"] = []string{time.Now().UTC().Format(time.RFC1123)}
+		hdrs["Host"] = []string{host}
 
 		skipDigest := strings.ToUpper(req.GetMethod()) == http.MethodGet
 
@@ -37,14 +43,14 @@ func (cfg Config) HTTPSignatureAuth(host string) runtime.ClientAuthInfoWriter {
 			if err != nil {
 				return err
 			}
-			hdrs.Set("Digest", digest)
+			hdrs["digest"] = []string{digest}
 		}
 
 		signature, err := cfg.generateHTTPSignatureHeader(req, skipDigest)
 		if err != nil {
 			return err
 		}
-		hdrs.Set("Signature", signature)
+		hdrs["signature"] = []string{signature}
 
 		return nil
 	}
@@ -62,7 +68,7 @@ func generateDigest(body []byte) (string, error) {
 
 func (cfg Config) generateHTTPSignatureHeader(req HTTPRequest, skipDigest bool) (string, error) {
 
-	headerNames := []string{"host" /*"date",*/, "(request-target)", "digest", "v-c-merchant-id"}
+	headerNames := []string{"host", "date", "(request-target)", "digest", "v-c-merchant-id"}
 	if skipDigest {
 		headerNames = append(headerNames[:3], headerNames[4:]...)
 	}
@@ -95,17 +101,13 @@ func generateHTTPSignatureValue(merchantSecretKey string, req HTTPRequest, heade
 			requestTarget := fmt.Sprintf("%s %s", strings.ToLower(req.GetMethod()), u.String())
 			keyValuePairs = append(keyValuePairs, []string{key, requestTarget})
 
-		case "v-c-merchant-id":
-			val := getHeaderDirect(headers, key)
-			if val == "" {
-				return "", fmt.Errorf("Unable to find header '%s' when creating signature value!", header)
-			}
-			keyValuePairs = append(keyValuePairs, []string{key, val})
-
 		default:
 			val := headers.Get(header)
 			if val == "" {
-				return "", fmt.Errorf("Unable to find header '%s' when creating signature value!", header)
+				val = getHeaderDirect(headers, key)
+				if val == "" {
+					return "", fmt.Errorf("Unable to find header '%s' when creating signature value!", header)
+				}
 			}
 			keyValuePairs = append(keyValuePairs, []string{key, val})
 		}
@@ -117,9 +119,6 @@ func generateHTTPSignatureValue(merchantSecretKey string, req HTTPRequest, heade
 	}
 
 	toSign := strings.Join(lines, "\n")
-	log.Println("-----------------------------------------")
-	log.Println(toSign)
-	log.Println("-----------------------------------------")
 
 	merchantDecoded, err := base64.StdEncoding.DecodeString(merchantSecretKey)
 	if err != nil {
