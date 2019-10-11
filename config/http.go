@@ -18,6 +18,12 @@ import (
 func (cfg Config) HTTPSignatureAuth(host string) runtime.ClientAuthInfoWriter {
 	f := func(req runtime.ClientRequest, reg strfmt.Registry) error {
 
+		if cfg.DebugLogging {
+			log.Println("Performing HTTP Signature Auth...")
+			log.Println("MerchantId: " + cfg.MerchantId)
+			log.Println("KeyId: " + cfg.MerchantKeyId)
+		}
+
 		hdrs := req.GetHeaderParams()
 
 		// The response is application/hal+json, and if our Accept
@@ -36,7 +42,9 @@ func (cfg Config) HTTPSignatureAuth(host string) runtime.ClientAuthInfoWriter {
 
 		body := req.GetBody()
 
-		log.Printf("Body: `%s`", string(body))
+		if cfg.DebugLogging {
+			log.Printf("Body: `%s`", string(body))
+		}
 
 		if !skipDigest {
 			digest, err := generateDigest(req.GetBody())
