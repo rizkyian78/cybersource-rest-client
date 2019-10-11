@@ -67,6 +67,8 @@ func (cfg Config) Transport() (*httptransport.Runtime, error) {
 
 	tr.Consumers["application/json;charset=utf-8"] = runtime.JSONConsumer()
 	tr.Producers["application/json;charset=utf-8"] = runtime.JSONProducer()
+	tr.Consumers["application/hal+json"] = runtime.JSONConsumer()
+	tr.Producers["application/hal+json"] = runtime.JSONProducer()
 	tr.SetDebug(cfg.DebugLogging)
 
 	auth, err := cfg.ClientAuthInfoWriter(host)
