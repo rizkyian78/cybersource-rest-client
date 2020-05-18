@@ -2578,7 +2578,7 @@ type GetTransactionOKBodyOrderInformationLineItemsItems0 struct {
 	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
 	//
 	// Max Length: 15
-	UnitPrice int `json:"unitPrice,omitempty"`
+	UnitPrice float64 `json:"unitPrice,omitempty"`
 }
 
 // Validate validates this get transaction o k body order information line items items0
@@ -2690,7 +2690,7 @@ func (o *GetTransactionOKBodyOrderInformationLineItemsItems0) validateUnitPrice(
 		return nil
 	}
 
-	if err := validate.MaxLength("unitPrice", "body", string(o.UnitPrice), 15); err != nil {
+	if err := validate.MaxLength("unitPrice", "body", fmt.Sprintf("%f", o.UnitPrice), 15); err != nil {
 		return err
 	}
 
