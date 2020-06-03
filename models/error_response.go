@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ErrorResponse error response
+//
 // swagger:model ErrorResponse
 type ErrorResponse struct {
 
@@ -98,6 +98,7 @@ func (m *ErrorResponse) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseLinks error response links
+//
 // swagger:model ErrorResponseLinks
 type ErrorResponseLinks struct {
 
@@ -220,6 +221,7 @@ func (m *ErrorResponseLinks) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseLinksDocumentationItems0 error response links documentation items0
+//
 // swagger:model ErrorResponseLinksDocumentationItems0
 type ErrorResponseLinksDocumentationItems0 struct {
 
@@ -257,6 +259,7 @@ func (m *ErrorResponseLinksDocumentationItems0) UnmarshalBinary(b []byte) error 
 }
 
 // ErrorResponseLinksNextItems0 error response links next items0
+//
 // swagger:model ErrorResponseLinksNextItems0
 type ErrorResponseLinksNextItems0 struct {
 
@@ -294,6 +297,7 @@ func (m *ErrorResponseLinksNextItems0) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseLinksSelf error response links self
+//
 // swagger:model ErrorResponseLinksSelf
 type ErrorResponseLinksSelf struct {
 
@@ -331,6 +335,7 @@ func (m *ErrorResponseLinksSelf) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseResponseStatus error response response status
+//
 // swagger:model ErrorResponseResponseStatus
 type ErrorResponseResponseStatus struct {
 
@@ -408,6 +413,7 @@ func (m *ErrorResponseResponseStatus) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseResponseStatusDetailsItems0 error response response status details items0
+//
 // swagger:model ErrorResponseResponseStatusDetailsItems0
 type ErrorResponseResponseStatusDetailsItems0 struct {
 

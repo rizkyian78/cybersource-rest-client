@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new payment instrument API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,21 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreatePaymentInstrument(params *CreatePaymentInstrumentParams) (*CreatePaymentInstrumentCreated, error)
+
+	DeletePaymentInstrument(params *DeletePaymentInstrumentParams) (*DeletePaymentInstrumentNoContent, error)
+
+	GetPaymentInstrument(params *GetPaymentInstrumentParams) (*GetPaymentInstrumentOK, error)
+
+	UpdatePaymentInstrument(params *UpdatePaymentInstrumentParams) (*UpdatePaymentInstrumentOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-CreatePaymentInstrument creates a payment instrument
+  CreatePaymentInstrument creates a payment instrument
 */
 func (a *Client) CreatePaymentInstrument(params *CreatePaymentInstrumentParams) (*CreatePaymentInstrumentCreated, error) {
 	// TODO: Validate the params before sending
@@ -61,7 +73,7 @@ func (a *Client) CreatePaymentInstrument(params *CreatePaymentInstrumentParams) 
 }
 
 /*
-DeletePaymentInstrument deletes a payment instrument
+  DeletePaymentInstrument deletes a payment instrument
 */
 func (a *Client) DeletePaymentInstrument(params *DeletePaymentInstrumentParams) (*DeletePaymentInstrumentNoContent, error) {
 	// TODO: Validate the params before sending
@@ -95,7 +107,7 @@ func (a *Client) DeletePaymentInstrument(params *DeletePaymentInstrumentParams) 
 }
 
 /*
-GetPaymentInstrument retrieves a payment instrument
+  GetPaymentInstrument retrieves a payment instrument
 */
 func (a *Client) GetPaymentInstrument(params *GetPaymentInstrumentParams) (*GetPaymentInstrumentOK, error) {
 	// TODO: Validate the params before sending
@@ -129,7 +141,7 @@ func (a *Client) GetPaymentInstrument(params *GetPaymentInstrumentParams) (*GetP
 }
 
 /*
-UpdatePaymentInstrument updates a payment instrument
+  UpdatePaymentInstrument updates a payment instrument
 */
 func (a *Client) UpdatePaymentInstrument(params *UpdatePaymentInstrumentParams) (*UpdatePaymentInstrumentOK, error) {
 	// TODO: Validate the params before sending

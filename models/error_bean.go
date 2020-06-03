@@ -8,14 +8,14 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ErrorBean Error Bean
+//
 // swagger:model ErrorBean
 type ErrorBean struct {
 
@@ -124,6 +124,7 @@ func (m *ErrorBean) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorBeanFieldsItems0 Provide validation failed input field details
+//
 // swagger:model ErrorBeanFieldsItems0
 type ErrorBeanFieldsItems0 struct {
 

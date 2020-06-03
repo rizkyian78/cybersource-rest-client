@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new payouts API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-OctCreatePayment processes a payout
+// ClientService is the interface for Client methods
+type ClientService interface {
+	OctCreatePayment(params *OctCreatePaymentParams) (*OctCreatePaymentCreated, error)
 
-Send funds from a selected funding source to a designated credit/debit card account or a prepaid card using
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  OctCreatePayment processes a payout
+
+  Send funds from a selected funding source to a designated credit/debit card account or a prepaid card using
 an Original Credit Transaction (OCT).
 
 */

@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // Error error
+//
 // swagger:model Error
 type Error struct {
 
@@ -98,6 +98,7 @@ func (m *Error) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorLinks error links
+//
 // swagger:model ErrorLinks
 type ErrorLinks struct {
 
@@ -220,6 +221,7 @@ func (m *ErrorLinks) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorLinksDocumentationItems0 error links documentation items0
+//
 // swagger:model ErrorLinksDocumentationItems0
 type ErrorLinksDocumentationItems0 struct {
 
@@ -257,6 +259,7 @@ func (m *ErrorLinksDocumentationItems0) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorLinksNextItems0 error links next items0
+//
 // swagger:model ErrorLinksNextItems0
 type ErrorLinksNextItems0 struct {
 
@@ -294,6 +297,7 @@ func (m *ErrorLinksNextItems0) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorLinksSelf error links self
+//
 // swagger:model ErrorLinksSelf
 type ErrorLinksSelf struct {
 
@@ -331,6 +335,7 @@ func (m *ErrorLinksSelf) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseStatus error response status
+//
 // swagger:model ErrorResponseStatus
 type ErrorResponseStatus struct {
 
@@ -408,6 +413,7 @@ func (m *ErrorResponseStatus) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseStatusDetailsItems0 error response status details items0
+//
 // swagger:model ErrorResponseStatusDetailsItems0
 type ErrorResponseStatusDetailsItems0 struct {
 

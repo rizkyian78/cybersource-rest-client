@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new report definitions API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,19 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetResourceInfoByReportDefinition gets report definition
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetResourceInfoByReportDefinition(params *GetResourceInfoByReportDefinitionParams) (*GetResourceInfoByReportDefinitionOK, error)
 
-View the attributes of an individual report type.
+	GetResourceV2Info(params *GetResourceV2InfoParams) (*GetResourceV2InfoOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetResourceInfoByReportDefinition gets report definition
+
+  View the attributes of an individual report type.
 For a list of values for reportDefinitionName, see the
 [Reporting Developer Guide](https://www.cybersource.com/developers/documentation/reporting_and_reconciliation/)
 
@@ -66,9 +74,9 @@ func (a *Client) GetResourceInfoByReportDefinition(params *GetResourceInfoByRepo
 }
 
 /*
-GetResourceV2Info gets reporting resource information
+  GetResourceV2Info gets reporting resource information
 
-View a list of supported reports and their attributes before subscribing to them.
+  View a list of supported reports and their attributes before subscribing to them.
 
 */
 func (a *Client) GetResourceV2Info(params *GetResourceV2InfoParams) (*GetResourceV2InfoOK, error) {

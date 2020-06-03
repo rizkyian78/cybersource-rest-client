@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new reports API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,21 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreateReport creates adhoc report
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateReport(params *CreateReportParams) (*CreateReportCreated, error)
 
-Create a one-time report. You must specify the
+	GetReportByReportID(params *GetReportByReportIDParams) (*GetReportByReportIDOK, error)
+
+	SearchReports(params *SearchReportsParams) (*SearchReportsOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateReport creates adhoc report
+
+  Create a one-time report. You must specify the
 type of report in reportDefinitionName. For a list of values for
 reportDefinitionName, see the [Reporting Developer Guide](https://www.cybersource.com/developers/documentation/reporting_and_reconciliation)
 
@@ -66,9 +76,9 @@ func (a *Client) CreateReport(params *CreateReportParams) (*CreateReportCreated,
 }
 
 /*
-GetReportByReportID gets report based on report Id
+  GetReportByReportID gets report based on report Id
 
-Download a report using the reportId value. If
+  Download a report using the reportId value. If
 you don’t already know this value, you can obtain it using the
 Retrieve available reports call.
 
@@ -105,9 +115,9 @@ func (a *Client) GetReportByReportID(params *GetReportByReportIDParams) (*GetRep
 }
 
 /*
-SearchReports retrieves available reports
+  SearchReports retrieves available reports
 
-Retrieve a list of the available reports to which
+  Retrieve a list of the available reports to which
 you are subscribed. This will also give you the reportId value,
 which you can also use to download a report.
 

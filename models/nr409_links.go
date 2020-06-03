@@ -6,13 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // Nr409Links 409 links
+//
 // swagger:model 409Links
 type Nr409Links struct {
 
@@ -71,6 +71,7 @@ func (m *Nr409Links) UnmarshalBinary(b []byte) error {
 }
 
 // Nr409LinksPaymentInstruments nr409 links payment instruments
+//
 // swagger:model Nr409LinksPaymentInstruments
 type Nr409LinksPaymentInstruments struct {
 

@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // InstrumentIdentifierEnrollableCard instrument identifier enrollable card
+//
 // swagger:model InstrumentIdentifierEnrollableCard
 type InstrumentIdentifierEnrollableCard struct {
 
@@ -125,6 +125,7 @@ func (m *InstrumentIdentifierEnrollableCard) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierEnrollableCardBankAccount instrument identifier enrollable card bank account
+//
 // swagger:model InstrumentIdentifierEnrollableCardBankAccount
 type InstrumentIdentifierEnrollableCardBankAccount struct {
 
@@ -210,6 +211,7 @@ func (m *InstrumentIdentifierEnrollableCardBankAccount) UnmarshalBinary(b []byte
 }
 
 // InstrumentIdentifierEnrollableCardBillTo instrument identifier enrollable card bill to
+//
 // swagger:model InstrumentIdentifierEnrollableCardBillTo
 type InstrumentIdentifierEnrollableCardBillTo struct {
 
@@ -256,6 +258,7 @@ func (m *InstrumentIdentifierEnrollableCardBillTo) UnmarshalBinary(b []byte) err
 }
 
 // InstrumentIdentifierEnrollableCardCard instrument identifier enrollable card card
+//
 // swagger:model InstrumentIdentifierEnrollableCardCard
 type InstrumentIdentifierEnrollableCardCard struct {
 

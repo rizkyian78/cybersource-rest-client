@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new refund API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,19 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-RefundCapture refunds a capture
+// ClientService is the interface for Client methods
+type ClientService interface {
+	RefundCapture(params *RefundCaptureParams) (*RefundCaptureCreated, error)
 
-Include the capture ID in the POST request to refund the captured amount.
+	RefundPayment(params *RefundPaymentParams) (*RefundPaymentCreated, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  RefundCapture refunds a capture
+
+  Include the capture ID in the POST request to refund the captured amount.
 
 */
 func (a *Client) RefundCapture(params *RefundCaptureParams) (*RefundCaptureCreated, error) {
@@ -64,9 +72,9 @@ func (a *Client) RefundCapture(params *RefundCaptureParams) (*RefundCaptureCreat
 }
 
 /*
-RefundPayment refunds a payment
+  RefundPayment refunds a payment
 
-Include the payment ID in the POST request to refund the payment amount.
+  Include the payment ID in the POST request to refund the payment amount.
 
 */
 func (a *Client) RefundPayment(params *RefundPaymentParams) (*RefundPaymentCreated, error) {

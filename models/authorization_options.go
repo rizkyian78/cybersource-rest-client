@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // AuthorizationOptions authorization options
+//
 // swagger:model AuthorizationOptions
 type AuthorizationOptions struct {
 
@@ -72,6 +72,7 @@ func (m *AuthorizationOptions) UnmarshalBinary(b []byte) error {
 }
 
 // AuthorizationOptionsInitiator authorization options initiator
+//
 // swagger:model AuthorizationOptionsInitiator
 type AuthorizationOptionsInitiator struct {
 
@@ -130,6 +131,7 @@ func (m *AuthorizationOptionsInitiator) UnmarshalBinary(b []byte) error {
 }
 
 // AuthorizationOptionsInitiatorMerchantInitiatedTransaction authorization options initiator merchant initiated transaction
+//
 // swagger:model AuthorizationOptionsInitiatorMerchantInitiatedTransaction
 type AuthorizationOptionsInitiatorMerchantInitiatedTransaction struct {
 

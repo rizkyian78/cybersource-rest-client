@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ErrorResponseWithHAL error response with h a l
+//
 // swagger:model ErrorResponseWithHAL
 type ErrorResponseWithHAL []*ErrorResponseWithHALItems0
 
@@ -89,6 +89,7 @@ func (m *ErrorResponseWithHAL) validateLinks(formats strfmt.Registry) error {
 }
 
 // ErrorResponseWithHALItems0 error response with h a l items0
+//
 // swagger:model ErrorResponseWithHALItems0
 type ErrorResponseWithHALItems0 struct {
 
@@ -153,6 +154,7 @@ func (m *ErrorResponseWithHALItems0) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseWithHALItems0Details error response with h a l items0 details
+//
 // swagger:model ErrorResponseWithHALItems0Details
 type ErrorResponseWithHALItems0Details struct {
 
@@ -187,6 +189,7 @@ func (m *ErrorResponseWithHALItems0Details) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseWithHALLinks error response with h a l links
+//
 // swagger:model ErrorResponseWithHALLinks
 type ErrorResponseWithHALLinks struct {
 
@@ -245,6 +248,7 @@ func (m *ErrorResponseWithHALLinks) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorResponseWithHALLinksPaymentInstruments error response with h a l links payment instruments
+//
 // swagger:model ErrorResponseWithHALLinksPaymentInstruments
 type ErrorResponseWithHALLinksPaymentInstruments struct {
 

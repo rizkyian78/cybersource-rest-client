@@ -6,13 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // KeyResult key result
+//
 // swagger:model KeyResult
 type KeyResult struct {
 
@@ -99,6 +99,7 @@ func (m *KeyResult) UnmarshalBinary(b []byte) error {
 }
 
 // KeyResultDer The public key in DER format. Used to validate the response from the Tokenize Card request. Additionally this format is useful for client side encryption in Android and iOS implementations.
+//
 // swagger:model KeyResultDer
 type KeyResultDer struct {
 
@@ -136,6 +137,7 @@ func (m *KeyResultDer) UnmarshalBinary(b []byte) error {
 }
 
 // KeyResultJwk The public key in JSON Web Key (JWK) format. This format is useful for client side encryption in JavaScript based implementations.
+//
 // swagger:model KeyResultJwk
 type KeyResultJwk struct {
 

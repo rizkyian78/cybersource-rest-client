@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new download x s d API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetXSDV2 useds to download x s ds for reports
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetXSDV2(params *GetXSDV2Params) (*GetXSDV2OK, error)
 
-Downloads XSDs for reports on no-auth.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetXSDV2 useds to download x s ds for reports
+
+  Downloads XSDs for reports on no-auth.
 */
 func (a *Client) GetXSDV2(params *GetXSDV2Params) (*GetXSDV2OK, error) {
 	// TODO: Validate the params before sending

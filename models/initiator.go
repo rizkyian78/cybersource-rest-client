@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Initiator initiator
+//
 // swagger:model Initiator
 type Initiator struct {
 
@@ -72,6 +72,7 @@ func (m *Initiator) UnmarshalBinary(b []byte) error {
 }
 
 // InitiatorMerchantInitiatedTransaction initiator merchant initiated transaction
+//
 // swagger:model InitiatorMerchantInitiatedTransaction
 type InitiatorMerchantInitiatedTransaction struct {
 

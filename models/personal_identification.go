@@ -6,13 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // PersonalIdentification personal identification
+//
 // swagger:model PersonalIdentification
 type PersonalIdentification struct {
 
@@ -87,6 +87,7 @@ func (m *PersonalIdentification) UnmarshalBinary(b []byte) error {
 }
 
 // PersonalIdentificationIssuedBy personal identification issued by
+//
 // swagger:model PersonalIdentificationIssuedBy
 type PersonalIdentificationIssuedBy struct {
 

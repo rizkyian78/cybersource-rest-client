@@ -12,10 +12,11 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/nkristianto/cybersource-rest-client-go/models"
 )
 
 // GetNotificationOfChangeReportReader is a Reader for the GetNotificationOfChangeReport structure.
@@ -392,7 +393,7 @@ type GetNotificationOfChangeReportInternalServerErrorBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*models.DetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
@@ -521,7 +522,7 @@ type GetNotificationOfChangeReportNotFoundBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*models.DetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//

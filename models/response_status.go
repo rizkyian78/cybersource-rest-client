@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ResponseStatus response status
+//
 // swagger:model ResponseStatus
 type ResponseStatus struct {
 
@@ -92,6 +92,7 @@ func (m *ResponseStatus) UnmarshalBinary(b []byte) error {
 }
 
 // ResponseStatusDetailsItems0 response status details items0
+//
 // swagger:model ResponseStatusDetailsItems0
 type ResponseStatusDetailsItems0 struct {
 

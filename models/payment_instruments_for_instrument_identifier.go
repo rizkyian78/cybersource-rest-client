@@ -8,14 +8,14 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // PaymentInstrumentsForInstrumentIdentifier payment instruments for instrument identifier
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifier
 type PaymentInstrumentsForInstrumentIdentifier struct {
 
@@ -123,6 +123,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifier) UnmarshalBinary(b []byte) er
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbedded payment instruments for instrument identifier embedded
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbedded
 type PaymentInstrumentsForInstrumentIdentifierEmbedded struct {
 
@@ -188,6 +189,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbedded) UnmarshalBinary(b []
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0 payment instruments for instrument identifier embedded payment instruments items0
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0 struct {
 
@@ -467,6 +469,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BankAccount payment instruments for instrument identifier embedded payment instruments items0 bank account
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BankAccount
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BankAccount struct {
 
@@ -503,6 +506,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BillTo payment instruments for instrument identifier embedded payment instruments items0 bill to
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BillTo
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BillTo struct {
 
@@ -842,6 +846,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformation payment instruments for instrument identifier embedded payment instruments items0 buyer information
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformation
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformation struct {
 
@@ -987,6 +992,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformationPersonalIdentificationItems0 payment instruments for instrument identifier embedded payment instruments items0 buyer information personal identification items0
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformationPersonalIdentificationItems0
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformationPersonalIdentificationItems0 struct {
 
@@ -1061,6 +1067,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformationPersonalIdentificationItems0IssuedBy payment instruments for instrument identifier embedded payment instruments items0 buyer information personal identification items0 issued by
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformationPersonalIdentificationItems0IssuedBy
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0BuyerInformationPersonalIdentificationItems0IssuedBy struct {
 
@@ -1096,6 +1103,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0Card payment instruments for instrument identifier embedded payment instruments items0 card
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0Card
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0Card struct {
 
@@ -1361,6 +1369,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifier payment instruments for instrument identifier embedded payment instruments items0 instrument identifier
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifier
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifier struct {
 
@@ -1562,6 +1571,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierBankAccount payment instruments for instrument identifier embedded payment instruments items0 instrument identifier bank account
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierBankAccount
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierBankAccount struct {
 
@@ -1647,6 +1657,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierCard payment instruments for instrument identifier embedded payment instruments items0 instrument identifier card
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierCard
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierCard struct {
 
@@ -1706,6 +1717,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinks payment instruments for instrument identifier embedded payment instruments items0 instrument identifier links
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinks
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinks struct {
 
@@ -1814,6 +1826,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksAncestor payment instruments for instrument identifier embedded payment instruments items0 instrument identifier links ancestor
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksAncestor
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksAncestor struct {
 
@@ -1845,6 +1858,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksSelf payment instruments for instrument identifier embedded payment instruments items0 instrument identifier links self
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksSelf
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksSelf struct {
 
@@ -1876,6 +1890,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksSuccessor payment instruments for instrument identifier embedded payment instruments items0 instrument identifier links successor
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksSuccessor
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierLinksSuccessor struct {
 
@@ -1907,6 +1922,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierMetadata payment instruments for instrument identifier embedded payment instruments items0 instrument identifier metadata
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierMetadata
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierMetadata struct {
 
@@ -1938,6 +1954,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformation payment instruments for instrument identifier embedded payment instruments items0 instrument identifier processing information
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformation
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformation struct {
 
@@ -1996,6 +2013,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptions payment instruments for instrument identifier embedded payment instruments items0 instrument identifier processing information authorization options
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptions
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptions struct {
 
@@ -2054,6 +2072,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator payment instruments for instrument identifier embedded payment instruments items0 instrument identifier processing information authorization options initiator
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator struct {
 
@@ -2112,6 +2131,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction payment instruments for instrument identifier embedded payment instruments items0 instrument identifier processing information authorization options initiator merchant initiated transaction
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction struct {
 
@@ -2166,6 +2186,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0Links payment instruments for instrument identifier embedded payment instruments items0 links
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0Links
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0Links struct {
 
@@ -2274,6 +2295,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksAncestor payment instruments for instrument identifier embedded payment instruments items0 links ancestor
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksAncestor
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksAncestor struct {
 
@@ -2305,6 +2327,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksSelf payment instruments for instrument identifier embedded payment instruments items0 links self
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksSelf
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksSelf struct {
 
@@ -2336,6 +2359,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksSuccessor payment instruments for instrument identifier embedded payment instruments items0 links successor
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksSuccessor
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0LinksSuccessor struct {
 
@@ -2367,6 +2391,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MerchantInformation payment instruments for instrument identifier embedded payment instruments items0 merchant information
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MerchantInformation
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MerchantInformation struct {
 
@@ -2425,6 +2450,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MerchantInformationMerchantDescriptor payment instruments for instrument identifier embedded payment instruments items0 merchant information merchant descriptor
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MerchantInformationMerchantDescriptor
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MerchantInformationMerchantDescriptor struct {
 
@@ -2456,6 +2482,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MetaData payment instruments for instrument identifier embedded payment instruments items0 meta data
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MetaData
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0MetaData struct {
 
@@ -2487,6 +2514,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0ProcessingInformation payment instruments for instrument identifier embedded payment instruments items0 processing information
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0ProcessingInformation
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0ProcessingInformation struct {
 
@@ -2551,6 +2579,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0ProcessingInformationBankTransferOptions payment instruments for instrument identifier embedded payment instruments items0 processing information bank transfer options
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0ProcessingInformationBankTransferOptions
 type PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItems0ProcessingInformationBankTransferOptions struct {
 
@@ -2590,6 +2619,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierEmbeddedPaymentInstrumentsItem
 }
 
 // PaymentInstrumentsForInstrumentIdentifierLinks payment instruments for instrument identifier links
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierLinks
 type PaymentInstrumentsForInstrumentIdentifierLinks struct {
 
@@ -2748,6 +2778,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierLinks) UnmarshalBinary(b []byt
 }
 
 // PaymentInstrumentsForInstrumentIdentifierLinksFirst payment instruments for instrument identifier links first
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierLinksFirst
 type PaymentInstrumentsForInstrumentIdentifierLinksFirst struct {
 
@@ -2779,6 +2810,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierLinksFirst) UnmarshalBinary(b 
 }
 
 // PaymentInstrumentsForInstrumentIdentifierLinksLast payment instruments for instrument identifier links last
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierLinksLast
 type PaymentInstrumentsForInstrumentIdentifierLinksLast struct {
 
@@ -2810,6 +2842,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierLinksLast) UnmarshalBinary(b [
 }
 
 // PaymentInstrumentsForInstrumentIdentifierLinksNext payment instruments for instrument identifier links next
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierLinksNext
 type PaymentInstrumentsForInstrumentIdentifierLinksNext struct {
 
@@ -2841,6 +2874,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierLinksNext) UnmarshalBinary(b [
 }
 
 // PaymentInstrumentsForInstrumentIdentifierLinksPrev A link to the previous collection starting at the supplied offset minus the supplied limit.
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierLinksPrev
 type PaymentInstrumentsForInstrumentIdentifierLinksPrev struct {
 
@@ -2872,6 +2906,7 @@ func (m *PaymentInstrumentsForInstrumentIdentifierLinksPrev) UnmarshalBinary(b [
 }
 
 // PaymentInstrumentsForInstrumentIdentifierLinksSelf payment instruments for instrument identifier links self
+//
 // swagger:model PaymentInstrumentsForInstrumentIdentifierLinksSelf
 type PaymentInstrumentsForInstrumentIdentifierLinksSelf struct {
 

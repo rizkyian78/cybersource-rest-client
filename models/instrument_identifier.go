@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // InstrumentIdentifier instrument identifier
+//
 // swagger:model InstrumentIdentifier
 type InstrumentIdentifier struct {
 
@@ -193,6 +193,7 @@ func (m *InstrumentIdentifier) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierBankAccount instrument identifier bank account
+//
 // swagger:model InstrumentIdentifierBankAccount
 type InstrumentIdentifierBankAccount struct {
 
@@ -278,6 +279,7 @@ func (m *InstrumentIdentifierBankAccount) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierCard instrument identifier card
+//
 // swagger:model InstrumentIdentifierCard
 type InstrumentIdentifierCard struct {
 
@@ -337,6 +339,7 @@ func (m *InstrumentIdentifierCard) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierLinks instrument identifier links
+//
 // swagger:model InstrumentIdentifierLinks
 type InstrumentIdentifierLinks struct {
 
@@ -445,6 +448,7 @@ func (m *InstrumentIdentifierLinks) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierLinksAncestor instrument identifier links ancestor
+//
 // swagger:model InstrumentIdentifierLinksAncestor
 type InstrumentIdentifierLinksAncestor struct {
 
@@ -476,6 +480,7 @@ func (m *InstrumentIdentifierLinksAncestor) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierLinksSelf instrument identifier links self
+//
 // swagger:model InstrumentIdentifierLinksSelf
 type InstrumentIdentifierLinksSelf struct {
 
@@ -507,6 +512,7 @@ func (m *InstrumentIdentifierLinksSelf) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierLinksSuccessor instrument identifier links successor
+//
 // swagger:model InstrumentIdentifierLinksSuccessor
 type InstrumentIdentifierLinksSuccessor struct {
 
@@ -538,6 +544,7 @@ func (m *InstrumentIdentifierLinksSuccessor) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierMetadata instrument identifier metadata
+//
 // swagger:model InstrumentIdentifierMetadata
 type InstrumentIdentifierMetadata struct {
 
@@ -569,6 +576,7 @@ func (m *InstrumentIdentifierMetadata) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierProcessingInformation instrument identifier processing information
+//
 // swagger:model InstrumentIdentifierProcessingInformation
 type InstrumentIdentifierProcessingInformation struct {
 
@@ -627,6 +635,7 @@ func (m *InstrumentIdentifierProcessingInformation) UnmarshalBinary(b []byte) er
 }
 
 // InstrumentIdentifierProcessingInformationAuthorizationOptions instrument identifier processing information authorization options
+//
 // swagger:model InstrumentIdentifierProcessingInformationAuthorizationOptions
 type InstrumentIdentifierProcessingInformationAuthorizationOptions struct {
 
@@ -685,6 +694,7 @@ func (m *InstrumentIdentifierProcessingInformationAuthorizationOptions) Unmarsha
 }
 
 // InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator instrument identifier processing information authorization options initiator
+//
 // swagger:model InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator
 type InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator struct {
 
@@ -743,6 +753,7 @@ func (m *InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator)
 }
 
 // InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction instrument identifier processing information authorization options initiator merchant initiated transaction
+//
 // swagger:model InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction
 type InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction struct {
 

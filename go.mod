@@ -8,6 +8,5 @@ require (
 	github.com/go-openapi/strfmt v0.19.3
 	github.com/go-openapi/swag v0.19.5
 	github.com/go-openapi/validate v0.19.3
-	github.com/helloeave/json v1.13.0
 	github.com/tooolbox/jwalk v1.0.3
 )

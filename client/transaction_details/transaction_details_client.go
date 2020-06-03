@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new transaction details API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetTransaction retrieves a transaction
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetTransaction(params *GetTransactionParams) (*GetTransactionOK, error)
 
-Include the Request ID in the GET request to retrieve the transaction details.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetTransaction retrieves a transaction
+
+  Include the Request ID in the GET request to retrieve the transaction details.
 */
 func (a *Client) GetTransaction(params *GetTransactionParams) (*GetTransactionOK, error) {
 	// TODO: Validate the params before sending

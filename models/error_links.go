@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ErrorLinks error links
+//
 // swagger:model ErrorLinks
 type ErrorLinks struct {
 
@@ -137,6 +137,7 @@ func (m *ErrorLinks) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorLinksDocumentationItems0 error links documentation items0
+//
 // swagger:model ErrorLinksDocumentationItems0
 type ErrorLinksDocumentationItems0 struct {
 
@@ -174,6 +175,7 @@ func (m *ErrorLinksDocumentationItems0) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorLinksNextItems0 error links next items0
+//
 // swagger:model ErrorLinksNextItems0
 type ErrorLinksNextItems0 struct {
 
@@ -211,6 +213,7 @@ func (m *ErrorLinksNextItems0) UnmarshalBinary(b []byte) error {
 }
 
 // ErrorLinksSelf error links self
+//
 // swagger:model ErrorLinksSelf
 type ErrorLinksSelf struct {
 

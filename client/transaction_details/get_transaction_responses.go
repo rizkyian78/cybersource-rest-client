@@ -12,10 +12,9 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	strfmt "github.com/go-openapi/strfmt"
 )
 
 // GetTransactionReader is a Reader for the GetTransaction structure.
@@ -722,7 +721,7 @@ type GetTransactionOKBodyApplicationInformation struct {
 	//
 	// For details, see the appendix of reason codes in the documentation for the relevant payment method.
 	//
-	ReasonCode int `json:"reasonCode,omitempty"`
+	ReasonCode string `json:"reasonCode,omitempty"`
 
 	// The status of the submitted transaction.
 	Status string `json:"status,omitempty"`
@@ -812,14 +811,14 @@ type GetTransactionOKBodyApplicationInformationApplicationsItems0 struct {
 	RMessage string `json:"rMessage,omitempty"`
 
 	// 3-digit reason code that indicates why the customer profile payment succeeded or failed.
-	ReasonCode string `json:"reasonCode,omitempty"`
+	ReasonCode int64 `json:"reasonCode,omitempty"`
 
 	// Reference number that you use to reconcile your CyberSource reports with your processor reports.
 	//
 	ReconciliationID string `json:"reconciliationId,omitempty"`
 
 	// The description for this field is not available.
-	ReturnCode int `json:"returnCode,omitempty"`
+	ReturnCode int64 `json:"returnCode,omitempty"`
 
 	// The description for this field is not available.
 	Status string `json:"status,omitempty"`
@@ -2568,7 +2567,7 @@ type GetTransactionOKBodyOrderInformationLineItemsItems0 struct {
 	// For details, see `tax_amount` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
 	//
 	// Max Length: 15
-	TaxAmount int `json:"taxAmount,omitempty"`
+	TaxAmount int64 `json:"taxAmount,omitempty"`
 
 	// Per-item price of the product. This value cannot be negative. You can include a decimal point (.), but you
 	// cannot include any other special characters. CyberSource truncates the amount to the correct number of decimal
@@ -2690,7 +2689,7 @@ func (o *GetTransactionOKBodyOrderInformationLineItemsItems0) validateUnitPrice(
 		return nil
 	}
 
-	if err := validate.MaxLength("unitPrice", "body", fmt.Sprintf("%f", o.UnitPrice), 15); err != nil {
+	if err := validate.MaxLength("unitPrice", "body", string(o.UnitPrice), 15); err != nil {
 		return err
 	}
 

@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // InstrumentIdentifierUpdate instrument identifier update
+//
 // swagger:model InstrumentIdentifierUpdate
 type InstrumentIdentifierUpdate struct {
 
@@ -72,6 +72,7 @@ func (m *InstrumentIdentifierUpdate) UnmarshalBinary(b []byte) error {
 }
 
 // InstrumentIdentifierUpdateProcessingInformation instrument identifier update processing information
+//
 // swagger:model InstrumentIdentifierUpdateProcessingInformation
 type InstrumentIdentifierUpdateProcessingInformation struct {
 
@@ -130,6 +131,7 @@ func (m *InstrumentIdentifierUpdateProcessingInformation) UnmarshalBinary(b []by
 }
 
 // InstrumentIdentifierUpdateProcessingInformationAuthorizationOptions instrument identifier update processing information authorization options
+//
 // swagger:model InstrumentIdentifierUpdateProcessingInformationAuthorizationOptions
 type InstrumentIdentifierUpdateProcessingInformationAuthorizationOptions struct {
 
@@ -188,6 +190,7 @@ func (m *InstrumentIdentifierUpdateProcessingInformationAuthorizationOptions) Un
 }
 
 // InstrumentIdentifierUpdateProcessingInformationAuthorizationOptionsInitiator instrument identifier update processing information authorization options initiator
+//
 // swagger:model InstrumentIdentifierUpdateProcessingInformationAuthorizationOptionsInitiator
 type InstrumentIdentifierUpdateProcessingInformationAuthorizationOptionsInitiator struct {
 
@@ -246,6 +249,7 @@ func (m *InstrumentIdentifierUpdateProcessingInformationAuthorizationOptionsInit
 }
 
 // InstrumentIdentifierUpdateProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction instrument identifier update processing information authorization options initiator merchant initiated transaction
+//
 // swagger:model InstrumentIdentifierUpdateProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction
 type InstrumentIdentifierUpdateProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction struct {
 

@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new conversion details API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetConversionDetail gets conversion detail transactions
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetConversionDetail(params *GetConversionDetailParams) (*GetConversionDetailOK, error)
 
-Get conversion detail of transactions for a merchant.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetConversionDetail gets conversion detail transactions
+
+  Get conversion detail of transactions for a merchant.
 */
 func (a *Client) GetConversionDetail(params *GetConversionDetailParams) (*GetConversionDetailOK, error) {
 	// TODO: Validate the params before sending

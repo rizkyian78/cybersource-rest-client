@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new secure file share API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,19 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetFile downloads a file with file identifier
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetFile(params *GetFileParams) (*GetFileOK, error)
 
-Download a file for the given file identifier
+	GetFileDetail(params *GetFileDetailParams) (*GetFileDetailOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetFile downloads a file with file identifier
+
+  Download a file for the given file identifier
 */
 func (a *Client) GetFile(params *GetFileParams) (*GetFileOK, error) {
 	// TODO: Validate the params before sending
@@ -63,9 +71,9 @@ func (a *Client) GetFile(params *GetFileParams) (*GetFileOK, error) {
 }
 
 /*
-GetFileDetail gets list of files
+  GetFileDetail gets list of files
 
-Get list of files and it's information of them available inside the report directory
+  Get list of files and it's information of them available inside the report directory
 */
 func (a *Client) GetFileDetail(params *GetFileDetailParams) (*GetFileDetailOK, error) {
 	// TODO: Validate the params before sending

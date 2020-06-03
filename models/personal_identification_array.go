@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // PersonalIdentificationArray personal identification array
+//
 // swagger:model PersonalIdentificationArray
 type PersonalIdentificationArray []*PersonalIdentificationArrayItems0
 
@@ -45,6 +45,7 @@ func (m PersonalIdentificationArray) Validate(formats strfmt.Registry) error {
 }
 
 // PersonalIdentificationArrayItems0 personal identification array items0
+//
 // swagger:model PersonalIdentificationArrayItems0
 type PersonalIdentificationArrayItems0 struct {
 
@@ -119,6 +120,7 @@ func (m *PersonalIdentificationArrayItems0) UnmarshalBinary(b []byte) error {
 }
 
 // PersonalIdentificationArrayItems0IssuedBy personal identification array items0 issued by
+//
 // swagger:model PersonalIdentificationArrayItems0IssuedBy
 type PersonalIdentificationArrayItems0IssuedBy struct {
 

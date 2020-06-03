@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // InstrumentIdentifierProcessingInformation instrument identifier processing information
+//
 // swagger:model InstrumentIdentifierProcessingInformation
 type InstrumentIdentifierProcessingInformation struct {
 
@@ -72,6 +72,7 @@ func (m *InstrumentIdentifierProcessingInformation) UnmarshalBinary(b []byte) er
 }
 
 // InstrumentIdentifierProcessingInformationAuthorizationOptions instrument identifier processing information authorization options
+//
 // swagger:model InstrumentIdentifierProcessingInformationAuthorizationOptions
 type InstrumentIdentifierProcessingInformationAuthorizationOptions struct {
 
@@ -130,6 +131,7 @@ func (m *InstrumentIdentifierProcessingInformationAuthorizationOptions) Unmarsha
 }
 
 // InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator instrument identifier processing information authorization options initiator
+//
 // swagger:model InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator
 type InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator struct {
 
@@ -188,6 +190,7 @@ func (m *InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator)
 }
 
 // InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction instrument identifier processing information authorization options initiator merchant initiated transaction
+//
 // swagger:model InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction
 type InstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction struct {
 

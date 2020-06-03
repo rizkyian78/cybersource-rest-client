@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // Links links
+//
 // swagger:model Links
 type Links struct {
 
@@ -137,6 +137,7 @@ func (m *Links) UnmarshalBinary(b []byte) error {
 }
 
 // LinksDocumentationItems0 links documentation items0
+//
 // swagger:model LinksDocumentationItems0
 type LinksDocumentationItems0 struct {
 
@@ -174,6 +175,7 @@ func (m *LinksDocumentationItems0) UnmarshalBinary(b []byte) error {
 }
 
 // LinksNextItems0 links next items0
+//
 // swagger:model LinksNextItems0
 type LinksNextItems0 struct {
 
@@ -211,6 +213,7 @@ func (m *LinksNextItems0) UnmarshalBinary(b []byte) error {
 }
 
 // LinksSelf links self
+//
 // swagger:model LinksSelf
 type LinksSelf struct {
 

@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new decision manager API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreateDecisionManagerCase creates decision manager case
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateDecisionManagerCase(params *CreateDecisionManagerCaseParams) (*CreateDecisionManagerCaseCreated, error)
 
-This is the combined request to the Decision Manager Service for a transaction sent to Cybersource.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateDecisionManagerCase creates decision manager case
+
+  This is the combined request to the Decision Manager Service for a transaction sent to Cybersource.
 Decision Manager will return a decision based on the request values.
 
 */

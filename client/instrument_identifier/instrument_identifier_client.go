@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new instrument identifier API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateInstrumentIdentifier(params *CreateInstrumentIdentifierParams) (*CreateInstrumentIdentifierOK, *CreateInstrumentIdentifierCreated, error)
+
+	DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierParams) (*DeleteInstrumentIdentifierNoContent, error)
+
+	GetAllPaymentInstruments(params *GetAllPaymentInstrumentsParams) (*GetAllPaymentInstrumentsOK, error)
+
+	GetInstrumentIdentifier(params *GetInstrumentIdentifierParams) (*GetInstrumentIdentifierOK, error)
+
+	UpdateInstrumentIdentifier(params *UpdateInstrumentIdentifierParams) (*UpdateInstrumentIdentifierOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-CreateInstrumentIdentifier creates an instrument identifier
+  CreateInstrumentIdentifier creates an instrument identifier
 */
 func (a *Client) CreateInstrumentIdentifier(params *CreateInstrumentIdentifierParams) (*CreateInstrumentIdentifierOK, *CreateInstrumentIdentifierCreated, error) {
 	// TODO: Validate the params before sending
@@ -62,7 +76,7 @@ func (a *Client) CreateInstrumentIdentifier(params *CreateInstrumentIdentifierPa
 }
 
 /*
-DeleteInstrumentIdentifier deletes an instrument identifier
+  DeleteInstrumentIdentifier deletes an instrument identifier
 */
 func (a *Client) DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierParams) (*DeleteInstrumentIdentifierNoContent, error) {
 	// TODO: Validate the params before sending
@@ -96,7 +110,7 @@ func (a *Client) DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierPa
 }
 
 /*
-GetAllPaymentInstruments retrieves all payment instruments
+  GetAllPaymentInstruments retrieves all payment instruments
 */
 func (a *Client) GetAllPaymentInstruments(params *GetAllPaymentInstrumentsParams) (*GetAllPaymentInstrumentsOK, error) {
 	// TODO: Validate the params before sending
@@ -130,7 +144,7 @@ func (a *Client) GetAllPaymentInstruments(params *GetAllPaymentInstrumentsParams
 }
 
 /*
-GetInstrumentIdentifier retrieves an instrument identifier
+  GetInstrumentIdentifier retrieves an instrument identifier
 */
 func (a *Client) GetInstrumentIdentifier(params *GetInstrumentIdentifierParams) (*GetInstrumentIdentifierOK, error) {
 	// TODO: Validate the params before sending
@@ -164,7 +178,7 @@ func (a *Client) GetInstrumentIdentifier(params *GetInstrumentIdentifierParams) 
 }
 
 /*
-UpdateInstrumentIdentifier updates a instrument identifier
+  UpdateInstrumentIdentifier updates a instrument identifier
 */
 func (a *Client) UpdateInstrumentIdentifier(params *UpdateInstrumentIdentifierParams) (*UpdateInstrumentIdentifierOK, error) {
 	// TODO: Validate the params before sending

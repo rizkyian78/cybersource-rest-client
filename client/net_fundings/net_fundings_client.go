@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new net fundings API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetNetFundingDetails gets netfunding information for an account or a merchant
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetNetFundingDetails(params *GetNetFundingDetailsParams) (*GetNetFundingDetailsOK, error)
 
-Get Netfunding information for an account or a merchant.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetNetFundingDetails gets netfunding information for an account or a merchant
+
+  Get Netfunding information for an account or a merchant.
 */
 func (a *Client) GetNetFundingDetails(params *GetNetFundingDetailsParams) (*GetNetFundingDetailsOK, error) {
 	// TODO: Validate the params before sending

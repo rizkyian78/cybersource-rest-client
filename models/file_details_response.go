@@ -8,14 +8,14 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // FileDetailsResponse file details response
+//
 // swagger:model FileDetailsResponse
 type FileDetailsResponse struct {
 
@@ -106,6 +106,7 @@ func (m *FileDetailsResponse) UnmarshalBinary(b []byte) error {
 }
 
 // FileDetailsResponseFileDetailsItems0 file details response file details items0
+//
 // swagger:model FileDetailsResponseFileDetailsItems0
 type FileDetailsResponseFileDetailsItems0 struct {
 
@@ -221,6 +222,7 @@ func (m *FileDetailsResponseFileDetailsItems0) UnmarshalBinary(b []byte) error {
 }
 
 // FileDetailsResponseLinks file details response links
+//
 // swagger:model FileDetailsResponseLinks
 type FileDetailsResponseLinks struct {
 
@@ -311,6 +313,7 @@ func (m *FileDetailsResponseLinks) UnmarshalBinary(b []byte) error {
 }
 
 // FileDetailsResponseLinksFilesItems0 file details response links files items0
+//
 // swagger:model FileDetailsResponseLinksFilesItems0
 type FileDetailsResponseLinksFilesItems0 struct {
 
@@ -348,6 +351,7 @@ func (m *FileDetailsResponseLinksFilesItems0) UnmarshalBinary(b []byte) error {
 }
 
 // FileDetailsResponseLinksSelf file details response links self
+//
 // swagger:model FileDetailsResponseLinksSelf
 type FileDetailsResponseLinksSelf struct {
 

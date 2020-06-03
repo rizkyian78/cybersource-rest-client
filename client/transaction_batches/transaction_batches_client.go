@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new transaction batches API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,21 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetTransactionBatchDetails gets transaction details for a given batch id
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetTransactionBatchDetails(params *GetTransactionBatchDetailsParams) (*GetTransactionBatchDetailsOK, error)
 
-Provides real-time detailed status information about the transactions
+	GetTransactionBatchID(params *GetTransactionBatchIDParams) (*GetTransactionBatchIDOK, error)
+
+	GetTransactionBatches(params *GetTransactionBatchesParams) (*GetTransactionBatchesOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetTransactionBatchDetails gets transaction details for a given batch id
+
+  Provides real-time detailed status information about the transactions
 that you previously uploaded in the Business Center or processed with
 the Offline Transaction File Submission service.
 
@@ -66,9 +76,9 @@ func (a *Client) GetTransactionBatchDetails(params *GetTransactionBatchDetailsPa
 }
 
 /*
-GetTransactionBatchID gets individual batch file
+  GetTransactionBatchID gets individual batch file
 
-Provide the search range
+  Provide the search range
 */
 func (a *Client) GetTransactionBatchID(params *GetTransactionBatchIDParams) (*GetTransactionBatchIDOK, error) {
 	// TODO: Validate the params before sending
@@ -102,9 +112,9 @@ func (a *Client) GetTransactionBatchID(params *GetTransactionBatchIDParams) (*Ge
 }
 
 /*
-GetTransactionBatches gets a list of batch files
+  GetTransactionBatches gets a list of batch files
 
-Provide the search range
+  Provide the search range
 */
 func (a *Client) GetTransactionBatches(params *GetTransactionBatchesParams) (*GetTransactionBatchesOK, error) {
 	// TODO: Validate the params before sending

@@ -6,13 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // PaymentInstrumentForInstrumentIdentifierLinks payment instrument for instrument identifier links
+//
 // swagger:model PaymentInstrumentForInstrumentIdentifierLinks
 type PaymentInstrumentForInstrumentIdentifierLinks struct {
 
@@ -171,6 +171,7 @@ func (m *PaymentInstrumentForInstrumentIdentifierLinks) UnmarshalBinary(b []byte
 }
 
 // PaymentInstrumentForInstrumentIdentifierLinksFirst payment instrument for instrument identifier links first
+//
 // swagger:model PaymentInstrumentForInstrumentIdentifierLinksFirst
 type PaymentInstrumentForInstrumentIdentifierLinksFirst struct {
 
@@ -202,6 +203,7 @@ func (m *PaymentInstrumentForInstrumentIdentifierLinksFirst) UnmarshalBinary(b [
 }
 
 // PaymentInstrumentForInstrumentIdentifierLinksLast payment instrument for instrument identifier links last
+//
 // swagger:model PaymentInstrumentForInstrumentIdentifierLinksLast
 type PaymentInstrumentForInstrumentIdentifierLinksLast struct {
 
@@ -233,6 +235,7 @@ func (m *PaymentInstrumentForInstrumentIdentifierLinksLast) UnmarshalBinary(b []
 }
 
 // PaymentInstrumentForInstrumentIdentifierLinksNext payment instrument for instrument identifier links next
+//
 // swagger:model PaymentInstrumentForInstrumentIdentifierLinksNext
 type PaymentInstrumentForInstrumentIdentifierLinksNext struct {
 
@@ -264,6 +267,7 @@ func (m *PaymentInstrumentForInstrumentIdentifierLinksNext) UnmarshalBinary(b []
 }
 
 // PaymentInstrumentForInstrumentIdentifierLinksPrev A link to the previous collection starting at the supplied offset minus the supplied limit.
+//
 // swagger:model PaymentInstrumentForInstrumentIdentifierLinksPrev
 type PaymentInstrumentForInstrumentIdentifierLinksPrev struct {
 
@@ -295,6 +299,7 @@ func (m *PaymentInstrumentForInstrumentIdentifierLinksPrev) UnmarshalBinary(b []
 }
 
 // PaymentInstrumentForInstrumentIdentifierLinksSelf payment instrument for instrument identifier links self
+//
 // swagger:model PaymentInstrumentForInstrumentIdentifierLinksSelf
 type PaymentInstrumentForInstrumentIdentifierLinksSelf struct {
 

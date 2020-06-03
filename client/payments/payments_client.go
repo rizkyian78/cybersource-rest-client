@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new payments API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreatePayment processes a payment
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreatePayment(params *CreatePaymentParams) (*CreatePaymentCreated, error)
 
-Authorize the payment for the transaction.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreatePayment processes a payment
+
+  Authorize the payment for the transaction.
 
 */
 func (a *Client) CreatePayment(params *CreatePaymentParams) (*CreatePaymentCreated, error) {

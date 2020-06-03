@@ -8,14 +8,14 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // BuyerInformation buyer information
+//
 // swagger:model BuyerInformation
 type BuyerInformation struct {
 
@@ -161,6 +161,7 @@ func (m *BuyerInformation) UnmarshalBinary(b []byte) error {
 }
 
 // BuyerInformationPersonalIdentificationItems0 buyer information personal identification items0
+//
 // swagger:model BuyerInformationPersonalIdentificationItems0
 type BuyerInformationPersonalIdentificationItems0 struct {
 
@@ -235,6 +236,7 @@ func (m *BuyerInformationPersonalIdentificationItems0) UnmarshalBinary(b []byte)
 }
 
 // BuyerInformationPersonalIdentificationItems0IssuedBy buyer information personal identification items0 issued by
+//
 // swagger:model BuyerInformationPersonalIdentificationItems0IssuedBy
 type BuyerInformationPersonalIdentificationItems0IssuedBy struct {
 

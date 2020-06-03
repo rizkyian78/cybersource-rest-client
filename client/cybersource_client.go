@@ -8,8 +8,7 @@ package client
 import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 
 	"github.com/nkristianto/cybersource-rest-client-go/client/capture"
 	"github.com/nkristianto/cybersource-rest-client-go/client/conversion_details"
@@ -21,6 +20,7 @@ import (
 	"github.com/nkristianto/cybersource-rest-client-go/client/key_generation"
 	"github.com/nkristianto/cybersource-rest-client-go/client/net_fundings"
 	"github.com/nkristianto/cybersource-rest-client-go/client/notification_of_changes"
+	"github.com/nkristianto/cybersource-rest-client-go/client/payer_authentication"
 	"github.com/nkristianto/cybersource-rest-client-go/client/payment_batch_summaries"
 	"github.com/nkristianto/cybersource-rest-client-go/client/payment_instrument"
 	"github.com/nkristianto/cybersource-rest-client-go/client/payments"
@@ -83,63 +83,35 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Cybersourc
 
 	cli := new(Cybersource)
 	cli.Transport = transport
-
 	cli.Capture = capture.New(transport, formats)
-
 	cli.ConversionDetails = conversion_details.New(transport, formats)
-
 	cli.Credit = credit.New(transport, formats)
-
 	cli.DecisionManager = decision_manager.New(transport, formats)
-
 	cli.Downloaddtd = download_d_t_d.New(transport, formats)
-
 	cli.Downloadxsd = download_x_s_d.New(transport, formats)
-
 	cli.InstrumentIdentifier = instrument_identifier.New(transport, formats)
-
 	cli.KeyGeneration = key_generation.New(transport, formats)
-
 	cli.NetFundings = net_fundings.New(transport, formats)
-
 	cli.NotificationOfChanges = notification_of_changes.New(transport, formats)
-
+	cli.PayerAuthentication = payer_authentication.New(transport, formats)
 	cli.PaymentBatchSummaries = payment_batch_summaries.New(transport, formats)
-
 	cli.PaymentInstrument = payment_instrument.New(transport, formats)
-
 	cli.Payments = payments.New(transport, formats)
-
 	cli.Payouts = payouts.New(transport, formats)
-
 	cli.PurchaseAndRefundDetails = purchase_and_refund_details.New(transport, formats)
-
 	cli.Refund = refund.New(transport, formats)
-
 	cli.ReportDefinitions = report_definitions.New(transport, formats)
-
 	cli.ReportDownloads = report_downloads.New(transport, formats)
-
 	cli.ReportSubscriptions = report_subscriptions.New(transport, formats)
-
 	cli.Reports = reports.New(transport, formats)
-
 	cli.Reversal = reversal.New(transport, formats)
-
 	cli.SearchTransactions = search_transactions.New(transport, formats)
-
 	cli.SecureFileShare = secure_file_share.New(transport, formats)
-
 	cli.Tokenization = tokenization.New(transport, formats)
-
 	cli.TransactionBatches = transaction_batches.New(transport, formats)
-
 	cli.TransactionDetails = transaction_details.New(transport, formats)
-
 	cli.UserManagement = user_management.New(transport, formats)
-
 	cli.Void = void.New(transport, formats)
-
 	return cli
 }
 
@@ -184,61 +156,63 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Cybersource is a client for cybersource
 type Cybersource struct {
-	Capture *capture.Client
+	Capture capture.ClientService
 
-	ConversionDetails *conversion_details.Client
+	ConversionDetails conversion_details.ClientService
 
-	Credit *credit.Client
+	Credit credit.ClientService
 
-	DecisionManager *decision_manager.Client
+	DecisionManager decision_manager.ClientService
 
-	Downloaddtd *download_d_t_d.Client
+	Downloaddtd download_d_t_d.ClientService
 
-	Downloadxsd *download_x_s_d.Client
+	Downloadxsd download_x_s_d.ClientService
 
-	InstrumentIdentifier *instrument_identifier.Client
+	InstrumentIdentifier instrument_identifier.ClientService
 
-	KeyGeneration *key_generation.Client
+	KeyGeneration key_generation.ClientService
 
-	NetFundings *net_fundings.Client
+	NetFundings net_fundings.ClientService
 
-	NotificationOfChanges *notification_of_changes.Client
+	NotificationOfChanges notification_of_changes.ClientService
 
-	PaymentBatchSummaries *payment_batch_summaries.Client
+	PayerAuthentication payer_authentication.ClientService
 
-	PaymentInstrument *payment_instrument.Client
+	PaymentBatchSummaries payment_batch_summaries.ClientService
 
-	Payments *payments.Client
+	PaymentInstrument payment_instrument.ClientService
 
-	Payouts *payouts.Client
+	Payments payments.ClientService
 
-	PurchaseAndRefundDetails *purchase_and_refund_details.Client
+	Payouts payouts.ClientService
 
-	Refund *refund.Client
+	PurchaseAndRefundDetails purchase_and_refund_details.ClientService
 
-	ReportDefinitions *report_definitions.Client
+	Refund refund.ClientService
 
-	ReportDownloads *report_downloads.Client
+	ReportDefinitions report_definitions.ClientService
 
-	ReportSubscriptions *report_subscriptions.Client
+	ReportDownloads report_downloads.ClientService
 
-	Reports *reports.Client
+	ReportSubscriptions report_subscriptions.ClientService
 
-	Reversal *reversal.Client
+	Reports reports.ClientService
 
-	SearchTransactions *search_transactions.Client
+	Reversal reversal.ClientService
 
-	SecureFileShare *secure_file_share.Client
+	SearchTransactions search_transactions.ClientService
 
-	Tokenization *tokenization.Client
+	SecureFileShare secure_file_share.ClientService
 
-	TransactionBatches *transaction_batches.Client
+	Tokenization tokenization.ClientService
 
-	TransactionDetails *transaction_details.Client
+	TransactionBatches transaction_batches.ClientService
 
-	UserManagement *user_management.Client
+	TransactionDetails transaction_details.ClientService
 
-	Void *void.Client
+	UserManagement user_management.ClientService
+
+	Void void.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -246,61 +220,33 @@ type Cybersource struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Cybersource) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-
 	c.Capture.SetTransport(transport)
-
 	c.ConversionDetails.SetTransport(transport)
-
 	c.Credit.SetTransport(transport)
-
 	c.DecisionManager.SetTransport(transport)
-
 	c.Downloaddtd.SetTransport(transport)
-
 	c.Downloadxsd.SetTransport(transport)
-
 	c.InstrumentIdentifier.SetTransport(transport)
-
 	c.KeyGeneration.SetTransport(transport)
-
 	c.NetFundings.SetTransport(transport)
-
 	c.NotificationOfChanges.SetTransport(transport)
-
+	c.PayerAuthentication.SetTransport(transport)
 	c.PaymentBatchSummaries.SetTransport(transport)
-
 	c.PaymentInstrument.SetTransport(transport)
-
 	c.Payments.SetTransport(transport)
-
 	c.Payouts.SetTransport(transport)
-
 	c.PurchaseAndRefundDetails.SetTransport(transport)
-
 	c.Refund.SetTransport(transport)
-
 	c.ReportDefinitions.SetTransport(transport)
-
 	c.ReportDownloads.SetTransport(transport)
-
 	c.ReportSubscriptions.SetTransport(transport)
-
 	c.Reports.SetTransport(transport)
-
 	c.Reversal.SetTransport(transport)
-
 	c.SearchTransactions.SetTransport(transport)
-
 	c.SecureFileShare.SetTransport(transport)
-
 	c.Tokenization.SetTransport(transport)
-
 	c.TransactionBatches.SetTransport(transport)
-
 	c.TransactionDetails.SetTransport(transport)
-
 	c.UserManagement.SetTransport(transport)
-
 	c.Void.SetTransport(transport)
-
 }

@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new report subscriptions API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreateSubscription creates report subscription for a report name by organization
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateSubscription(params *CreateSubscriptionParams) (*CreateSubscriptionOK, error)
 
-Create a report subscription for your organization. The report name must be unique.
+	DeleteSubscription(params *DeleteSubscriptionParams) (*DeleteSubscriptionOK, error)
+
+	GetAllSubscriptions(params *GetAllSubscriptionsParams) (*GetAllSubscriptionsOK, error)
+
+	GetSubscription(params *GetSubscriptionParams) (*GetSubscriptionOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateSubscription creates report subscription for a report name by organization
+
+  Create a report subscription for your organization. The report name must be unique.
 
 */
 func (a *Client) CreateSubscription(params *CreateSubscriptionParams) (*CreateSubscriptionOK, error) {
@@ -64,9 +76,9 @@ func (a *Client) CreateSubscription(params *CreateSubscriptionParams) (*CreateSu
 }
 
 /*
-DeleteSubscription deletes subscription of a report name by organization
+  DeleteSubscription deletes subscription of a report name by organization
 
-Delete a report subscription for your
+  Delete a report subscription for your
 organization. You must know the unique name of the report
 you want to delete.
 
@@ -103,9 +115,9 @@ func (a *Client) DeleteSubscription(params *DeleteSubscriptionParams) (*DeleteSu
 }
 
 /*
-GetAllSubscriptions gets all subscriptions
+  GetAllSubscriptions gets all subscriptions
 
-View a summary of all report subscriptions.
+  View a summary of all report subscriptions.
 
 */
 func (a *Client) GetAllSubscriptions(params *GetAllSubscriptionsParams) (*GetAllSubscriptionsOK, error) {
@@ -140,9 +152,9 @@ func (a *Client) GetAllSubscriptions(params *GetAllSubscriptionsParams) (*GetAll
 }
 
 /*
-GetSubscription gets subscription for report name
+  GetSubscription gets subscription for report name
 
-View the details of a report subscription, such as
+  View the details of a report subscription, such as
 the report format or report frequency, using the report’s
 unique name.
 

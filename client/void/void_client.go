@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new void API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-VoidCapture voids a capture
+// ClientService is the interface for Client methods
+type ClientService interface {
+	VoidCapture(params *VoidCaptureParams) (*VoidCaptureCreated, error)
 
-Include the capture ID in the POST request to cancel the capture.
+	VoidCredit(params *VoidCreditParams) (*VoidCreditCreated, error)
+
+	VoidPayment(params *VoidPaymentParams) (*VoidPaymentCreated, error)
+
+	VoidRefund(params *VoidRefundParams) (*VoidRefundCreated, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  VoidCapture voids a capture
+
+  Include the capture ID in the POST request to cancel the capture.
 */
 func (a *Client) VoidCapture(params *VoidCaptureParams) (*VoidCaptureCreated, error) {
 	// TODO: Validate the params before sending
@@ -63,9 +75,9 @@ func (a *Client) VoidCapture(params *VoidCaptureParams) (*VoidCaptureCreated, er
 }
 
 /*
-VoidCredit voids a credit
+  VoidCredit voids a credit
 
-Include the credit ID in the POST request to cancel the credit.
+  Include the credit ID in the POST request to cancel the credit.
 */
 func (a *Client) VoidCredit(params *VoidCreditParams) (*VoidCreditCreated, error) {
 	// TODO: Validate the params before sending
@@ -99,9 +111,9 @@ func (a *Client) VoidCredit(params *VoidCreditParams) (*VoidCreditCreated, error
 }
 
 /*
-VoidPayment voids a payment
+  VoidPayment voids a payment
 
-Include the payment ID in the POST request to cancel the payment.
+  Include the payment ID in the POST request to cancel the payment.
 */
 func (a *Client) VoidPayment(params *VoidPaymentParams) (*VoidPaymentCreated, error) {
 	// TODO: Validate the params before sending
@@ -135,9 +147,9 @@ func (a *Client) VoidPayment(params *VoidPaymentParams) (*VoidPaymentCreated, er
 }
 
 /*
-VoidRefund voids a refund
+  VoidRefund voids a refund
 
-Include the refund ID in the POST request to cancel the refund.
+  Include the refund ID in the POST request to cancel the refund.
 */
 func (a *Client) VoidRefund(params *VoidRefundParams) (*VoidRefundCreated, error) {
 	// TODO: Validate the params before sending

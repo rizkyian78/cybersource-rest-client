@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new notification of changes API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetNotificationOfChangeReport gets notification of changes
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetNotificationOfChangeReport(params *GetNotificationOfChangeReportParams) (*GetNotificationOfChangeReportOK, error)
 
-Download the Notification of Change report. This
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetNotificationOfChangeReport gets notification of changes
+
+  Download the Notification of Change report. This
 report shows eCheck-related fields updated as a result of a
 response to an eCheck settlement transaction.
 

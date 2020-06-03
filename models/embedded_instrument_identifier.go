@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // EmbeddedInstrumentIdentifier embedded instrument identifier
+//
 // swagger:model EmbeddedInstrumentIdentifier
 type EmbeddedInstrumentIdentifier struct {
 
@@ -215,6 +215,7 @@ func (m *EmbeddedInstrumentIdentifier) UnmarshalBinary(b []byte) error {
 }
 
 // EmbeddedInstrumentIdentifierBankAccount embedded instrument identifier bank account
+//
 // swagger:model EmbeddedInstrumentIdentifierBankAccount
 type EmbeddedInstrumentIdentifierBankAccount struct {
 
@@ -300,6 +301,7 @@ func (m *EmbeddedInstrumentIdentifierBankAccount) UnmarshalBinary(b []byte) erro
 }
 
 // EmbeddedInstrumentIdentifierCard embedded instrument identifier card
+//
 // swagger:model EmbeddedInstrumentIdentifierCard
 type EmbeddedInstrumentIdentifierCard struct {
 
@@ -359,6 +361,7 @@ func (m *EmbeddedInstrumentIdentifierCard) UnmarshalBinary(b []byte) error {
 }
 
 // EmbeddedInstrumentIdentifierLinks embedded instrument identifier links
+//
 // swagger:model EmbeddedInstrumentIdentifierLinks
 type EmbeddedInstrumentIdentifierLinks struct {
 
@@ -467,6 +470,7 @@ func (m *EmbeddedInstrumentIdentifierLinks) UnmarshalBinary(b []byte) error {
 }
 
 // EmbeddedInstrumentIdentifierLinksAncestor embedded instrument identifier links ancestor
+//
 // swagger:model EmbeddedInstrumentIdentifierLinksAncestor
 type EmbeddedInstrumentIdentifierLinksAncestor struct {
 
@@ -498,6 +502,7 @@ func (m *EmbeddedInstrumentIdentifierLinksAncestor) UnmarshalBinary(b []byte) er
 }
 
 // EmbeddedInstrumentIdentifierLinksSelf embedded instrument identifier links self
+//
 // swagger:model EmbeddedInstrumentIdentifierLinksSelf
 type EmbeddedInstrumentIdentifierLinksSelf struct {
 
@@ -529,6 +534,7 @@ func (m *EmbeddedInstrumentIdentifierLinksSelf) UnmarshalBinary(b []byte) error 
 }
 
 // EmbeddedInstrumentIdentifierLinksSuccessor embedded instrument identifier links successor
+//
 // swagger:model EmbeddedInstrumentIdentifierLinksSuccessor
 type EmbeddedInstrumentIdentifierLinksSuccessor struct {
 
@@ -560,6 +566,7 @@ func (m *EmbeddedInstrumentIdentifierLinksSuccessor) UnmarshalBinary(b []byte) e
 }
 
 // EmbeddedInstrumentIdentifierMetadata embedded instrument identifier metadata
+//
 // swagger:model EmbeddedInstrumentIdentifierMetadata
 type EmbeddedInstrumentIdentifierMetadata struct {
 
@@ -591,6 +598,7 @@ func (m *EmbeddedInstrumentIdentifierMetadata) UnmarshalBinary(b []byte) error {
 }
 
 // EmbeddedInstrumentIdentifierProcessingInformation embedded instrument identifier processing information
+//
 // swagger:model EmbeddedInstrumentIdentifierProcessingInformation
 type EmbeddedInstrumentIdentifierProcessingInformation struct {
 
@@ -649,6 +657,7 @@ func (m *EmbeddedInstrumentIdentifierProcessingInformation) UnmarshalBinary(b []
 }
 
 // EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptions embedded instrument identifier processing information authorization options
+//
 // swagger:model EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptions
 type EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptions struct {
 
@@ -707,6 +716,7 @@ func (m *EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptions) 
 }
 
 // EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator embedded instrument identifier processing information authorization options initiator
+//
 // swagger:model EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator
 type EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator struct {
 
@@ -765,6 +775,7 @@ func (m *EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptionsIn
 }
 
 // EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction embedded instrument identifier processing information authorization options initiator merchant initiated transaction
+//
 // swagger:model EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction
 type EmbeddedInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction struct {
 

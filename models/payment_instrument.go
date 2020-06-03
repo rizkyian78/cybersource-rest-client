@@ -8,14 +8,14 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // PaymentInstrument payment instrument
+//
 // swagger:model PaymentInstrument
 type PaymentInstrument struct {
 
@@ -295,6 +295,7 @@ func (m *PaymentInstrument) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentBankAccount payment instrument bank account
+//
 // swagger:model PaymentInstrumentBankAccount
 type PaymentInstrumentBankAccount struct {
 
@@ -331,6 +332,7 @@ func (m *PaymentInstrumentBankAccount) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentBillTo payment instrument bill to
+//
 // swagger:model PaymentInstrumentBillTo
 type PaymentInstrumentBillTo struct {
 
@@ -670,6 +672,7 @@ func (m *PaymentInstrumentBillTo) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentBuyerInformation payment instrument buyer information
+//
 // swagger:model PaymentInstrumentBuyerInformation
 type PaymentInstrumentBuyerInformation struct {
 
@@ -815,6 +818,7 @@ func (m *PaymentInstrumentBuyerInformation) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentBuyerInformationPersonalIdentificationItems0 payment instrument buyer information personal identification items0
+//
 // swagger:model PaymentInstrumentBuyerInformationPersonalIdentificationItems0
 type PaymentInstrumentBuyerInformationPersonalIdentificationItems0 struct {
 
@@ -889,6 +893,7 @@ func (m *PaymentInstrumentBuyerInformationPersonalIdentificationItems0) Unmarsha
 }
 
 // PaymentInstrumentBuyerInformationPersonalIdentificationItems0IssuedBy payment instrument buyer information personal identification items0 issued by
+//
 // swagger:model PaymentInstrumentBuyerInformationPersonalIdentificationItems0IssuedBy
 type PaymentInstrumentBuyerInformationPersonalIdentificationItems0IssuedBy struct {
 
@@ -924,6 +929,7 @@ func (m *PaymentInstrumentBuyerInformationPersonalIdentificationItems0IssuedBy) 
 }
 
 // PaymentInstrumentCard payment instrument card
+//
 // swagger:model PaymentInstrumentCard
 type PaymentInstrumentCard struct {
 
@@ -1189,6 +1195,7 @@ func (m *PaymentInstrumentCard) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentInstrumentIdentifier payment instrument instrument identifier
+//
 // swagger:model PaymentInstrumentInstrumentIdentifier
 type PaymentInstrumentInstrumentIdentifier struct {
 
@@ -1390,6 +1397,7 @@ func (m *PaymentInstrumentInstrumentIdentifier) UnmarshalBinary(b []byte) error 
 }
 
 // PaymentInstrumentInstrumentIdentifierBankAccount payment instrument instrument identifier bank account
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierBankAccount
 type PaymentInstrumentInstrumentIdentifierBankAccount struct {
 
@@ -1475,6 +1483,7 @@ func (m *PaymentInstrumentInstrumentIdentifierBankAccount) UnmarshalBinary(b []b
 }
 
 // PaymentInstrumentInstrumentIdentifierCard payment instrument instrument identifier card
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierCard
 type PaymentInstrumentInstrumentIdentifierCard struct {
 
@@ -1534,6 +1543,7 @@ func (m *PaymentInstrumentInstrumentIdentifierCard) UnmarshalBinary(b []byte) er
 }
 
 // PaymentInstrumentInstrumentIdentifierLinks payment instrument instrument identifier links
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierLinks
 type PaymentInstrumentInstrumentIdentifierLinks struct {
 
@@ -1642,6 +1652,7 @@ func (m *PaymentInstrumentInstrumentIdentifierLinks) UnmarshalBinary(b []byte) e
 }
 
 // PaymentInstrumentInstrumentIdentifierLinksAncestor payment instrument instrument identifier links ancestor
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierLinksAncestor
 type PaymentInstrumentInstrumentIdentifierLinksAncestor struct {
 
@@ -1673,6 +1684,7 @@ func (m *PaymentInstrumentInstrumentIdentifierLinksAncestor) UnmarshalBinary(b [
 }
 
 // PaymentInstrumentInstrumentIdentifierLinksSelf payment instrument instrument identifier links self
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierLinksSelf
 type PaymentInstrumentInstrumentIdentifierLinksSelf struct {
 
@@ -1704,6 +1716,7 @@ func (m *PaymentInstrumentInstrumentIdentifierLinksSelf) UnmarshalBinary(b []byt
 }
 
 // PaymentInstrumentInstrumentIdentifierLinksSuccessor payment instrument instrument identifier links successor
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierLinksSuccessor
 type PaymentInstrumentInstrumentIdentifierLinksSuccessor struct {
 
@@ -1735,6 +1748,7 @@ func (m *PaymentInstrumentInstrumentIdentifierLinksSuccessor) UnmarshalBinary(b 
 }
 
 // PaymentInstrumentInstrumentIdentifierMetadata payment instrument instrument identifier metadata
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierMetadata
 type PaymentInstrumentInstrumentIdentifierMetadata struct {
 
@@ -1766,6 +1780,7 @@ func (m *PaymentInstrumentInstrumentIdentifierMetadata) UnmarshalBinary(b []byte
 }
 
 // PaymentInstrumentInstrumentIdentifierProcessingInformation payment instrument instrument identifier processing information
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierProcessingInformation
 type PaymentInstrumentInstrumentIdentifierProcessingInformation struct {
 
@@ -1824,6 +1839,7 @@ func (m *PaymentInstrumentInstrumentIdentifierProcessingInformation) UnmarshalBi
 }
 
 // PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptions payment instrument instrument identifier processing information authorization options
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptions
 type PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptions struct {
 
@@ -1882,6 +1898,7 @@ func (m *PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorization
 }
 
 // PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator payment instrument instrument identifier processing information authorization options initiator
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator
 type PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiator struct {
 
@@ -1940,6 +1957,7 @@ func (m *PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorization
 }
 
 // PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction payment instrument instrument identifier processing information authorization options initiator merchant initiated transaction
+//
 // swagger:model PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction
 type PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorizationOptionsInitiatorMerchantInitiatedTransaction struct {
 
@@ -1994,6 +2012,7 @@ func (m *PaymentInstrumentInstrumentIdentifierProcessingInformationAuthorization
 }
 
 // PaymentInstrumentLinks payment instrument links
+//
 // swagger:model PaymentInstrumentLinks
 type PaymentInstrumentLinks struct {
 
@@ -2102,6 +2121,7 @@ func (m *PaymentInstrumentLinks) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentLinksAncestor payment instrument links ancestor
+//
 // swagger:model PaymentInstrumentLinksAncestor
 type PaymentInstrumentLinksAncestor struct {
 
@@ -2133,6 +2153,7 @@ func (m *PaymentInstrumentLinksAncestor) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentLinksSelf payment instrument links self
+//
 // swagger:model PaymentInstrumentLinksSelf
 type PaymentInstrumentLinksSelf struct {
 
@@ -2164,6 +2185,7 @@ func (m *PaymentInstrumentLinksSelf) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentLinksSuccessor payment instrument links successor
+//
 // swagger:model PaymentInstrumentLinksSuccessor
 type PaymentInstrumentLinksSuccessor struct {
 
@@ -2195,6 +2217,7 @@ func (m *PaymentInstrumentLinksSuccessor) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentMerchantInformation payment instrument merchant information
+//
 // swagger:model PaymentInstrumentMerchantInformation
 type PaymentInstrumentMerchantInformation struct {
 
@@ -2253,6 +2276,7 @@ func (m *PaymentInstrumentMerchantInformation) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentMerchantInformationMerchantDescriptor payment instrument merchant information merchant descriptor
+//
 // swagger:model PaymentInstrumentMerchantInformationMerchantDescriptor
 type PaymentInstrumentMerchantInformationMerchantDescriptor struct {
 
@@ -2284,6 +2308,7 @@ func (m *PaymentInstrumentMerchantInformationMerchantDescriptor) UnmarshalBinary
 }
 
 // PaymentInstrumentMetaData payment instrument meta data
+//
 // swagger:model PaymentInstrumentMetaData
 type PaymentInstrumentMetaData struct {
 
@@ -2315,6 +2340,7 @@ func (m *PaymentInstrumentMetaData) UnmarshalBinary(b []byte) error {
 }
 
 // PaymentInstrumentProcessingInformation payment instrument processing information
+//
 // swagger:model PaymentInstrumentProcessingInformation
 type PaymentInstrumentProcessingInformation struct {
 
@@ -2379,6 +2405,7 @@ func (m *PaymentInstrumentProcessingInformation) UnmarshalBinary(b []byte) error
 }
 
 // PaymentInstrumentProcessingInformationBankTransferOptions payment instrument processing information bank transfer options
+//
 // swagger:model PaymentInstrumentProcessingInformationBankTransferOptions
 type PaymentInstrumentProcessingInformationBankTransferOptions struct {
 

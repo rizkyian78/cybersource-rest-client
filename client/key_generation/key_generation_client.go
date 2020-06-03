@@ -7,12 +7,11 @@ package key_generation
 
 import (
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new key generation API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,10 +23,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GeneratePublicKey generates key
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GeneratePublicKey(params *GeneratePublicKeyParams) (*GeneratePublicKeyOK, error)
 
-Generate a one-time use public key and key ID to encrypt the card number in the follow-on Tokenize Card request. The key used to encrypt the card number on the cardholder’s device or browser is valid for 15 minutes and must be used to verify the signature in the response message. CyberSource recommends creating a new key for each order. Generating a key is an authenticated request initiated from your servers, prior to requesting to tokenize the card data from your customer’s device or browser.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GeneratePublicKey generates key
+
+  Generate a one-time use public key and key ID to encrypt the card number in the follow-on Tokenize Card request. The key used to encrypt the card number on the cardholder’s device or browser is valid for 15 minutes and must be used to verify the signature in the response message. CyberSource recommends creating a new key for each order. Generating a key is an authenticated request initiated from your servers, prior to requesting to tokenize the card data from your customer’s device or browser.
 */
 func (a *Client) GeneratePublicKey(params *GeneratePublicKeyParams) (*GeneratePublicKeyOK, error) {
 	// TODO: Validate the params before sending

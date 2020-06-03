@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new download d t d API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-GetDTDV2 useds to download d t ds for reports
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetDTDV2(params *GetDTDV2Params) (*GetDTDV2OK, error)
 
-Downloads DTDs for reports on no-auth.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetDTDV2 useds to download d t ds for reports
+
+  Downloads DTDs for reports on no-auth.
 */
 func (a *Client) GetDTDV2(params *GetDTDV2Params) (*GetDTDV2OK, error) {
 	// TODO: Validate the params before sending
