@@ -721,7 +721,7 @@ type GetTransactionOKBodyApplicationInformation struct {
 	//
 	// For details, see the appendix of reason codes in the documentation for the relevant payment method.
 	//
-	ReasonCode string `json:"reasonCode,omitempty"`
+	ReasonCode int64 `json:"reasonCode,omitempty"`
 
 	// The status of the submitted transaction.
 	Status string `json:"status,omitempty"`
@@ -811,7 +811,7 @@ type GetTransactionOKBodyApplicationInformationApplicationsItems0 struct {
 	RMessage string `json:"rMessage,omitempty"`
 
 	// 3-digit reason code that indicates why the customer profile payment succeeded or failed.
-	ReasonCode int64 `json:"reasonCode,omitempty"`
+	ReasonCode string `json:"reasonCode,omitempty"`
 
 	// Reference number that you use to reconcile your CyberSource reports with your processor reports.
 	//

@@ -22674,7 +22674,7 @@
                                             "description": "The status of the submitted transaction."
                                         },
                                         "reasonCode": {
-                                            "type": "string",
+                                            "type": "integer",
                                             "description": "Indicates the reason why a request succeeded or failed and possible action to take if a request fails.\n\nFor details, see the appendix of reason codes in the documentation for the relevant payment method.\n"
                                         },
                                         "rCode": {
@@ -22699,7 +22699,7 @@
                                                         "description": "The description for this field is not available."
                                                     },
                                                     "reasonCode": {
-                                                        "type": "integer",
+                                                        "type": "string",
                                                         "description": "3-digit reason code that indicates why the customer profile payment succeeded or failed."
                                                     },
                                                     "rCode": {
