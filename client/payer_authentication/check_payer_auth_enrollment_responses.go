@@ -1599,7 +1599,7 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ucafCollectionIndicator", "body", string(o.UcafCollectionIndicator), 1); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ucafCollectionIndicator", "body", fmt.Sprintf("%f", o.UcafAuthenticationData), 1); err != nil {
 		return err
 	}
 

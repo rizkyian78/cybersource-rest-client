@@ -15,8 +15,6 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	"github.com/nkristianto/cybersource-rest-client-go/models"
 )
 
 // GetNetFundingDetailsReader is a Reader for the GetNetFundingDetails structure.
@@ -438,7 +436,7 @@ type GetNetFundingDetailsInternalServerErrorBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*models.DetailsItems0 `json:"details"`
+	Details []*DetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//

@@ -15,8 +15,6 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	"github.com/nkristianto/cybersource-rest-client-go/models"
 )
 
 // GetFileDetailReader is a Reader for the GetFileDetail structure.
@@ -473,7 +471,7 @@ type GetFileDetailInternalServerErrorBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*models.FieldsItems0 `json:"fields"`
+	Fields []*FieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -584,7 +582,7 @@ type GetFileDetailNotFoundBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*models.FieldsItems0 `json:"fields"`
+	Fields []*FieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -950,7 +948,7 @@ type GetFileDetailUnauthorizedBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*models.FieldsItems0 `json:"fields"`
+	Fields []*FieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`

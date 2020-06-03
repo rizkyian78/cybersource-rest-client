@@ -1083,7 +1083,7 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"ucafCollectionIndicator", "body", string(o.UcafCollectionIndicator), 1); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"ucafCollectionIndicator", "body", fmt.Sprintf("%f", o.UcafCollectionIndicator), 1); err != nil {
 		return err
 	}
 

@@ -2689,7 +2689,7 @@ func (o *GetTransactionOKBodyOrderInformationLineItemsItems0) validateUnitPrice(
 		return nil
 	}
 
-	if err := validate.MaxLength("unitPrice", "body", string(o.UnitPrice), 15); err != nil {
+	if err := validate.MaxLength("unitPrice", "body", fmt.Sprintf("%f", o.UnitPrice), 15); err != nil {
 		return err
 	}
 

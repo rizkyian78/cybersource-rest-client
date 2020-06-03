@@ -38,13 +38,15 @@ func (m ErrorResponseWithHAL) Validate(formats strfmt.Registry) error {
 
 	}
 
-	if err := m.validateLinks(formats); err != nil {
-		res = append(res, err)
-	}
+	/*
+		if err := m.validateLinks(formats); err != nil {
+			res = append(res, err)
+		}
 
-	if err := m.validateLinks(formats); err != nil {
-		res = append(res, err)
-	}
+		if err := m.validateLinks(formats); err != nil {
+			res = append(res, err)
+		}
+	*/
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
@@ -52,6 +54,7 @@ func (m ErrorResponseWithHAL) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+/*
 func (m *ErrorResponseWithHAL) validateLinks(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Links) { // not required
@@ -69,24 +72,7 @@ func (m *ErrorResponseWithHAL) validateLinks(formats strfmt.Registry) error {
 
 	return nil
 }
-
-func (m *ErrorResponseWithHAL) validateLinks(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Links) { // not required
-		return nil
-	}
-
-	if m.Links != nil {
-		if err := m.Links.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("_links")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
+*/
 
 // ErrorResponseWithHALItems0 error response with h a l items0
 //
