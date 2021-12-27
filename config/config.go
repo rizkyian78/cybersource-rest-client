@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-	"github.com/nkristianto/cybersource-rest-client-go/client"
 )
 
 const (

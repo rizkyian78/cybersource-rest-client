@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/payments"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/config"
 	"github.com/go-openapi/strfmt"
-	"github.com/nkristianto/cybersource-rest-client-go/client"
-	"github.com/nkristianto/cybersource-rest-client-go/client/payments"
-	"github.com/nkristianto/cybersource-rest-client-go/config"
 )
 
 func main() {
