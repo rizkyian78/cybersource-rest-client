@@ -1609,6 +1609,9 @@ type AuthReversalParamsBodyClientReferenceInformation struct {
 
 	// partner
 	Partner *AuthReversalParamsBodyClientReferenceInformationPartner `json:"partner,omitempty"`
+
+	//
+	TransactionID string `json:"transactionId,omitempty"`
 }
 
 // Validate validates this auth reversal params body client reference information

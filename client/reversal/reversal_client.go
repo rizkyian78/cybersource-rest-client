@@ -28,6 +28,7 @@ type Client struct {
 // ClientService is the interface for Client methods
 type ClientService interface {
 	AuthReversal(params *AuthReversalParams) (*AuthReversalCreated, error)
+	TimeoutReversal(params *AuthReversalParams) (*AuthReversalCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -39,6 +40,7 @@ type ClientService interface {
 */
 func (a *Client) AuthReversal(params *AuthReversalParams) (*AuthReversalCreated, error) {
 	// TODO: Validate the params before sending
+	
 	if params == nil {
 		params = NewAuthReversalParams()
 	}
@@ -59,6 +61,37 @@ func (a *Client) AuthReversal(params *AuthReversalParams) (*AuthReversalCreated,
 		return nil, err
 	}
 	success, ok := result.(*AuthReversalCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for authReversal: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+func (a *Client) TimeoutReversal(params *AuthReversalParams) (*AuthReversalCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewAuthReversalParams()
+	}
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "timeoutReversal",
+		Method:             "POST",
+		PathPattern:        "/pts/v2/reversals/",
+		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
+		Schemes:            []string{"https"},
+		Reader:             &AuthReversalReader{formats: a.formats},
+		Params: 			params,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*AuthReversalCreated)
+	fmt.Println(success, "<<<<<")
 	if ok {
 		return success, nil
 	}
