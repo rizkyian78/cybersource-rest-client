@@ -1,4 +1,4 @@
-module github.com/nkristianto/cybersource-rest-client-go
+module gitea.brankas.dev/fauzias/cybersource-rest-client
 
 go 1.13
 
