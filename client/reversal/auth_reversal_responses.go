@@ -61,10 +61,15 @@ Successful response.
 type AuthReversalCreated struct {
 	Payload *AuthReversalCreatedBody
 }
+type TimeoutReversalCreated struct {
+	Payload *AuthReversalCreatedBody
+}
 
 func (o *AuthReversalCreated) Error() string {
-	return fmt.Sprintf("[POST /pts/v2/payments/{id}/reversals][%d] authReversalCreated  %+v", 201, o.Payload)
+	return fmt.Sprintf("[POST /pts/v2/reversals][%d] timeoutReversal  %+v", 201, o.Payload)
 }
+
+
 
 func (o *AuthReversalCreated) GetPayload() *AuthReversalCreatedBody {
 	return o.Payload
