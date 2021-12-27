@@ -1,5 +1,7 @@
 # Go Client SDK for the CyberSource REST API
 
+[![Documentation](https://godoc.org/github.com/tooolbox/cybersource-rest-client-go?status.svg)](https://godoc.org/github.com/tooolbox/cybersource-rest-client-go)
+
 The CyberSource Go client provides convenient access to the [CyberSource REST API](https://developer.cybersource.com/api/reference/api-reference.html) from your Go application.
 
 ## Requirements  
