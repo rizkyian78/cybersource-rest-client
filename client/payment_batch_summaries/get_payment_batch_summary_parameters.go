@@ -17,94 +17,119 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewGetPaymentBatchSummaryParams creates a new GetPaymentBatchSummaryParams object
-// with the default values initialized.
+// NewGetPaymentBatchSummaryParams creates a new GetPaymentBatchSummaryParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetPaymentBatchSummaryParams() *GetPaymentBatchSummaryParams {
-	var ()
 	return &GetPaymentBatchSummaryParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetPaymentBatchSummaryParamsWithTimeout creates a new GetPaymentBatchSummaryParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetPaymentBatchSummaryParamsWithTimeout(timeout time.Duration) *GetPaymentBatchSummaryParams {
-	var ()
 	return &GetPaymentBatchSummaryParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetPaymentBatchSummaryParamsWithContext creates a new GetPaymentBatchSummaryParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetPaymentBatchSummaryParamsWithContext(ctx context.Context) *GetPaymentBatchSummaryParams {
-	var ()
 	return &GetPaymentBatchSummaryParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetPaymentBatchSummaryParamsWithHTTPClient creates a new GetPaymentBatchSummaryParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetPaymentBatchSummaryParamsWithHTTPClient(client *http.Client) *GetPaymentBatchSummaryParams {
-	var ()
 	return &GetPaymentBatchSummaryParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetPaymentBatchSummaryParams contains all the parameters to send to the API endpoint
-for the get payment batch summary operation typically these are written to a http.Request
+/* GetPaymentBatchSummaryParams contains all the parameters to send to the API endpoint
+   for the get payment batch summary operation.
+
+   Typically these are written to a http.Request.
 */
 type GetPaymentBatchSummaryParams struct {
 
-	/*Breakdown
-	  Conditional - Breakdown on account_rollup/all_merchant/selected_merchant. Required while getting breakdown data for a Merchant.
+	/* Breakdown.
 
+	   Conditional - Breakdown on account_rollup/all_merchant/selected_merchant. Required while getting breakdown data for a Merchant.
 	*/
 	Breakdown *string
-	/*EndTime
-	  Valid report End Time in **ISO 8601 format**
+
+	/* EndTime.
+
+	     Valid report End Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	EndTime strfmt.DateTime
-	/*OrganizationID
-	  Valid Cybersource Organization Id
 
+	/* OrganizationID.
+
+	   Valid Organization Id
 	*/
 	OrganizationID *string
-	/*RollUp
-	  Conditional - RollUp for data for day/week/month. Required while getting breakdown data for a Merchant
 
+	/* RollUp.
+
+	   Conditional - RollUp for data for day/week/month. Required while getting breakdown data for a Merchant
 	*/
 	RollUp *string
-	/*StartDayOfWeek
-	  Optional - Start day of week to breakdown data for weeks in a month
 
+	/* StartDayOfWeek.
+
+	   Optional - Start day of week to breakdown data for weeks in a month
+
+	   Format: int32
 	*/
 	StartDayOfWeek *int32
-	/*StartTime
-	  Valid report Start Time in **ISO 8601 format**
+
+	/* StartTime.
+
+	     Valid report Start Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	StartTime strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get payment batch summary params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPaymentBatchSummaryParams) WithDefaults() *GetPaymentBatchSummaryParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get payment batch summary params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPaymentBatchSummaryParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get payment batch summary params
@@ -218,22 +243,24 @@ func (o *GetPaymentBatchSummaryParams) WriteToRequest(r runtime.ClientRequest, r
 
 		// query param breakdown
 		var qrBreakdown string
+
 		if o.Breakdown != nil {
 			qrBreakdown = *o.Breakdown
 		}
 		qBreakdown := qrBreakdown
 		if qBreakdown != "" {
+
 			if err := r.SetQueryParam("breakdown", qBreakdown); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// query param endTime
 	qrEndTime := o.EndTime
 	qEndTime := qrEndTime.String()
 	if qEndTime != "" {
+
 		if err := r.SetQueryParam("endTime", qEndTime); err != nil {
 			return err
 		}
@@ -243,54 +270,58 @@ func (o *GetPaymentBatchSummaryParams) WriteToRequest(r runtime.ClientRequest, r
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.RollUp != nil {
 
 		// query param rollUp
 		var qrRollUp string
+
 		if o.RollUp != nil {
 			qrRollUp = *o.RollUp
 		}
 		qRollUp := qrRollUp
 		if qRollUp != "" {
+
 			if err := r.SetQueryParam("rollUp", qRollUp); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.StartDayOfWeek != nil {
 
 		// query param startDayOfWeek
 		var qrStartDayOfWeek int32
+
 		if o.StartDayOfWeek != nil {
 			qrStartDayOfWeek = *o.StartDayOfWeek
 		}
 		qStartDayOfWeek := swag.FormatInt32(qrStartDayOfWeek)
 		if qStartDayOfWeek != "" {
+
 			if err := r.SetQueryParam("startDayOfWeek", qStartDayOfWeek); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// query param startTime
 	qrStartTime := o.StartTime
 	qStartTime := qrStartTime.String()
 	if qStartTime != "" {
+
 		if err := r.SetQueryParam("startTime", qStartTime); err != nil {
 			return err
 		}

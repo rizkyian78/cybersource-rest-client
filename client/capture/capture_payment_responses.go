@@ -6,6 +6,7 @@ package capture
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *CapturePaymentReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewCapturePaymentCreated() *CapturePaymentCreated {
 	return &CapturePaymentCreated{}
 }
 
-/*CapturePaymentCreated handles this case with default header values.
+/* CapturePaymentCreated describes a response with status code 201, with default header values.
 
 Successful response.
 */
@@ -65,7 +65,6 @@ type CapturePaymentCreated struct {
 func (o *CapturePaymentCreated) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/payments/{id}/captures][%d] capturePaymentCreated  %+v", 201, o.Payload)
 }
-
 func (o *CapturePaymentCreated) GetPayload() *CapturePaymentCreatedBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewCapturePaymentBadRequest() *CapturePaymentBadRequest {
 	return &CapturePaymentBadRequest{}
 }
 
-/*CapturePaymentBadRequest handles this case with default header values.
+/* CapturePaymentBadRequest describes a response with status code 400, with default header values.
 
 Invalid request.
 */
@@ -98,7 +97,6 @@ type CapturePaymentBadRequest struct {
 func (o *CapturePaymentBadRequest) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/payments/{id}/captures][%d] capturePaymentBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *CapturePaymentBadRequest) GetPayload() *CapturePaymentBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewCapturePaymentBadGateway() *CapturePaymentBadGateway {
 	return &CapturePaymentBadGateway{}
 }
 
-/*CapturePaymentBadGateway handles this case with default header values.
+/* CapturePaymentBadGateway describes a response with status code 502, with default header values.
 
 Unexpected system error or system timeout.
 */
@@ -131,7 +129,6 @@ type CapturePaymentBadGateway struct {
 func (o *CapturePaymentBadGateway) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/payments/{id}/captures][%d] capturePaymentBadGateway  %+v", 502, o.Payload)
 }
-
 func (o *CapturePaymentBadGateway) GetPayload() *CapturePaymentBadGatewayBody {
 	return o.Payload
 }
@@ -162,7 +159,6 @@ type CapturePaymentBadGatewayBody struct {
 	//  - SYSTEM_ERROR
 	//  - SERVER_TIMEOUT
 	//  - SERVICE_TIMEOUT
-	//  - INVALID_OR_MISSING_CONFIG
 	//
 	Reason string `json:"reason,omitempty"`
 
@@ -174,14 +170,21 @@ type CapturePaymentBadGatewayBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
 
 // Validate validates this capture payment bad gateway body
 func (o *CapturePaymentBadGatewayBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this capture payment bad gateway body based on context it is used
+func (o *CapturePaymentBadGatewayBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -209,7 +212,7 @@ swagger:model CapturePaymentBadRequestBody
 type CapturePaymentBadRequestBody struct {
 
 	// details
-	Details []*DetailsItems0 `json:"details"`
+	Details []*CapturePaymentBadRequestBodyDetailsItems0 `json:"details"`
 
 	// The detail message related to the status and reason listed above.
 	Message string `json:"message,omitempty"`
@@ -238,8 +241,10 @@ type CapturePaymentBadRequestBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -259,7 +264,6 @@ func (o *CapturePaymentBadRequestBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *CapturePaymentBadRequestBody) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -273,6 +277,42 @@ func (o *CapturePaymentBadRequestBody) validateDetails(formats strfmt.Registry) 
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("capturePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment bad request body based on the context it is used
+func (o *CapturePaymentBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -301,7 +341,53 @@ func (o *CapturePaymentBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*CapturePaymentBadRequestBodyDetailsItems0 capture payment bad request body details items0
+swagger:model CapturePaymentBadRequestBodyDetailsItems0
+*/
+type CapturePaymentBadRequestBodyDetailsItems0 struct {
+
+	// This is the flattened JSON object field name/path that is either missing or invalid.
+	Field string `json:"field,omitempty"`
+
+	// Possible reasons for the error.
+	//
+	// Possible values:
+	//  - MISSING_FIELD
+	//  - INVALID_DATA
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this capture payment bad request body details items0
+func (o *CapturePaymentBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this capture payment bad request body details items0 based on context it is used
+func (o *CapturePaymentBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CapturePaymentBody capture payment body
+// Example: {"clientReferenceInformation":{"code":"TC50171_3"},"orderInformation":{"amountDetails":{"currency":"USD","totalAmount":"102.21"}}}
 swagger:model CapturePaymentBody
 */
 type CapturePaymentBody struct {
@@ -323,7 +409,7 @@ type CapturePaymentBody struct {
 
 	// The object containing the custom data that the merchant defines.
 	//
-	MerchantDefinedInformation []*MerchantDefinedInformationItems0 `json:"merchantDefinedInformation"`
+	MerchantDefinedInformation []*CapturePaymentParamsBodyMerchantDefinedInformationItems0 `json:"merchantDefinedInformation"`
 
 	// merchant information
 	MerchantInformation *CapturePaymentParamsBodyMerchantInformation `json:"merchantInformation,omitempty"`
@@ -339,6 +425,12 @@ type CapturePaymentBody struct {
 
 	// processing information
 	ProcessingInformation *CapturePaymentParamsBodyProcessingInformation `json:"processingInformation,omitempty"`
+
+	// promotion information
+	PromotionInformation *CapturePaymentParamsBodyPromotionInformation `json:"promotionInformation,omitempty"`
+
+	// travel information
+	TravelInformation *CapturePaymentParamsBodyTravelInformation `json:"travelInformation,omitempty"`
 }
 
 // Validate validates this capture payment body
@@ -389,6 +481,14 @@ func (o *CapturePaymentBody) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := o.validatePromotionInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTravelInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -396,7 +496,6 @@ func (o *CapturePaymentBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *CapturePaymentBody) validateAggregatorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AggregatorInformation) { // not required
 		return nil
 	}
@@ -405,6 +504,8 @@ func (o *CapturePaymentBody) validateAggregatorInformation(formats strfmt.Regist
 		if err := o.AggregatorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation")
 			}
 			return err
 		}
@@ -414,7 +515,6 @@ func (o *CapturePaymentBody) validateAggregatorInformation(formats strfmt.Regist
 }
 
 func (o *CapturePaymentBody) validateBuyerInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.BuyerInformation) { // not required
 		return nil
 	}
@@ -423,6 +523,8 @@ func (o *CapturePaymentBody) validateBuyerInformation(formats strfmt.Registry) e
 		if err := o.BuyerInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "buyerInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "buyerInformation")
 			}
 			return err
 		}
@@ -432,7 +534,6 @@ func (o *CapturePaymentBody) validateBuyerInformation(formats strfmt.Registry) e
 }
 
 func (o *CapturePaymentBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -441,6 +542,8 @@ func (o *CapturePaymentBody) validateClientReferenceInformation(formats strfmt.R
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -450,7 +553,6 @@ func (o *CapturePaymentBody) validateClientReferenceInformation(formats strfmt.R
 }
 
 func (o *CapturePaymentBody) validateDeviceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeviceInformation) { // not required
 		return nil
 	}
@@ -459,6 +561,8 @@ func (o *CapturePaymentBody) validateDeviceInformation(formats strfmt.Registry) 
 		if err := o.DeviceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "deviceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "deviceInformation")
 			}
 			return err
 		}
@@ -468,7 +572,6 @@ func (o *CapturePaymentBody) validateDeviceInformation(formats strfmt.Registry) 
 }
 
 func (o *CapturePaymentBody) validateInstallmentInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.InstallmentInformation) { // not required
 		return nil
 	}
@@ -477,6 +580,8 @@ func (o *CapturePaymentBody) validateInstallmentInformation(formats strfmt.Regis
 		if err := o.InstallmentInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "installmentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "installmentInformation")
 			}
 			return err
 		}
@@ -486,7 +591,6 @@ func (o *CapturePaymentBody) validateInstallmentInformation(formats strfmt.Regis
 }
 
 func (o *CapturePaymentBody) validateMerchantDefinedInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantDefinedInformation) { // not required
 		return nil
 	}
@@ -500,6 +604,8 @@ func (o *CapturePaymentBody) validateMerchantDefinedInformation(formats strfmt.R
 			if err := o.MerchantDefinedInformation[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("capturePaymentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -511,7 +617,6 @@ func (o *CapturePaymentBody) validateMerchantDefinedInformation(formats strfmt.R
 }
 
 func (o *CapturePaymentBody) validateMerchantInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantInformation) { // not required
 		return nil
 	}
@@ -520,6 +625,8 @@ func (o *CapturePaymentBody) validateMerchantInformation(formats strfmt.Registry
 		if err := o.MerchantInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "merchantInformation")
 			}
 			return err
 		}
@@ -529,7 +636,6 @@ func (o *CapturePaymentBody) validateMerchantInformation(formats strfmt.Registry
 }
 
 func (o *CapturePaymentBody) validateOrderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrderInformation) { // not required
 		return nil
 	}
@@ -538,6 +644,8 @@ func (o *CapturePaymentBody) validateOrderInformation(formats strfmt.Registry) e
 		if err := o.OrderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation")
 			}
 			return err
 		}
@@ -547,7 +655,6 @@ func (o *CapturePaymentBody) validateOrderInformation(formats strfmt.Registry) e
 }
 
 func (o *CapturePaymentBody) validatePaymentInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentInformation) { // not required
 		return nil
 	}
@@ -556,6 +663,8 @@ func (o *CapturePaymentBody) validatePaymentInformation(formats strfmt.Registry)
 		if err := o.PaymentInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "paymentInformation")
 			}
 			return err
 		}
@@ -565,7 +674,6 @@ func (o *CapturePaymentBody) validatePaymentInformation(formats strfmt.Registry)
 }
 
 func (o *CapturePaymentBody) validatePointOfSaleInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PointOfSaleInformation) { // not required
 		return nil
 	}
@@ -574,6 +682,8 @@ func (o *CapturePaymentBody) validatePointOfSaleInformation(formats strfmt.Regis
 		if err := o.PointOfSaleInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation")
 			}
 			return err
 		}
@@ -583,7 +693,6 @@ func (o *CapturePaymentBody) validatePointOfSaleInformation(formats strfmt.Regis
 }
 
 func (o *CapturePaymentBody) validateProcessingInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProcessingInformation) { // not required
 		return nil
 	}
@@ -592,6 +701,320 @@ func (o *CapturePaymentBody) validateProcessingInformation(formats strfmt.Regist
 		if err := o.ProcessingInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) validatePromotionInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.PromotionInformation) { // not required
+		return nil
+	}
+
+	if o.PromotionInformation != nil {
+		if err := o.PromotionInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "promotionInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "promotionInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) validateTravelInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.TravelInformation) { // not required
+		return nil
+	}
+
+	if o.TravelInformation != nil {
+		if err := o.TravelInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment body based on the context it is used
+func (o *CapturePaymentBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAggregatorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateBuyerInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateDeviceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateInstallmentInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMerchantDefinedInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMerchantInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePaymentInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePointOfSaleInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessingInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePromotionInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTravelInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateAggregatorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AggregatorInformation != nil {
+		if err := o.AggregatorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateBuyerInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.BuyerInformation != nil {
+		if err := o.BuyerInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "buyerInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "buyerInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateDeviceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.DeviceInformation != nil {
+		if err := o.DeviceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "deviceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "deviceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateInstallmentInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.InstallmentInformation != nil {
+		if err := o.InstallmentInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "installmentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "installmentInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateMerchantDefinedInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.MerchantDefinedInformation); i++ {
+
+		if o.MerchantDefinedInformation[i] != nil {
+			if err := o.MerchantDefinedInformation[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateMerchantInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantInformation != nil {
+		if err := o.MerchantInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "merchantInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateOrderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrderInformation != nil {
+		if err := o.OrderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidatePaymentInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PaymentInformation != nil {
+		if err := o.PaymentInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "paymentInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidatePointOfSaleInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PointOfSaleInformation != nil {
+		if err := o.PointOfSaleInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateProcessingInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessingInformation != nil {
+		if err := o.ProcessingInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidatePromotionInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PromotionInformation != nil {
+		if err := o.PromotionInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "promotionInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "promotionInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentBody) contextValidateTravelInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.TravelInformation != nil {
+		if err := o.TravelInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation")
 			}
 			return err
 		}
@@ -619,6 +1042,7 @@ func (o *CapturePaymentBody) UnmarshalBinary(b []byte) error {
 }
 
 /*CapturePaymentCreatedBody ptsV2PaymentsCapturesPost201Response
+// Example: {"_links":{"refund":{"href":"/pts/v2/captures/4963014519526177701545/refunds","method":"POST"},"self":{"href":"/pts/v2/captures/4963014519526177701545","method":"GET"},"void":{"href":"/pts/v2/captures/4963014519526177701545/voids","method":"POST"}},"clientReferenceInformation":{"code":"TC50171_3"},"id":"4963014519526177701545","orderInformation":{"amountDetails":{"currency":"USD","totalAmount":"102.21"}},"reconciliationId":"39570715X3E1LBQA","status":"200","statusInformation":{"message":"Successful transaction.","reason":"SUCCESS"},"submitTimeUtc":"2017-06-01T071731Z"}
 swagger:model CapturePaymentCreatedBody
 */
 type CapturePaymentCreatedBody struct {
@@ -629,17 +1053,28 @@ type CapturePaymentCreatedBody struct {
 	// client reference information
 	ClientReferenceInformation *CapturePaymentCreatedBodyClientReferenceInformation `json:"clientReferenceInformation,omitempty"`
 
-	// An unique identification number assigned by CyberSource to identify the submitted request. It is also appended to the endpoint of the resource.
+	// An unique identification number generated by Cybersource to identify the submitted request. Returned by all services.
+	// It is also appended to the endpoint of the resource.
+	// On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
+	//
 	// Max Length: 26
 	ID string `json:"id,omitempty"`
 
 	// order information
 	OrderInformation *CapturePaymentCreatedBodyOrderInformation `json:"orderInformation,omitempty"`
 
+	// point of sale information
+	PointOfSaleInformation *CapturePaymentCreatedBodyPointOfSaleInformation `json:"pointOfSaleInformation,omitempty"`
+
+	// processing information
+	ProcessingInformation *CapturePaymentCreatedBodyProcessingInformation `json:"processingInformation,omitempty"`
+
 	// processor information
 	ProcessorInformation *CapturePaymentCreatedBodyProcessorInformation `json:"processorInformation,omitempty"`
 
-	// The reconciliation id for the submitted transaction. This value is not returned for all processors.
+	// Reference number for the transaction.
+	// Depending on how your Cybersource account is configured, this value could either be provided in the API request or generated by CyberSource.
+	// The actual value used in the request to the processor is provided back to you by Cybersource in the response.
 	//
 	// Max Length: 60
 	ReconciliationID string `json:"reconciliationId,omitempty"`
@@ -652,8 +1087,10 @@ type CapturePaymentCreatedBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -678,6 +1115,14 @@ func (o *CapturePaymentCreatedBody) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := o.validatePointOfSaleInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateProcessingInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateProcessorInformation(formats); err != nil {
 		res = append(res, err)
 	}
@@ -693,7 +1138,6 @@ func (o *CapturePaymentCreatedBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *CapturePaymentCreatedBody) validateLinks(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Links) { // not required
 		return nil
 	}
@@ -702,6 +1146,8 @@ func (o *CapturePaymentCreatedBody) validateLinks(formats strfmt.Registry) error
 		if err := o.Links.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links")
 			}
 			return err
 		}
@@ -711,7 +1157,6 @@ func (o *CapturePaymentCreatedBody) validateLinks(formats strfmt.Registry) error
 }
 
 func (o *CapturePaymentCreatedBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -720,6 +1165,8 @@ func (o *CapturePaymentCreatedBody) validateClientReferenceInformation(formats s
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -729,12 +1176,11 @@ func (o *CapturePaymentCreatedBody) validateClientReferenceInformation(formats s
 }
 
 func (o *CapturePaymentCreatedBody) validateID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentCreated"+"."+"id", "body", string(o.ID), 26); err != nil {
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"id", "body", o.ID, 26); err != nil {
 		return err
 	}
 
@@ -742,7 +1188,6 @@ func (o *CapturePaymentCreatedBody) validateID(formats strfmt.Registry) error {
 }
 
 func (o *CapturePaymentCreatedBody) validateOrderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrderInformation) { // not required
 		return nil
 	}
@@ -751,6 +1196,46 @@ func (o *CapturePaymentCreatedBody) validateOrderInformation(formats strfmt.Regi
 		if err := o.OrderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) validatePointOfSaleInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.PointOfSaleInformation) { // not required
+		return nil
+	}
+
+	if o.PointOfSaleInformation != nil {
+		if err := o.PointOfSaleInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "pointOfSaleInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "pointOfSaleInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) validateProcessingInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.ProcessingInformation) { // not required
+		return nil
+	}
+
+	if o.ProcessingInformation != nil {
+		if err := o.ProcessingInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "processingInformation")
 			}
 			return err
 		}
@@ -760,7 +1245,6 @@ func (o *CapturePaymentCreatedBody) validateOrderInformation(formats strfmt.Regi
 }
 
 func (o *CapturePaymentCreatedBody) validateProcessorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProcessorInformation) { // not required
 		return nil
 	}
@@ -769,6 +1253,8 @@ func (o *CapturePaymentCreatedBody) validateProcessorInformation(formats strfmt.
 		if err := o.ProcessorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "processorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "processorInformation")
 			}
 			return err
 		}
@@ -778,13 +1264,142 @@ func (o *CapturePaymentCreatedBody) validateProcessorInformation(formats strfmt.
 }
 
 func (o *CapturePaymentCreatedBody) validateReconciliationID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReconciliationID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentCreated"+"."+"reconciliationId", "body", string(o.ReconciliationID), 60); err != nil {
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"reconciliationId", "body", o.ReconciliationID, 60); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment created body based on the context it is used
+func (o *CapturePaymentCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePointOfSaleInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessingInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Links != nil {
+		if err := o.Links.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) contextValidateOrderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrderInformation != nil {
+		if err := o.OrderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) contextValidatePointOfSaleInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PointOfSaleInformation != nil {
+		if err := o.PointOfSaleInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "pointOfSaleInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "pointOfSaleInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) contextValidateProcessingInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessingInformation != nil {
+		if err := o.ProcessingInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "processingInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBody) contextValidateProcessorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessorInformation != nil {
+		if err := o.ProcessorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "processorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "processorInformation")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -813,10 +1428,18 @@ swagger:model CapturePaymentCreatedBodyClientReferenceInformation
 */
 type CapturePaymentCreatedBodyClientReferenceInformation struct {
 
-	// Client-generated order reference or tracking number. CyberSource recommends that you send a unique value for each
+	// Merchant-generated order reference or tracking number. It is recommended that you send a unique value for each
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
-	// For information about tracking orders, see "Tracking and Reconciling Your Orders" in [Getting Started with CyberSource Advanced for the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Getting_Started_SCMP/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -832,13 +1455,14 @@ type CapturePaymentCreatedBodyClientReferenceInformation struct {
 	// If your CyberSource account is enabled for Payment Tokenization, this field is returned only if you are using
 	// profile sharing and if your merchant ID is in the same merchant ID pool as the owner merchant ID.
 	//
-	// For details about how this field is used for Recurring Billing or Payment Tokenization, see the `ecp_debit_owner_merchant_id` field description in the [Electronic Check Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/EChecks_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
 	OwnerMerchantID string `json:"ownerMerchantId,omitempty"`
 
 	// Date and time at your physical location.
 	//
 	// Format: `YYYYMMDDhhmmss`, where YYYY = year, MM = month, DD = day, hh = hour, mm = minutes ss = seconds
+	//
+	// #### PIN Debit
+	// Optional field for PIN Debit purchase and credit requests.
 	//
 	// Max Length: 14
 	SubmitLocalDateTime string `json:"submitLocalDateTime,omitempty"`
@@ -863,12 +1487,11 @@ func (o *CapturePaymentCreatedBodyClientReferenceInformation) Validate(formats s
 }
 
 func (o *CapturePaymentCreatedBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentCreated"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
 	}
 
@@ -876,15 +1499,19 @@ func (o *CapturePaymentCreatedBodyClientReferenceInformation) validateCode(forma
 }
 
 func (o *CapturePaymentCreatedBodyClientReferenceInformation) validateSubmitLocalDateTime(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SubmitLocalDateTime) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentCreated"+"."+"clientReferenceInformation"+"."+"submitLocalDateTime", "body", string(o.SubmitLocalDateTime), 14); err != nil {
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"clientReferenceInformation"+"."+"submitLocalDateTime", "body", o.SubmitLocalDateTime, 14); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment created body client reference information based on context it is used
+func (o *CapturePaymentCreatedBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -944,7 +1571,6 @@ func (o *CapturePaymentCreatedBodyLinks) Validate(formats strfmt.Registry) error
 }
 
 func (o *CapturePaymentCreatedBodyLinks) validateRefund(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Refund) { // not required
 		return nil
 	}
@@ -953,6 +1579,8 @@ func (o *CapturePaymentCreatedBodyLinks) validateRefund(formats strfmt.Registry)
 		if err := o.Refund.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "refund")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "refund")
 			}
 			return err
 		}
@@ -962,7 +1590,6 @@ func (o *CapturePaymentCreatedBodyLinks) validateRefund(formats strfmt.Registry)
 }
 
 func (o *CapturePaymentCreatedBodyLinks) validateSelf(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Self) { // not required
 		return nil
 	}
@@ -971,6 +1598,8 @@ func (o *CapturePaymentCreatedBodyLinks) validateSelf(formats strfmt.Registry) e
 		if err := o.Self.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "self")
 			}
 			return err
 		}
@@ -980,7 +1609,6 @@ func (o *CapturePaymentCreatedBodyLinks) validateSelf(formats strfmt.Registry) e
 }
 
 func (o *CapturePaymentCreatedBodyLinks) validateVoid(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Void) { // not required
 		return nil
 	}
@@ -989,6 +1617,78 @@ func (o *CapturePaymentCreatedBodyLinks) validateVoid(formats strfmt.Registry) e
 		if err := o.Void.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "void")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "void")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment created body links based on the context it is used
+func (o *CapturePaymentCreatedBodyLinks) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateRefund(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateSelf(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateVoid(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentCreatedBodyLinks) contextValidateRefund(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Refund != nil {
+		if err := o.Refund.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "refund")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "refund")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBodyLinks) contextValidateSelf(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Self != nil {
+		if err := o.Self.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "self")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBodyLinks) contextValidateVoid(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Void != nil {
+		if err := o.Void.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "void")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "_links" + "." + "void")
 			}
 			return err
 		}
@@ -1032,6 +1732,11 @@ func (o *CapturePaymentCreatedBodyLinksRefund) Validate(formats strfmt.Registry)
 	return nil
 }
 
+// ContextValidate validates this capture payment created body links refund based on context it is used
+func (o *CapturePaymentCreatedBodyLinksRefund) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *CapturePaymentCreatedBodyLinksRefund) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -1067,6 +1772,11 @@ func (o *CapturePaymentCreatedBodyLinksSelf) Validate(formats strfmt.Registry) e
 	return nil
 }
 
+// ContextValidate validates this capture payment created body links self based on context it is used
+func (o *CapturePaymentCreatedBodyLinksSelf) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *CapturePaymentCreatedBodyLinksSelf) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -1099,6 +1809,11 @@ type CapturePaymentCreatedBodyLinksVoid struct {
 
 // Validate validates this capture payment created body links void
 func (o *CapturePaymentCreatedBodyLinksVoid) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this capture payment created body links void based on context it is used
+func (o *CapturePaymentCreatedBodyLinksVoid) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1151,7 +1866,6 @@ func (o *CapturePaymentCreatedBodyOrderInformation) Validate(formats strfmt.Regi
 }
 
 func (o *CapturePaymentCreatedBodyOrderInformation) validateAmountDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountDetails) { // not required
 		return nil
 	}
@@ -1160,6 +1874,8 @@ func (o *CapturePaymentCreatedBodyOrderInformation) validateAmountDetails(format
 		if err := o.AmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
 			}
 			return err
 		}
@@ -1169,7 +1885,6 @@ func (o *CapturePaymentCreatedBodyOrderInformation) validateAmountDetails(format
 }
 
 func (o *CapturePaymentCreatedBodyOrderInformation) validateInvoiceDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.InvoiceDetails) { // not required
 		return nil
 	}
@@ -1178,6 +1893,58 @@ func (o *CapturePaymentCreatedBodyOrderInformation) validateInvoiceDetails(forma
 		if err := o.InvoiceDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "invoiceDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "invoiceDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment created body order information based on the context it is used
+func (o *CapturePaymentCreatedBodyOrderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateInvoiceDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentCreatedBodyOrderInformation) contextValidateAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AmountDetails != nil {
+		if err := o.AmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentCreatedBodyOrderInformation) contextValidateInvoiceDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.InvoiceDetails != nil {
+		if err := o.InvoiceDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "invoiceDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentCreated" + "." + "orderInformation" + "." + "invoiceDetails")
 			}
 			return err
 		}
@@ -1209,14 +1976,35 @@ swagger:model CapturePaymentCreatedBodyOrderInformationAmountDetails
 */
 type CapturePaymentCreatedBodyOrderInformationAmountDetails struct {
 
-	// Currency used for the order. Use the three-character I[ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
+	// Currency used for the order. Use the three-character [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
 	//
-	// For details about currency as used in partial authorizations, see "Features for Debit Cards and Prepaid Cards" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
 	//
+	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
+	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
 	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
+	// Your local currency.
 	//
 	// Max Length: 3
 	Currency string `json:"currency,omitempty"`
@@ -1246,12 +2034,11 @@ func (o *CapturePaymentCreatedBodyOrderInformationAmountDetails) Validate(format
 }
 
 func (o *CapturePaymentCreatedBodyOrderInformationAmountDetails) validateCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Currency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", string(o.Currency), 3); err != nil {
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
@@ -1259,15 +2046,19 @@ func (o *CapturePaymentCreatedBodyOrderInformationAmountDetails) validateCurrenc
 }
 
 func (o *CapturePaymentCreatedBodyOrderInformationAmountDetails) validateTotalAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", string(o.TotalAmount), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", o.TotalAmount, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment created body order information amount details based on context it is used
+func (o *CapturePaymentCreatedBodyOrderInformationAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1299,9 +2090,6 @@ type CapturePaymentCreatedBodyOrderInformationInvoiceDetails struct {
 	// If your account is not enabled for Level III data or if you did not include the purchasing level field in your
 	// request, CyberSource does not include the Level III data in the request sent to the processor.
 	//
-	// For processor-specific information, see the `bill_purchasing_level3_enabled` field description in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
-	//
 	// Possible values:
 	// - **true**
 	// - **false**
@@ -1311,6 +2099,11 @@ type CapturePaymentCreatedBodyOrderInformationInvoiceDetails struct {
 
 // Validate validates this capture payment created body order information invoice details
 func (o *CapturePaymentCreatedBodyOrderInformationInvoiceDetails) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this capture payment created body order information invoice details based on context it is used
+func (o *CapturePaymentCreatedBodyOrderInformationInvoiceDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1325,6 +2118,154 @@ func (o *CapturePaymentCreatedBodyOrderInformationInvoiceDetails) MarshalBinary(
 // UnmarshalBinary interface implementation
 func (o *CapturePaymentCreatedBodyOrderInformationInvoiceDetails) UnmarshalBinary(b []byte) error {
 	var res CapturePaymentCreatedBodyOrderInformationInvoiceDetails
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentCreatedBodyPointOfSaleInformation capture payment created body point of sale information
+swagger:model CapturePaymentCreatedBodyPointOfSaleInformation
+*/
+type CapturePaymentCreatedBodyPointOfSaleInformation struct {
+
+	// Identifier for the terminal at your retail location. You can define this value yourself, but consult the processor for requirements.
+	//
+	// #### CyberSource through VisaNet
+	// A list of all possible values is stored in your CyberSource account. If terminal ID validation is enabled for
+	// your CyberSource account, the value you send for this field is validated against the list each time you include
+	// the field in a request. To enable or disable terminal ID validation, contact CyberSource Customer Support.
+	//
+	// When you do not include this field in a request, CyberSource uses the default value that is defined in your CyberSource account.
+	//
+	// #### FDC Nashville Global
+	// To have your account configured to support this field, contact CyberSource Customer Support. This value must be a value that FDC Nashville Global issued to you.
+	//
+	// #### For Payouts
+	// This field is applicable for CyberSource through VisaNet.
+	//
+	// #### GPX
+	// Identifier for the terminal at your retail location. A list of all possible values is stored in your account.
+	// If terminal ID validation is enabled for your account, the value you send for this field is validated against
+	// the list each time you include the field in a request. To enable or disable terminal ID validation, contact
+	// customer support.
+	//
+	// When you do not include this field in a request, the default value that is defined in your account is used.
+	//
+	// Optional for authorizations.
+	//
+	// #### Used by
+	// **Authorization**
+	// Optional for the following processors. When you do not include this field in a request, the default value that is
+	// defined in your account is used.
+	//   - American Express Direct
+	//   - Credit Mutuel-CIC
+	//   - FDC Nashville Global
+	//   - SIX
+	// - Chase Paymentech Solutions: Optional field. If you include this field in your request, you must also include `pointOfSaleInformation.catLevel`.
+	// - FDMS Nashville: The default value that is defined in your account is used.
+	// - GPX
+	// - OmniPay Direct: Optional field.
+	//
+	// For the following processors, this field is not used.
+	// - GPN
+	// - JCN Gateway
+	// - RBS WorldPay Atlanta
+	// - TSYS Acquiring Solutions
+	// - Worldpay VAP
+	//
+	// #### Card Present reply
+	// Terminal identifier assigned by the acquirer. This value must be printed on the receipt.
+	//
+	// Max Length: 8
+	TerminalID string `json:"terminalId,omitempty"`
+}
+
+// Validate validates this capture payment created body point of sale information
+func (o *CapturePaymentCreatedBodyPointOfSaleInformation) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateTerminalID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentCreatedBodyPointOfSaleInformation) validateTerminalID(formats strfmt.Registry) error {
+	if swag.IsZero(o.TerminalID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"pointOfSaleInformation"+"."+"terminalId", "body", o.TerminalID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment created body point of sale information based on context it is used
+func (o *CapturePaymentCreatedBodyPointOfSaleInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentCreatedBodyPointOfSaleInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentCreatedBodyPointOfSaleInformation) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentCreatedBodyPointOfSaleInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentCreatedBodyProcessingInformation capture payment created body processing information
+swagger:model CapturePaymentCreatedBodyProcessingInformation
+*/
+type CapturePaymentCreatedBodyProcessingInformation struct {
+
+	// The possible values for the reply field are:
+	// - `true` : the airline data was included in the request to the processor.
+	// - `false` : the airline data was not included in the request to the processor.
+	//
+	// Returned by authorization, capture, or credit services.
+	//
+	EnhancedDataEnabled bool `json:"enhancedDataEnabled,omitempty"`
+}
+
+// Validate validates this capture payment created body processing information
+func (o *CapturePaymentCreatedBodyProcessingInformation) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this capture payment created body processing information based on context it is used
+func (o *CapturePaymentCreatedBodyProcessingInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentCreatedBodyProcessingInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentCreatedBodyProcessingInformation) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentCreatedBodyProcessingInformation
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -1375,15 +2316,19 @@ func (o *CapturePaymentCreatedBodyProcessorInformation) Validate(formats strfmt.
 }
 
 func (o *CapturePaymentCreatedBodyProcessorInformation) validateTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentCreated"+"."+"processorInformation"+"."+"transactionId", "body", string(o.TransactionID), 18); err != nil {
+	if err := validate.MaxLength("capturePaymentCreated"+"."+"processorInformation"+"."+"transactionId", "body", o.TransactionID, 18); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment created body processor information based on context it is used
+func (o *CapturePaymentCreatedBodyProcessorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1471,12 +2416,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformation) Validate(formats strfmt.
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformation) validateAggregatorID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AggregatorID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"aggregatorId", "body", string(o.AggregatorID), 20); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"aggregatorId", "body", o.AggregatorID, 20); err != nil {
 		return err
 	}
 
@@ -1484,12 +2428,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformation) validateAggregatorID(for
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformation) validateName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Name) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"name", "body", string(o.Name), 37); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"name", "body", o.Name, 37); err != nil {
 		return err
 	}
 
@@ -1497,7 +2440,6 @@ func (o *CapturePaymentParamsBodyAggregatorInformation) validateName(formats str
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformation) validateSubMerchant(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SubMerchant) { // not required
 		return nil
 	}
@@ -1506,6 +2448,38 @@ func (o *CapturePaymentParamsBodyAggregatorInformation) validateSubMerchant(form
 		if err := o.SubMerchant.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation" + "." + "subMerchant")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation" + "." + "subMerchant")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body aggregator information based on the context it is used
+func (o *CapturePaymentParamsBodyAggregatorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateSubMerchant(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyAggregatorInformation) contextValidateSubMerchant(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.SubMerchant != nil {
+		if err := o.SubMerchant.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation" + "." + "subMerchant")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "aggregatorInformation" + "." + "subMerchant")
 			}
 			return err
 		}
@@ -1539,7 +2513,7 @@ type CapturePaymentParamsBodyAggregatorInformationSubMerchant struct {
 
 	// First line of the sub-merchant’s street address.
 	//
-	// For processor-specific details, see `submerchant_street` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see `submerchant_street` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### CyberSource through VisaNet
 	// The value for this field does not map to the TC 33 capture file5.
@@ -1552,7 +2526,7 @@ type CapturePaymentParamsBodyAggregatorInformationSubMerchant struct {
 
 	// Sub-merchant’s state or province.
 	//
-	// For possible values and also aggregator support, see `submerchant_state` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For possible values and also aggregator support, see `submerchant_state` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### CyberSource through VisaNet
 	// The value for this field does not map to the TC 33 capture file5.
@@ -1563,7 +2537,7 @@ type CapturePaymentParamsBodyAggregatorInformationSubMerchant struct {
 	// Max Length: 3
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
-	// Sub-merchant’s country. Use the two-character ISO Standard Country Codes.
+	// Sub-merchant’s country. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
 	//
 	// #### CyberSource through VisaNet
 	// The value for this field does not map to the TC 33 capture file.
@@ -1571,7 +2545,7 @@ type CapturePaymentParamsBodyAggregatorInformationSubMerchant struct {
 	// #### FDC Compass
 	// This value must consist of uppercase characters.
 	//
-	// See "Aggregator Support," page 101.
+	// For details, see the `submerchant_country` request-level field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// Max Length: 3
 	Country string `json:"country,omitempty"`
@@ -1596,9 +2570,29 @@ type CapturePaymentParamsBodyAggregatorInformationSubMerchant struct {
 	// Max Length: 40
 	Email string `json:"email,omitempty"`
 
+	// The ID you assigned to your sub-merchant.
+	// CyberSource through VisaNet: For American Express transaction, the value for this field corresponds to the following data in the TC 33 capture file:
+	// - Record: CP01 TCRB
+	// - Position: 65-84
+	// - Field: American Express Seller ID
+	// For  Mastercard transactions, the value for this field corresponds to the following data in the TC 33 capture file:
+	// - Record: CP01 TCR6
+	// - Position: 117-131
+	// - Field: Mastercard Sub-Merchant ID
+	// FDC Compass: This value must consist of uppercase characters.
+	//
+	// American Express Direct: String (20)
+	// CyberSource through VisaNet with American Express: String (20)
+	// CyberSource through VisaNet with Mastercard: String (15)
+	// FDC Compass: String (20)
+	// FDC Nashville Global: String (14)
+	//
+	// Max Length: 20
+	ID string `json:"id,omitempty"`
+
 	// Sub-merchant’s city.
 	//
-	// For processor-specific details, see `submerchant_city` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see `submerchant_city` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### CyberSource through VisaNet
 	// The value for this field does not map to the TC 33 capture file5.
@@ -1654,7 +2648,7 @@ type CapturePaymentParamsBodyAggregatorInformationSubMerchant struct {
 
 	// Partial postal code for the sub-merchant’s address.
 	//
-	// For processor-specific details, see `submerchant_postal_code` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see `submerchant_postal_code` request field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### CyberSource through VisaNet
 	// The value for this field does not map to the TC 33 capture file5.
@@ -1686,6 +2680,10 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) Validate(form
 		res = append(res, err)
 	}
 
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateLocality(formats); err != nil {
 		res = append(res, err)
 	}
@@ -1709,12 +2707,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) Validate(form
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateAddress1(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address1) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"address1", "body", string(o.Address1), 38); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"address1", "body", o.Address1, 38); err != nil {
 		return err
 	}
 
@@ -1722,12 +2719,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateAddre
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateAdministrativeArea(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdministrativeArea) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 3); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"administrativeArea", "body", o.AdministrativeArea, 3); err != nil {
 		return err
 	}
 
@@ -1735,12 +2731,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateAdmin
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"country", "body", string(o.Country), 3); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"country", "body", o.Country, 3); err != nil {
 		return err
 	}
 
@@ -1748,12 +2743,23 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateCount
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateEmail(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Email) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"email", "body", string(o.Email), 40); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"email", "body", o.Email, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateID(formats strfmt.Registry) error {
+	if swag.IsZero(o.ID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"id", "body", o.ID, 20); err != nil {
 		return err
 	}
 
@@ -1761,12 +2767,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateEmail
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"locality", "body", string(o.Locality), 21); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"locality", "body", o.Locality, 21); err != nil {
 		return err
 	}
 
@@ -1774,12 +2779,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateLocal
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Name) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"name", "body", string(o.Name), 37); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"name", "body", o.Name, 37); err != nil {
 		return err
 	}
 
@@ -1787,12 +2791,11 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validateName(
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validatePhoneNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PhoneNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"phoneNumber", "body", string(o.PhoneNumber), 20); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"phoneNumber", "body", o.PhoneNumber, 20); err != nil {
 		return err
 	}
 
@@ -1800,15 +2803,19 @@ func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validatePhone
 }
 
 func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"postalCode", "body", string(o.PostalCode), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"aggregatorInformation"+"."+"subMerchant"+"."+"postalCode", "body", o.PostalCode, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body aggregator information sub merchant based on context it is used
+func (o *CapturePaymentParamsBodyAggregatorInformationSubMerchant) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1859,6 +2866,9 @@ type CapturePaymentParamsBodyBuyerInformation struct {
 
 	// Customer’s government-assigned tax identification number.
 	//
+	// #### Tax Calculation
+	// Optional for international and value added taxes only. Not applicable to U.S. and Canadian taxes.
+	//
 	// For processor-specific information, see the purchaser_vat_registration_number field in
 	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
 	//
@@ -1885,12 +2895,11 @@ func (o *CapturePaymentParamsBodyBuyerInformation) Validate(formats strfmt.Regis
 }
 
 func (o *CapturePaymentParamsBodyBuyerInformation) validateMerchantCustomerID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantCustomerID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"buyerInformation"+"."+"merchantCustomerId", "body", string(o.MerchantCustomerID), 100); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"buyerInformation"+"."+"merchantCustomerId", "body", o.MerchantCustomerID, 100); err != nil {
 		return err
 	}
 
@@ -1898,15 +2907,19 @@ func (o *CapturePaymentParamsBodyBuyerInformation) validateMerchantCustomerID(fo
 }
 
 func (o *CapturePaymentParamsBodyBuyerInformation) validateVatRegistrationNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VatRegistrationNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"buyerInformation"+"."+"vatRegistrationNumber", "body", string(o.VatRegistrationNumber), 20); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"buyerInformation"+"."+"vatRegistrationNumber", "body", o.VatRegistrationNumber, 20); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body buyer information based on context it is used
+func (o *CapturePaymentParamsBodyBuyerInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1933,10 +2946,30 @@ swagger:model CapturePaymentParamsBodyClientReferenceInformation
 */
 type CapturePaymentParamsBodyClientReferenceInformation struct {
 
-	// Client-generated order reference or tracking number. CyberSource recommends that you send a unique value for each
+	// The name of the Connection Method client (such as Virtual Terminal or SOAP Toolkit API) that the merchant uses to send a transaction request to CyberSource.
+	//
+	ApplicationName string `json:"applicationName,omitempty"`
+
+	// The entity that is responsible for running the transaction and submitting the processing request to CyberSource. This could be a person, a system, or a connection method.
+	//
+	ApplicationUser string `json:"applicationUser,omitempty"`
+
+	// Version of the CyberSource application or integration used for a transaction.
+	//
+	ApplicationVersion string `json:"applicationVersion,omitempty"`
+
+	// Merchant-generated order reference or tracking number. It is recommended that you send a unique value for each
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
-	// For information about tracking orders, see "Tracking and Reconciling Your Orders" in [Getting Started with CyberSource Advanced for the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Getting_Started_SCMP/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -1950,12 +2983,24 @@ type CapturePaymentParamsBodyClientReferenceInformation struct {
 	// partner
 	Partner *CapturePaymentParamsBodyClientReferenceInformationPartner `json:"partner,omitempty"`
 
-	// Identifier that you assign to the transaction.
+	// Used to resume a transaction that was paused for an order modification rule to allow for payer authentication to complete. To resume and continue with the authorization/decision service flow, call the services and include the request id from the prior decision call.
+	//
+	// Max Length: 26
+	PausedRequestID string `json:"pausedRequestId,omitempty"`
+
+	// Identifier that you assign to the transaction. Normally generated by a client server to identify a unique API request.
 	//
 	// **Note** Use this field only if you want to support merchant-initiated reversal and void operations.
 	//
-	// For details, see "Merchant-Initiated Reversals and Voids" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization, Authorization Reversal, Capture, Credit, and Void**
+	// Optional field.
 	//
+	// #### PIN Debit
+	// For a PIN debit reversal, your request must include a request ID or a merchant transaction identifier.
+	// Optional field for PIN debit purchase or credit requests.
+	//
+	// Max Length: 30
 	TransactionID string `json:"transactionId,omitempty"`
 }
 
@@ -1971,6 +3016,14 @@ func (o *CapturePaymentParamsBodyClientReferenceInformation) Validate(formats st
 		res = append(res, err)
 	}
 
+	if err := o.validatePausedRequestID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTransactionID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -1978,12 +3031,11 @@ func (o *CapturePaymentParamsBodyClientReferenceInformation) Validate(formats st
 }
 
 func (o *CapturePaymentParamsBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
 	}
 
@@ -1991,7 +3043,6 @@ func (o *CapturePaymentParamsBodyClientReferenceInformation) validateCode(format
 }
 
 func (o *CapturePaymentParamsBodyClientReferenceInformation) validatePartner(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Partner) { // not required
 		return nil
 	}
@@ -2000,6 +3051,62 @@ func (o *CapturePaymentParamsBodyClientReferenceInformation) validatePartner(for
 		if err := o.Partner.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyClientReferenceInformation) validatePausedRequestID(formats strfmt.Registry) error {
+	if swag.IsZero(o.PausedRequestID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"pausedRequestId", "body", o.PausedRequestID, 26); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyClientReferenceInformation) validateTransactionID(formats strfmt.Registry) error {
+	if swag.IsZero(o.TransactionID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"transactionId", "body", o.TransactionID, 30); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body client reference information based on the context it is used
+func (o *CapturePaymentParamsBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePartner(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyClientReferenceInformation) contextValidatePartner(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Partner != nil {
+		if err := o.Partner.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "clientReferenceInformation" + "." + "partner")
 			}
 			return err
 		}
@@ -2049,7 +3156,14 @@ type CapturePaymentParamsBodyClientReferenceInformationPartner struct {
 	// CyberSource does not forward this value to the processor. Instead, the value is forwarded to the CyberSource
 	// reporting functionality.
 	//
-	// This field is supported only on American Express Direct, FDC Nashville Global, and SIX.
+	// This field is supported only on these processors:
+	// - American Express Direct
+	// - Credit Mutuel-CIC
+	// - FDC Nashville Global
+	// - OmniPay Direct
+	// - SIX
+	//
+	// Optional field.
 	//
 	// Max Length: 32
 	OriginalTransactionID string `json:"originalTransactionId,omitempty"`
@@ -2058,10 +3172,24 @@ type CapturePaymentParamsBodyClientReferenceInformationPartner struct {
 	//
 	// Send this value in all requests that are sent through the partner solution. CyberSource assigns the ID to the partner.
 	//
-	// **Note** When you see a partner ID of 999 in reports, the partner ID that was submitted is incorrect.
+	// **Note** When you see a solutionId of 999 in reports, the solutionId that was submitted is incorrect.
 	//
 	// Max Length: 8
 	SolutionID string `json:"solutionId,omitempty"`
+
+	// Value that identifies the application vendor and application version for a third party gateway.
+	// CyberSource provides you with this value during testing and validation.
+	// This field is supported only on CyberSource through VisaNet.
+	//
+	// #### Used by
+	// **Authorization, Authorization Reversal, Capture, Credit, Incremental Authorization, and Void**
+	// Optional field.
+	//
+	// #### PIN debit
+	// Required field for PIN debit credit, PIN debit purchase, or PIN debit reversal request.
+	//
+	// Max Length: 12
+	ThirdPartyCertificationNumber string `json:"thirdPartyCertificationNumber,omitempty"`
 }
 
 // Validate validates this capture payment params body client reference information partner
@@ -2080,6 +3208,10 @@ func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) Validate(for
 		res = append(res, err)
 	}
 
+	if err := o.validateThirdPartyCertificationNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -2087,12 +3219,11 @@ func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) Validate(for
 }
 
 func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) validateDeveloperID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeveloperID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", string(o.DeveloperID), 8); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", o.DeveloperID, 8); err != nil {
 		return err
 	}
 
@@ -2100,12 +3231,11 @@ func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) validateDeve
 }
 
 func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) validateOriginalTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OriginalTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"originalTransactionId", "body", string(o.OriginalTransactionID), 32); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"originalTransactionId", "body", o.OriginalTransactionID, 32); err != nil {
 		return err
 	}
 
@@ -2113,15 +3243,31 @@ func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) validateOrig
 }
 
 func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) validateSolutionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SolutionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", string(o.SolutionID), 8); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", o.SolutionID, 8); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) validateThirdPartyCertificationNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.ThirdPartyCertificationNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"thirdPartyCertificationNumber", "body", o.ThirdPartyCertificationNumber, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body client reference information partner based on context it is used
+func (o *CapturePaymentParamsBodyClientReferenceInformationPartner) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2154,7 +3300,11 @@ type CapturePaymentParamsBodyDeviceInformation struct {
 
 	// IP address of the customer.
 	//
-	// Max Length: 48
+	// #### Used by
+	// **Authorization, Capture, and Credit**
+	// Optional field.
+	//
+	// Max Length: 45
 	IPAddress string `json:"ipAddress,omitempty"`
 
 	// Customer’s browser as identified from the HTTP header data. For example, `Mozilla` is the value that identifies
@@ -2187,12 +3337,11 @@ func (o *CapturePaymentParamsBodyDeviceInformation) Validate(formats strfmt.Regi
 }
 
 func (o *CapturePaymentParamsBodyDeviceInformation) validateHostName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HostName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"deviceInformation"+"."+"hostName", "body", string(o.HostName), 60); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"deviceInformation"+"."+"hostName", "body", o.HostName, 60); err != nil {
 		return err
 	}
 
@@ -2200,12 +3349,11 @@ func (o *CapturePaymentParamsBodyDeviceInformation) validateHostName(formats str
 }
 
 func (o *CapturePaymentParamsBodyDeviceInformation) validateIPAddress(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.IPAddress) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"deviceInformation"+"."+"ipAddress", "body", string(o.IPAddress), 48); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"deviceInformation"+"."+"ipAddress", "body", o.IPAddress, 45); err != nil {
 		return err
 	}
 
@@ -2213,15 +3361,19 @@ func (o *CapturePaymentParamsBodyDeviceInformation) validateIPAddress(formats st
 }
 
 func (o *CapturePaymentParamsBodyDeviceInformation) validateUserAgent(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.UserAgent) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"deviceInformation"+"."+"userAgent", "body", string(o.UserAgent), 40); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"deviceInformation"+"."+"userAgent", "body", o.UserAgent, 40); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body device information based on context it is used
+func (o *CapturePaymentParamsBodyDeviceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2253,7 +3405,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2274,7 +3426,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2286,12 +3438,21 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// Max Length: 4
 	AdditionalCostsPercentage string `json:"additionalCostsPercentage,omitempty"`
 
+	// Amount for the current installment payment.
+	//
+	// This field is supported only for CyberSource through VisaNet.
+	//
+	// For details, see `installment_amount` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// Max Length: 12
+	Amount string `json:"amount,omitempty"`
+
 	// Amount funded.
 	//
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2312,7 +3473,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2329,7 +3490,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2350,7 +3511,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2367,7 +3528,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2388,7 +3549,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2405,7 +3566,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2426,7 +3587,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on CyberSource through VisaNet.
 	//
@@ -2438,13 +3599,22 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// Max Length: 4
 	FeesPercentage string `json:"feesPercentage,omitempty"`
 
-	// Date of the first installment payment. Format: YYMMDD. When you do not include this field, CyberSource sends a
-	// string of six zeros (000000) to the processor.
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// Amount of the first installment payment. The issuer provides this value when the first installment payment is successful.
+	// This field is supported for Mastercard installment payments on CyberSource through VisaNet in all countries except Brazil,Croatia, Georgia, and Greece.
+	// The value for this field corresponds to the following data in the TC 33 capture file:
+	// - Record: CP01 TCR5
+	// - Position: 23-34
+	// - Field: Amount of Each Installment
+	//
+	// Max Length: 13
+	FirstInstallmentAmount string `json:"firstInstallmentAmount,omitempty"`
+
+	// Date of the first installment payment. Format: YYMMDD. When you do not include this field, CyberSource sends a string of six zeros (000000) to the processor.
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on CyberSource through VisaNet.
 	//
-	// The value for this field corresponds to the following data in the TC 33 capture file5:
+	// The value for this field corresponds to the following data in the TC 33 capture file:
 	// - Record: CP01 TCR9
 	// - Position: 42-47
 	// - Field: Date of First Installment
@@ -2452,12 +3622,32 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// Max Length: 6
 	FirstInstallmentDate string `json:"firstInstallmentDate,omitempty"`
 
+	// Frequency of the installment payments. When you do not include this field in a request for a
+	// Crediario installment payment, CyberSource sends a space character to the processor.
+	//
+	// For details, see `installment_frequency` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// This field is supported only for CyberSource through VisaNet. Possible values:
+	// - `B`: Biweekly
+	// - `M`: Monthly
+	// - `W`: Weekly
+	//
+	// For Crediario installment payments, the value for this field corresponds to the following data in the TC 33 capture file5:
+	// - Record: CP01 TCR9
+	// - Position: 41
+	// - Field: Installment Frequency
+	//
+	// For details, see "Installment Payments" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// Max Length: 1
+	Frequency string `json:"frequency,omitempty"`
+
 	// Insurance charged by the issuer to fund the installment payments.
 	//
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2478,7 +3668,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2495,7 +3685,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	//
 	// This field is supported only for installment payments with Mastercard on CyberSource through VisaNet in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// The value for this field corresponds to the following data in the TC 33 capture file5:
 	// - Record: CP07 TCR4
@@ -2514,7 +3704,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2538,7 +3728,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	//
 	// This field is supported only for installment payments with Visa on CyberSource through VisaNet in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// The value for this field corresponds to the following data in the TC 33 capture file5:
 	// - Record: CP07 TCR1
@@ -2548,12 +3738,82 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// Max Length: 1
 	PaymentType string `json:"paymentType,omitempty"`
 
+	// #### American Express Direct, Cielo, and CyberSource Latin American Processing
+	// Flag that indicates the type of funding for the installment plan associated with the payment.
+	//
+	// Possible values:
+	// - `1`: Merchant-funded installment plan
+	// - `2`: Issuer-funded installment plan
+	// If you do not include this field in the request, CyberSource uses the value in your CyberSource account.
+	//
+	// To change the value in your CyberSource account, contact CyberSource Customer Service.
+	// For details, see `installment_plan_type` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// #### CyberSource through VisaNet and American Express
+	// Defined code that indicates the type of installment plan for this transaction.
+	//
+	// Contact American Express for:
+	// - Information about the kinds of installment plans that American Express provides
+	// - Values for this field
+	//
+	// For installment payments with American Express in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*:
+	// - Record: CP07 TCR3
+	// - Position: 5-6
+	// - Field: Plan Type
+	//
+	// * The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
+	//
+	// #### CyberSource through VisaNet with Visa or Mastercard
+	// Flag indicating the type of funding for the installment plan associated with the payment.
+	// Possible values:
+	// - 1 or 01: Merchant-funded installment plan
+	// - 2 or 02: Issuer-funded installment plan
+	// - 43: Crediario installment plan—only with Visa in Brazil
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// For installment payments with Visa in Brazil, the value for this field corresponds to the following data in the TC 33 capture file5:
+	// - Record: CP07 TCR1
+	// - Position: 5-6
+	// - Field: Installment Type
+	//
+	// For all other kinds of installment payments, the value for this field corresponds to the following data in the TC 33 capture file5:
+	// - Record: CP01 TCR5
+	// - Position: 39-40
+	// - Field: Installment Plan Type (Issuer or Merchant)
+	//
+	// Max Length: 1
+	PlanType string `json:"planType,omitempty"`
+
+	// Installment number when making payments in installments. Used along with `totalCount` to track which payment is being processed.
+	//
+	// For example, the second of 5 payments would be passed to CyberSource as `sequence` = 2 and `totalCount` = 5.
+	//
+	// For details, see "Installment Payments" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// #### Chase Paymentech Solutions and FDC Compass
+	// This field is optional because this value is required in the merchant descriptors.
+	// For details, see "Chase Paymentech Solutions Merchant Descriptors" and "FDC Compass Merchant Descriptors" in the [Merchant Descriptors Using the SCMP API]
+	// (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)
+	//
+	// #### CyberSource through VisaNet
+	// When you do not include this field in a request for a Crediario installment payment, CyberSource sends a value of 0 to the processor.
+	//
+	// For Crediario installment payments, the value for this field corresponds to the following data in the TC 33 capture file*:
+	// - Record: CP01 TCR9
+	// - Position: 38-40
+	// - Field: Installment Payment Number
+	//
+	// * The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
+	//
+	// Maximum: 99
+	Sequence int64 `json:"sequence,omitempty"`
+
 	// Taxes collected by the issuer to fund the installment payments.
 	//
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2574,7 +3834,7 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	// This field is included in the authorization reply for the Crediario eligibility request when the issuer approves
 	// the cardholder's request for Crediario installment payments in Brazil.
 	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see "Installment Payments on CyberSource through VisaNet" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// This field is supported only for Crediario installment payments in Brazil on **CyberSource through VisaNet**.
 	//
@@ -2585,6 +3845,61 @@ type CapturePaymentParamsBodyInstallmentInformation struct {
 	//
 	// Max Length: 4
 	TaxesPercentage string `json:"taxesPercentage,omitempty"`
+
+	// Total amount of the loan that is being paid in installments. This field is supported only for CyberSource
+	// through VisaNet.
+	//
+	// For details, see "Installment Payments" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// Max Length: 12
+	TotalAmount string `json:"totalAmount,omitempty"`
+
+	// Total number of installments when making payments in installments.
+	//
+	// For details, see "Installment Payments" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// #### Chase Paymentech Solutions and FDC Compass
+	// This field is optional because this value is required in the merchant descriptors.
+	//
+	// For details, see "Chase Paymentech Solutions Merchant Descriptors" and "FDC Compass Merchant Descriptors" in the [Merchant Descriptors Using the SCMP API.]
+	// (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)
+	//
+	// #### American Express Direct, Cielo, and Comercio Latino
+	// This value is the total number of installments you approved.
+	//
+	// #### CyberSource Latin American Processing in Brazil
+	// This value is the total number of installments that you approved. The default is 1.
+	//
+	// #### All Other Processors
+	// This value is used along with _sequence_ to track which payment is being processed.
+	//
+	// For example, the second of 5 payments would be passed to CyberSource as _sequence_ = 2 and _totalCount_ = 5.
+	//
+	// #### CyberSource through VisaNet
+	// For Crediario installment payments, the value for this field corresponds to the following data in the TC 33 capture file*:
+	// - Record: CP01 TCR9
+	// - Position: 23-25
+	// - Field: Number of Installments
+	//
+	// For installment payments with American Express in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*:
+	// - Record: CP07 TCR3
+	// - Position: 7-8
+	// - Field: Number of Installments
+	//
+	// For installment payments with Visa in Brazil, the value for this field corresponds to the following data in the TC 33 capture file*:
+	// - Record: CP07 TCR1
+	// - Position: 7-8
+	// - Field: Number of Installments
+	//
+	// For all other kinds of installment payments, the value for this field corresponds to the following data in the TC 33 capture file*:
+	// - Record: CP01 TCR5
+	// - Position: 20-22
+	// - Field: Installment Total Count
+	//
+	// **Note** The TC 33 Capture file contains information about the purchases and refunds that a merchant submits to CyberSource. CyberSource through VisaNet creates the TC 33 Capture file at the end of the day and sends it to the merchant’s acquirer, who uses this information to facilitate end-of-day clearing processing with payment card companies.
+	//
+	// Maximum: 99
+	TotalCount int64 `json:"totalCount,omitempty"`
 }
 
 // Validate validates this capture payment params body installment information
@@ -2596,6 +3911,10 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) Validate(formats strfmt
 	}
 
 	if err := o.validateAdditionalCostsPercentage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAmount(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -2631,7 +3950,15 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) Validate(formats strfmt
 		res = append(res, err)
 	}
 
+	if err := o.validateFirstInstallmentAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateFirstInstallmentDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateFrequency(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -2655,11 +3982,27 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) Validate(formats strfmt
 		res = append(res, err)
 	}
 
+	if err := o.validatePlanType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSequence(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateTaxes(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := o.validateTaxesPercentage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTotalAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTotalCount(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -2670,12 +4013,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) Validate(formats strfmt
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateAdditionalCosts(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdditionalCosts) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCosts", "body", string(o.AdditionalCosts), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCosts", "body", o.AdditionalCosts, 12); err != nil {
 		return err
 	}
 
@@ -2683,12 +4025,23 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAdditionalCosts
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateAdditionalCostsPercentage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdditionalCostsPercentage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCostsPercentage", "body", string(o.AdditionalCostsPercentage), 4); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"additionalCostsPercentage", "body", o.AdditionalCostsPercentage, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyInstallmentInformation) validateAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.Amount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"amount", "body", o.Amount, 12); err != nil {
 		return err
 	}
 
@@ -2696,12 +4049,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAdditionalCosts
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateAmountFunded(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountFunded) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountFunded", "body", string(o.AmountFunded), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountFunded", "body", o.AmountFunded, 12); err != nil {
 		return err
 	}
 
@@ -2709,12 +4061,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAmountFunded(fo
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateAmountRequestedPercentage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountRequestedPercentage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountRequestedPercentage", "body", string(o.AmountRequestedPercentage), 4); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"amountRequestedPercentage", "body", o.AmountRequestedPercentage, 4); err != nil {
 		return err
 	}
 
@@ -2722,12 +4073,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAmountRequested
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateAnnualFinancingCost(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AnnualFinancingCost) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualFinancingCost", "body", string(o.AnnualFinancingCost), 7); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualFinancingCost", "body", o.AnnualFinancingCost, 7); err != nil {
 		return err
 	}
 
@@ -2735,12 +4085,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAnnualFinancing
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateAnnualInterestRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AnnualInterestRate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualInterestRate", "body", string(o.AnnualInterestRate), 7); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"annualInterestRate", "body", o.AnnualInterestRate, 7); err != nil {
 		return err
 	}
 
@@ -2748,12 +4097,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateAnnualInterestR
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateExpenses(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Expenses) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"expenses", "body", string(o.Expenses), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"expenses", "body", o.Expenses, 12); err != nil {
 		return err
 	}
 
@@ -2761,12 +4109,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateExpenses(format
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateExpensesPercentage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExpensesPercentage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"expensesPercentage", "body", string(o.ExpensesPercentage), 4); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"expensesPercentage", "body", o.ExpensesPercentage, 4); err != nil {
 		return err
 	}
 
@@ -2774,12 +4121,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateExpensesPercent
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateFees(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Fees) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"fees", "body", string(o.Fees), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"fees", "body", o.Fees, 12); err != nil {
 		return err
 	}
 
@@ -2787,12 +4133,23 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateFees(formats st
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateFeesPercentage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FeesPercentage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"feesPercentage", "body", string(o.FeesPercentage), 4); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"feesPercentage", "body", o.FeesPercentage, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyInstallmentInformation) validateFirstInstallmentAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.FirstInstallmentAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"firstInstallmentAmount", "body", o.FirstInstallmentAmount, 13); err != nil {
 		return err
 	}
 
@@ -2800,12 +4157,23 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateFeesPercentage(
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateFirstInstallmentDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstInstallmentDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"firstInstallmentDate", "body", string(o.FirstInstallmentDate), 6); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"firstInstallmentDate", "body", o.FirstInstallmentDate, 6); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyInstallmentInformation) validateFrequency(formats strfmt.Registry) error {
+	if swag.IsZero(o.Frequency) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"frequency", "body", o.Frequency, 1); err != nil {
 		return err
 	}
 
@@ -2813,12 +4181,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateFirstInstallmen
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateInsurance(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Insurance) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurance", "body", string(o.Insurance), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurance", "body", o.Insurance, 12); err != nil {
 		return err
 	}
 
@@ -2826,12 +4193,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateInsurance(forma
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateInsurancePercentage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.InsurancePercentage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurancePercentage", "body", string(o.InsurancePercentage), 4); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"insurancePercentage", "body", o.InsurancePercentage, 4); err != nil {
 		return err
 	}
 
@@ -2839,12 +4205,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateInsurancePercen
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateInvoiceData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.InvoiceData) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"invoiceData", "body", string(o.InvoiceData), 20); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"invoiceData", "body", o.InvoiceData, 20); err != nil {
 		return err
 	}
 
@@ -2852,12 +4217,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateInvoiceData(for
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateMonthlyInterestRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MonthlyInterestRate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"monthlyInterestRate", "body", string(o.MonthlyInterestRate), 7); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"monthlyInterestRate", "body", o.MonthlyInterestRate, 7); err != nil {
 		return err
 	}
 
@@ -2865,12 +4229,35 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateMonthlyInterest
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validatePaymentType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"paymentType", "body", string(o.PaymentType), 1); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"paymentType", "body", o.PaymentType, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyInstallmentInformation) validatePlanType(formats strfmt.Registry) error {
+	if swag.IsZero(o.PlanType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"planType", "body", o.PlanType, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyInstallmentInformation) validateSequence(formats strfmt.Registry) error {
+	if swag.IsZero(o.Sequence) { // not required
+		return nil
+	}
+
+	if err := validate.MaximumInt("capturePaymentRequest"+"."+"installmentInformation"+"."+"sequence", "body", o.Sequence, 99, false); err != nil {
 		return err
 	}
 
@@ -2878,12 +4265,11 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validatePaymentType(for
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateTaxes(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Taxes) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxes", "body", string(o.Taxes), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxes", "body", o.Taxes, 12); err != nil {
 		return err
 	}
 
@@ -2891,15 +4277,43 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) validateTaxes(formats s
 }
 
 func (o *CapturePaymentParamsBodyInstallmentInformation) validateTaxesPercentage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxesPercentage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxesPercentage", "body", string(o.TaxesPercentage), 4); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"taxesPercentage", "body", o.TaxesPercentage, 4); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyInstallmentInformation) validateTotalAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TotalAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"installmentInformation"+"."+"totalAmount", "body", o.TotalAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyInstallmentInformation) validateTotalCount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TotalCount) { // not required
+		return nil
+	}
+
+	if err := validate.MaximumInt("capturePaymentRequest"+"."+"installmentInformation"+"."+"totalCount", "body", o.TotalCount, 99, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body installment information based on context it is used
+func (o *CapturePaymentParamsBodyInstallmentInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2914,6 +4328,119 @@ func (o *CapturePaymentParamsBodyInstallmentInformation) MarshalBinary() ([]byte
 // UnmarshalBinary interface implementation
 func (o *CapturePaymentParamsBodyInstallmentInformation) UnmarshalBinary(b []byte) error {
 	var res CapturePaymentParamsBodyInstallmentInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyMerchantDefinedInformationItems0 capture payment params body merchant defined information items0
+swagger:model CapturePaymentParamsBodyMerchantDefinedInformationItems0
+*/
+type CapturePaymentParamsBodyMerchantDefinedInformationItems0 struct {
+
+	// The number you assign for as the key for your merchant-defined data field. Valid values are 0 to 100.
+	//
+	// For example, to set or access the key for the 2nd merchant-defined data field in the array, you would reference `merchantDefinedInformation[1].key`.
+	//
+	// #### CyberSource through VisaNet
+	// For installment payments with Mastercard in Brazil, use `merchantDefinedInformation[0].key` and
+	// `merchantDefinedInformation[1].key` for data that you want to provide to the issuer to identify the
+	// transaction.
+	//
+	// For details, see the `merchant_defined_data1` request-level field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// Max Length: 50
+	Key string `json:"key,omitempty"`
+
+	// The value you assign for your merchant-defined data field.
+	//
+	// For details, see `merchant_defined_data1` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// **Warning** Merchant-defined data fields are not intended to and must not be used to capture personally identifying information. Accordingly, merchants are prohibited from capturing, obtaining, and/or transmitting any personally identifying information in or via the merchant-defined data fields. Personally identifying information includes, but is not
+	// limited to, address, credit card number, social security number, driver's license number, state-issued identification number, passport number, and card verification numbers (CVV,
+	// CVC2, CVV2, CID, CVN). In the event CyberSource discovers that a merchant is capturing and/or transmitting personally identifying information via the merchant-defined data fields, whether or not intentionally, CyberSource will immediately suspend the merchant's account, which will result in a rejection of any and all transaction requests submitted by the merchant after the point of suspension.
+	//
+	// #### CyberSource through VisaNet
+	// For installment payments with Mastercard in Brazil, use `merchantDefinedInformation[0].value` and
+	// `merchantDefinedInformation[1].value` for data that you want to provide to the issuer to identify the
+	// transaction. For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// For installment payments with Mastercard in Brazil:
+	// - The value for merchantDefinedInformation[0].value corresponds to the following data in the TC 33 capture file5:
+	//   - Record: CP07 TCR5
+	//   - Position: 25-44
+	//   - Field: Reference Field 2
+	// - The value for merchantDefinedInformation[1].value corresponds to the following data in the TC 33 capture file5:
+	//   - Record: CP07 TCR5
+	//   - Position: 45-64
+	//   - Field: Reference Field 3
+	//
+	// Max Length: 255
+	Value string `json:"value,omitempty"`
+}
+
+// Validate validates this capture payment params body merchant defined information items0
+func (o *CapturePaymentParamsBodyMerchantDefinedInformationItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateKey(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateValue(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyMerchantDefinedInformationItems0) validateKey(formats strfmt.Registry) error {
+	if swag.IsZero(o.Key) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("key", "body", o.Key, 50); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyMerchantDefinedInformationItems0) validateValue(formats strfmt.Registry) error {
+	if swag.IsZero(o.Value) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("value", "body", o.Value, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body merchant defined information items0 based on context it is used
+func (o *CapturePaymentParamsBodyMerchantDefinedInformationItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyMerchantDefinedInformationItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyMerchantDefinedInformationItems0) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyMerchantDefinedInformationItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -2966,13 +4493,17 @@ type CapturePaymentParamsBodyMerchantInformation struct {
 	// - Position: 40-59
 	// - Field: BNDES Reference Field 1
 	//
-	// For details, see `bill_merchant_tax_id` field description in the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see `bill_merchant_tax_id` field description in the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// Max Length: 15
 	TaxID string `json:"taxId,omitempty"`
 
 	// Your government-assigned tax identification number.
 	//
+	// #### Tax Calculation
+	// Required field for value added tax only. Not applicable to U.S. and Canadian taxes.
+	//
+	// #### CyberSource through VisaNet
 	// For CtV processors, the maximum length is 20.
 	//
 	// For other processor-specific information, see the `merchant_vat_registration_number` field description in
@@ -3017,12 +4548,11 @@ func (o *CapturePaymentParamsBodyMerchantInformation) Validate(formats strfmt.Re
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformation) validateCardAcceptorReferenceNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CardAcceptorReferenceNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"cardAcceptorReferenceNumber", "body", string(o.CardAcceptorReferenceNumber), 25); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"cardAcceptorReferenceNumber", "body", o.CardAcceptorReferenceNumber, 25); err != nil {
 		return err
 	}
 
@@ -3030,12 +4560,11 @@ func (o *CapturePaymentParamsBodyMerchantInformation) validateCardAcceptorRefere
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformation) validateCategoryCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CategoryCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaximumInt("capturePaymentRequest"+"."+"merchantInformation"+"."+"categoryCode", "body", int64(o.CategoryCode), 9999, false); err != nil {
+	if err := validate.MaximumInt("capturePaymentRequest"+"."+"merchantInformation"+"."+"categoryCode", "body", o.CategoryCode, 9999, false); err != nil {
 		return err
 	}
 
@@ -3043,7 +4572,6 @@ func (o *CapturePaymentParamsBodyMerchantInformation) validateCategoryCode(forma
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformation) validateMerchantDescriptor(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantDescriptor) { // not required
 		return nil
 	}
@@ -3052,6 +4580,8 @@ func (o *CapturePaymentParamsBodyMerchantInformation) validateMerchantDescriptor
 		if err := o.MerchantDescriptor.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
 			}
 			return err
 		}
@@ -3061,7 +4591,6 @@ func (o *CapturePaymentParamsBodyMerchantInformation) validateMerchantDescriptor
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformation) validateServiceFeeDescriptor(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ServiceFeeDescriptor) { // not required
 		return nil
 	}
@@ -3070,6 +4599,8 @@ func (o *CapturePaymentParamsBodyMerchantInformation) validateServiceFeeDescript
 		if err := o.ServiceFeeDescriptor.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "serviceFeeDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "serviceFeeDescriptor")
 			}
 			return err
 		}
@@ -3079,12 +4610,11 @@ func (o *CapturePaymentParamsBodyMerchantInformation) validateServiceFeeDescript
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformation) validateTaxID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"taxId", "body", string(o.TaxID), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"taxId", "body", o.TaxID, 15); err != nil {
 		return err
 	}
 
@@ -3092,13 +4622,62 @@ func (o *CapturePaymentParamsBodyMerchantInformation) validateTaxID(formats strf
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformation) validateVatRegistrationNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VatRegistrationNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"vatRegistrationNumber", "body", string(o.VatRegistrationNumber), 21); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"vatRegistrationNumber", "body", o.VatRegistrationNumber, 21); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body merchant information based on the context it is used
+func (o *CapturePaymentParamsBodyMerchantInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateMerchantDescriptor(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateServiceFeeDescriptor(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyMerchantInformation) contextValidateMerchantDescriptor(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantDescriptor != nil {
+		if err := o.MerchantDescriptor.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyMerchantInformation) contextValidateServiceFeeDescriptor(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ServiceFeeDescriptor != nil {
+		if err := o.ServiceFeeDescriptor.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "serviceFeeDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "merchantInformation" + "." + "serviceFeeDescriptor")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -3135,13 +4714,16 @@ type CapturePaymentParamsBodyMerchantInformationMerchantDescriptor struct {
 
 	// The state where the merchant is located.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_state` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// State code or region code for your business. Use the Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf) This value might be displayed on the cardholder’s statement.
 	//
-	// Merchant State. For the descriptions, used-by information, data types, and lengths for these fields, see Merchant Descriptors
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
 	//
-	// Max Length: 3
+	// **Note** This field is supported only for businesses located in the U.S. or Canada.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase.
+	//
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
 	// An alternate name for the merchant.
@@ -3165,35 +4747,92 @@ type CapturePaymentParamsBodyMerchantInformationMerchantDescriptor struct {
 
 	// Merchant's country.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_country` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// Country code for your business location. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)
+	// This value might be displayed on the cardholder’s statement.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	// **Note** If your business is located in the U.S. or Canada and you include this field in a
+	// request, you must also include `merchantInformation.merchantDescriptor.administrativeArea`.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase.
 	//
 	// Max Length: 2
 	Country string `json:"country,omitempty"`
 
 	// Merchant's City.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_city` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// City for your business location. This value might be displayed on the cardholder’s statement.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase requests.
 	//
 	// Max Length: 13
 	Locality string `json:"locality,omitempty"`
 
-	// Merchant's name.
-	//
-	// For more details about the merchant-related fields, see the `merchant_descriptor` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// Your merchant name.
 	//
 	// **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.
 	//
+	// #### PIN debit
+	// Your business name. This name is displayed on the cardholder’s statement. When you
+	// include more than one consecutive space, extra spaces are removed.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase requests.
+	//
+	// #### Airline processing
+	// Your merchant name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.
+	//
+	// **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.
+	//
+	// **Important** This value must consist of English characters.
+	//
+	// Required for captures and credits.
+	//
 	Name string `json:"name,omitempty"`
+
+	// Merchnat phone as contact information for CNP transactions
+	//
+	// Max Length: 13
+	Phone string `json:"phone,omitempty"`
 
 	// Merchant's postal code.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_postal_code` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// Postal code for your business location. This value might be displayed on the cardholder’s statement.
+	//
+	// If your business is domiciled in the U.S., you can use a 5-digit or 9-digit postal code. A 9-digit postal code must follow this format:
+	// [5 digits][dash][4 digits]
+	// Example: `12345-6789`
+	//
+	// If your business is domiciled in Canada, you can use a 6-digit or 9-digit postal code. A 6-digit postal code must follow this format:
+	// [alpha][numeric][alpha][space]
+	// [numeric][alpha][numeric]
+	// Example: `A1B 2C3`
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// **Note** This field is supported only for businesses located in the U.S. or Canada.
+	// **Important** Mastercard requires a postal code for any country that uses postal codes.
+	// You can provide the postal code in your account or you can include this field in your request.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase.
 	//
 	// Max Length: 14
 	PostalCode string `json:"postalCode,omitempty"`
+
+	// Address of company's website provided by merchant
+	//
+	// Max Length: 255
+	URL string `json:"url,omitempty"`
 }
 
 // Validate validates this capture payment params body merchant information merchant descriptor
@@ -3201,10 +4840,6 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) Validate
 	var res []error
 
 	if err := o.validateAddress1(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateAdministrativeArea(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -3224,7 +4859,15 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) Validate
 		res = append(res, err)
 	}
 
+	if err := o.validatePhone(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validatePostalCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -3235,25 +4878,11 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) Validate
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validateAddress1(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address1) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"address1", "body", string(o.Address1), 60); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validateAdministrativeArea(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.AdministrativeArea) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 3); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"address1", "body", o.Address1, 60); err != nil {
 		return err
 	}
 
@@ -3261,12 +4890,11 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validate
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validateAlternateName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AlternateName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"alternateName", "body", string(o.AlternateName), 13); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"alternateName", "body", o.AlternateName, 13); err != nil {
 		return err
 	}
 
@@ -3274,12 +4902,11 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validate
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validateContact(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Contact) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"contact", "body", string(o.Contact), 14); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"contact", "body", o.Contact, 14); err != nil {
 		return err
 	}
 
@@ -3287,12 +4914,11 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validate
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -3300,12 +4926,23 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validate
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"locality", "body", string(o.Locality), 13); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"locality", "body", o.Locality, 13); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validatePhone(formats strfmt.Registry) error {
+	if swag.IsZero(o.Phone) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"phone", "body", o.Phone, 13); err != nil {
 		return err
 	}
 
@@ -3313,15 +4950,31 @@ func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validate
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"postalCode", "body", string(o.PostalCode), 14); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"postalCode", "body", o.PostalCode, 14); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) validateURL(formats strfmt.Registry) error {
+	if swag.IsZero(o.URL) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"url", "body", o.URL, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body merchant information merchant descriptor based on context it is used
+func (o *CapturePaymentParamsBodyMerchantInformationMerchantDescriptor) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3416,12 +5069,11 @@ func (o *CapturePaymentParamsBodyMerchantInformationServiceFeeDescriptor) Valida
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationServiceFeeDescriptor) validateContact(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Contact) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"serviceFeeDescriptor"+"."+"contact", "body", string(o.Contact), 11); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"serviceFeeDescriptor"+"."+"contact", "body", o.Contact, 11); err != nil {
 		return err
 	}
 
@@ -3429,12 +5081,11 @@ func (o *CapturePaymentParamsBodyMerchantInformationServiceFeeDescriptor) valida
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationServiceFeeDescriptor) validateName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Name) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"serviceFeeDescriptor"+"."+"name", "body", string(o.Name), 22); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"serviceFeeDescriptor"+"."+"name", "body", o.Name, 22); err != nil {
 		return err
 	}
 
@@ -3442,15 +5093,19 @@ func (o *CapturePaymentParamsBodyMerchantInformationServiceFeeDescriptor) valida
 }
 
 func (o *CapturePaymentParamsBodyMerchantInformationServiceFeeDescriptor) validateState(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.State) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"serviceFeeDescriptor"+"."+"state", "body", string(o.State), 20); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"merchantInformation"+"."+"serviceFeeDescriptor"+"."+"state", "body", o.State, 20); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body merchant information service fee descriptor based on context it is used
+func (o *CapturePaymentParamsBodyMerchantInformationServiceFeeDescriptor) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3531,7 +5186,6 @@ func (o *CapturePaymentParamsBodyOrderInformation) Validate(formats strfmt.Regis
 }
 
 func (o *CapturePaymentParamsBodyOrderInformation) validateAmountDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountDetails) { // not required
 		return nil
 	}
@@ -3540,6 +5194,8 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateAmountDetails(formats
 		if err := o.AmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
 			}
 			return err
 		}
@@ -3549,7 +5205,6 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateAmountDetails(formats
 }
 
 func (o *CapturePaymentParamsBodyOrderInformation) validateBillTo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.BillTo) { // not required
 		return nil
 	}
@@ -3558,6 +5213,8 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateBillTo(formats strfmt
 		if err := o.BillTo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo")
 			}
 			return err
 		}
@@ -3567,7 +5224,6 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateBillTo(formats strfmt
 }
 
 func (o *CapturePaymentParamsBodyOrderInformation) validateInvoiceDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.InvoiceDetails) { // not required
 		return nil
 	}
@@ -3576,6 +5232,8 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateInvoiceDetails(format
 		if err := o.InvoiceDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails")
 			}
 			return err
 		}
@@ -3585,7 +5243,6 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateInvoiceDetails(format
 }
 
 func (o *CapturePaymentParamsBodyOrderInformation) validateLineItems(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LineItems) { // not required
 		return nil
 	}
@@ -3599,6 +5256,8 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateLineItems(formats str
 			if err := o.LineItems[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -3610,7 +5269,6 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateLineItems(formats str
 }
 
 func (o *CapturePaymentParamsBodyOrderInformation) validateShipTo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ShipTo) { // not required
 		return nil
 	}
@@ -3619,6 +5277,8 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateShipTo(formats strfmt
 		if err := o.ShipTo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shipTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shipTo")
 			}
 			return err
 		}
@@ -3628,7 +5288,6 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateShipTo(formats strfmt
 }
 
 func (o *CapturePaymentParamsBodyOrderInformation) validateShippingDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ShippingDetails) { // not required
 		return nil
 	}
@@ -3637,6 +5296,142 @@ func (o *CapturePaymentParamsBodyOrderInformation) validateShippingDetails(forma
 		if err := o.ShippingDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shippingDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shippingDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body order information based on the context it is used
+func (o *CapturePaymentParamsBodyOrderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateBillTo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateInvoiceDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLineItems(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateShipTo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateShippingDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformation) contextValidateAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AmountDetails != nil {
+		if err := o.AmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformation) contextValidateBillTo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.BillTo != nil {
+		if err := o.BillTo.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformation) contextValidateInvoiceDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.InvoiceDetails != nil {
+		if err := o.InvoiceDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformation) contextValidateLineItems(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.LineItems); i++ {
+
+		if o.LineItems[i] != nil {
+			if err := o.LineItems[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformation) contextValidateShipTo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ShipTo != nil {
+		if err := o.ShipTo.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shipTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shipTo")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformation) contextValidateShippingDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ShippingDetails != nil {
+		if err := o.ShippingDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shippingDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "shippingDetails")
 			}
 			return err
 		}
@@ -3671,30 +5466,62 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	// amex additional amounts
 	AmexAdditionalAmounts []*CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditionalAmountsItems0 `json:"amexAdditionalAmounts"`
 
-	// Currency used for the order. Use the three-character I[ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
+	// Cashback amount in the acquirer’s currency. If a cashback amount is included in the request, it must be included
+	// in the `orderInformation.amountDetails.totalAmount` value.
 	//
-	// For details about currency as used in partial authorizations, see "Features for Debit Cards and Prepaid Cards" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// This field is supported only on CyberSource through VisaNet.
 	//
+	// #### Used by
+	// **Authorization**
+	// Optional.
+	// **Authorization Reversal**
+	// Optional.
+	//
+	// #### PIN debit
+	// Required field for PIN debit purchase, PIN debit credit or PIN debit reversal.
+	//
+	// Max Length: 13
+	CashbackAmount string `json:"cashbackAmount,omitempty"`
+
+	// Currency used for the order. Use the three-character [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
+	//
+	// #### Used by
+	// **Authorization**
+	// Required field.
+	//
+	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
+	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
 	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
+	// Your local currency.
 	//
 	// Max Length: 3
 	Currency string `json:"currency,omitempty"`
 
 	// Total discount amount applied to the order.
 	//
-	// For processor-specific information, see the order_discount_amount field in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
-	//
 	// Max Length: 15
 	DiscountAmount string `json:"discountAmount,omitempty"`
 
 	// Total charges for any import or export duties included in the order.
-	//
-	// For processor-specific information, see the duty_amount field in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
 	//
 	// Max Length: 15
 	DutyAmount string `json:"dutyAmount,omitempty"`
@@ -3703,9 +5530,6 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	//
 	// For details, see `exchange_rate` request-level field description in the [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf)
 	//
-	// For processor-specific information, see the `exchange_rate` request-level field description in
-	// [Credit Card Services Using the SCMP API Guide.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
-	//
 	// Max Length: 13
 	ExchangeRate string `json:"exchangeRate,omitempty"`
 
@@ -3713,20 +5537,16 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	//
 	// Format: `YYYYMMDD~HH:MM`  where ~ denotes a space.
 	//
-	// For processor-specific information, see the `exchange_rate_timestamp` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
-	//
 	// Max Length: 14
 	ExchangeRateTimeStamp string `json:"exchangeRateTimeStamp,omitempty"`
 
 	// Set this field to the converted amount that was returned by the DCC provider.
-	// For processor-specific information, see the `foreign_amount` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific information, see the `foreign_amount` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// Max Length: 15
 	ForeignAmount string `json:"foreignAmount,omitempty"`
 
 	// Set this field to the converted amount that was returned by the DCC provider.
-	// For processor-specific information, see the `foreign_amount` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
 	//
 	// Max Length: 5
 	ForeignCurrency string `json:"foreignCurrency,omitempty"`
@@ -3740,14 +5560,16 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	// Max Length: 13
 	FreightAmount string `json:"freightAmount,omitempty"`
 
-	// Gratuity or tip amount for restaurants when the card is present. Allowed only when `industryDatatype=restaurant`.
+	// Gratuity or tip amount for restaurants. Allowed only when industryDatatype=restaurant.
 	// When your customer uses a debit card or prepaid card, and you receive a partial authorization, the payment networks recommend that you do not
 	// submit a capture amount that is higher than the authorized amount. When the capture amount exceeds the partial amount that was approved, the
 	// issuer has chargeback rights for the excess amount.
 	//
-	// For information about partial authorizations, see Credit Card Services Using the SCMP API.
+	// Used by **Capture**
+	// Optional field.
 	//
-	// Restaurant data is supported only on CyberSource through VisaNet.
+	// #### CyberSource through VisaNet
+	// Restaurant data is supported only on CyberSource through VisaNet when card is present.
 	//
 	// Max Length: 13
 	GratuityAmount string `json:"gratuityAmount,omitempty"`
@@ -3759,19 +5581,12 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	//  - **0**: national tax not included
 	//  - **1**: national tax included
 	//
-	// For processor-specific information, see the national_tax_indicator field in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
-	//
 	// Max Length: 1
 	NationalTaxIncluded string `json:"nationalTaxIncluded,omitempty"`
 
 	// Your local pricing currency code.
 	//
 	// For the possible values, see the [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
-	//
-	// For details, see `original_currency` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
-	// For details about converting a foreign cardholder’s purchase from your local pricing currency to the cardholder’s billing currency, see the [Dynamic Currency Conversion with a Third Party Provider Guide.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
 	//
 	// Max Length: 15
 	OriginalCurrency string `json:"originalCurrency,omitempty"`
@@ -3783,9 +5598,6 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 
 	// Total tax amount for all the items in the order.
 	//
-	// For processor-specific information, see the total_tax_amount field in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
-	//
 	// Max Length: 12
 	TaxAmount string `json:"taxAmount,omitempty"`
 
@@ -3796,9 +5608,6 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	//  - **0**: no invoice level discount included
 	//  - **1**: tax calculated on the postdiscount invoice total
 	//  - **2**: tax calculated on the prediscount invoice total
-	//
-	// For processor-specific information, see the order_discount_management_indicator field in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
 	//
 	// Max Length: 1
 	TaxAppliedAfterDiscount string `json:"taxAppliedAfterDiscount,omitempty"`
@@ -3812,9 +5621,6 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	//  - **2**: gross prices with tax provided at line item level
 	//  - **3**: gross prices with tax provided at invoice level
 	//  - **4**: no tax applies on the invoice for the transaction
-	//
-	// For processor-specific information, see the tax_management_indicator field in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
 	//
 	// Max Length: 1
 	TaxAppliedLevel string `json:"taxAppliedLevel,omitempty"`
@@ -3831,34 +5637,44 @@ type CapturePaymentParamsBodyOrderInformationAmountDetails struct {
 	//  - **056**: sales tax (U.S only)
 	//  - **TX~**: all taxes (Canada only)   Note ~ = space.
 	//
-	// For processor-specific information, see the total_tax_type_code field in
-	// [Level II and Level III Processing Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html)
-	//
 	// Max Length: 3
 	TaxTypeCode string `json:"taxTypeCode,omitempty"`
 
-	// Grand total for the order. This value cannot be negative. You can include a decimal point (.), but no other special characters. CyberSource truncates the amount to the correct number of decimal places.
+	// Grand total for the order. This value cannot be negative. You can include a decimal point (.), but no other special characters.
+	// CyberSource truncates the amount to the correct number of decimal places.
 	//
 	// **Note** For CTV, FDCCompass, Paymentech processors, the maximum length for this field is 12.
 	//
 	// **Important** Some processors have specific requirements and limitations, such as maximum amounts and maximum field lengths. For details, see:
-	// - "Authorization Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
-	// - "Capture Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
-	// - "Credit Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
+	// - "Authorization Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
+	// - "Capture Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
+	// - "Credit Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
 	//
-	// If your processor supports zero amount authorizations, you can set this field to 0 for the authorization to check if the card is lost or stolen. For details, see "Zero Amount Authorizations," "Credit Information for Specific Processors" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// If your processor supports zero amount authorizations, you can set this field to 0 for the authorization to check if the card is lost or stolen. For details, see "Zero Amount Authorizations," "Credit Information for Specific Processors" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// #### Card Present
+	// Required to include either this field or `orderInformation.lineItems[].unitPrice` for the order.
+	//
+	// #### Invoicing
+	// Required for creating a new invoice.
+	//
+	// #### PIN Debit
+	// Amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount.
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit; however, for all other processors, these fields are required.
 	//
 	// #### DCC with a Third-Party Provider
 	// Set this field to the converted amount that was returned by the DCC provider. You must include either this field or the 1st line item in the order and the specific line-order amount in your request. For details, see `grand_total_amount` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
 	//
 	// #### FDMS South
-	// If you accept IDR or CLP currencies, see the entry for FDMS South in "Authorization Information for Specific Processors" of the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// If you accept IDR or CLP currencies, see the entry for FDMS South in "Authorization Information for Specific Processors" of the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### DCC for First Data
 	// Not used.
-	//
-	// #### Invoicing
-	// Grand total for the order, this is required for creating a new invoice.
 	//
 	// Max Length: 19
 	TotalAmount string `json:"totalAmount,omitempty"`
@@ -3869,6 +5685,10 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) Validate(formats
 	var res []error
 
 	if err := o.validateAmexAdditionalAmounts(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCashbackAmount(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -3951,7 +5771,6 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) Validate(formats
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateAmexAdditionalAmounts(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmexAdditionalAmounts) { // not required
 		return nil
 	}
@@ -3965,6 +5784,8 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateAmexAddi
 			if err := o.AmexAdditionalAmounts[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "amexAdditionalAmounts" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "amexAdditionalAmounts" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -3975,13 +5796,24 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateAmexAddi
 	return nil
 }
 
-func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateCurrency(formats strfmt.Registry) error {
+func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateCashbackAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.CashbackAmount) { // not required
+		return nil
+	}
 
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"cashbackAmount", "body", o.CashbackAmount, 13); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateCurrency(formats strfmt.Registry) error {
 	if swag.IsZero(o.Currency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", string(o.Currency), 3); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
@@ -3989,12 +5821,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateCurrency
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateDiscountAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DiscountAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"discountAmount", "body", string(o.DiscountAmount), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"discountAmount", "body", o.DiscountAmount, 15); err != nil {
 		return err
 	}
 
@@ -4002,12 +5833,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateDiscount
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateDutyAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DutyAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"dutyAmount", "body", string(o.DutyAmount), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"dutyAmount", "body", o.DutyAmount, 15); err != nil {
 		return err
 	}
 
@@ -4015,12 +5845,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateDutyAmou
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateExchangeRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExchangeRate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"exchangeRate", "body", string(o.ExchangeRate), 13); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"exchangeRate", "body", o.ExchangeRate, 13); err != nil {
 		return err
 	}
 
@@ -4028,12 +5857,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateExchange
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateExchangeRateTimeStamp(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExchangeRateTimeStamp) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"exchangeRateTimeStamp", "body", string(o.ExchangeRateTimeStamp), 14); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"exchangeRateTimeStamp", "body", o.ExchangeRateTimeStamp, 14); err != nil {
 		return err
 	}
 
@@ -4041,12 +5869,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateExchange
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateForeignAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ForeignAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"foreignAmount", "body", string(o.ForeignAmount), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"foreignAmount", "body", o.ForeignAmount, 15); err != nil {
 		return err
 	}
 
@@ -4054,12 +5881,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateForeignA
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateForeignCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ForeignCurrency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"foreignCurrency", "body", string(o.ForeignCurrency), 5); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"foreignCurrency", "body", o.ForeignCurrency, 5); err != nil {
 		return err
 	}
 
@@ -4067,12 +5893,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateForeignC
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateFreightAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FreightAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"freightAmount", "body", string(o.FreightAmount), 13); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"freightAmount", "body", o.FreightAmount, 13); err != nil {
 		return err
 	}
 
@@ -4080,12 +5905,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateFreightA
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateGratuityAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.GratuityAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"gratuityAmount", "body", string(o.GratuityAmount), 13); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"gratuityAmount", "body", o.GratuityAmount, 13); err != nil {
 		return err
 	}
 
@@ -4093,12 +5917,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateGratuity
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateNationalTaxIncluded(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.NationalTaxIncluded) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"nationalTaxIncluded", "body", string(o.NationalTaxIncluded), 1); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"nationalTaxIncluded", "body", o.NationalTaxIncluded, 1); err != nil {
 		return err
 	}
 
@@ -4106,12 +5929,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateNational
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateOriginalCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OriginalCurrency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"originalCurrency", "body", string(o.OriginalCurrency), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"originalCurrency", "body", o.OriginalCurrency, 15); err != nil {
 		return err
 	}
 
@@ -4119,12 +5941,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateOriginal
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateServiceFeeAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ServiceFeeAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"serviceFeeAmount", "body", string(o.ServiceFeeAmount), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"serviceFeeAmount", "body", o.ServiceFeeAmount, 15); err != nil {
 		return err
 	}
 
@@ -4132,12 +5953,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateServiceF
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxAmount", "body", string(o.TaxAmount), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxAmount", "body", o.TaxAmount, 12); err != nil {
 		return err
 	}
 
@@ -4145,12 +5965,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxAmoun
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxAppliedAfterDiscount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxAppliedAfterDiscount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxAppliedAfterDiscount", "body", string(o.TaxAppliedAfterDiscount), 1); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxAppliedAfterDiscount", "body", o.TaxAppliedAfterDiscount, 1); err != nil {
 		return err
 	}
 
@@ -4158,12 +5977,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxAppli
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxAppliedLevel(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxAppliedLevel) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxAppliedLevel", "body", string(o.TaxAppliedLevel), 1); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxAppliedLevel", "body", o.TaxAppliedLevel, 1); err != nil {
 		return err
 	}
 
@@ -4171,7 +5989,6 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxAppli
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxDetails) { // not required
 		return nil
 	}
@@ -4185,6 +6002,8 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxDetai
 			if err := o.TaxDetails[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "taxDetails" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "taxDetails" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -4196,12 +6015,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxDetai
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxTypeCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxTypeCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxTypeCode", "body", string(o.TaxTypeCode), 3); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"taxTypeCode", "body", o.TaxTypeCode, 3); err != nil {
 		return err
 	}
 
@@ -4209,13 +6027,70 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTaxTypeC
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) validateTotalAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", string(o.TotalAmount), 19); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", o.TotalAmount, 19); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body order information amount details based on the context it is used
+func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmexAdditionalAmounts(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTaxDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) contextValidateAmexAdditionalAmounts(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.AmexAdditionalAmounts); i++ {
+
+		if o.AmexAdditionalAmounts[i] != nil {
+			if err := o.AmexAdditionalAmounts[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "amexAdditionalAmounts" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "amexAdditionalAmounts" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationAmountDetails) contextValidateTaxDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.TaxDetails); i++ {
+
+		if o.TaxDetails[i] != nil {
+			if err := o.TaxDetails[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "taxDetails" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "taxDetails" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -4245,9 +6120,6 @@ swagger:model CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditiona
 type CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditionalAmountsItems0 struct {
 
 	// Additional amount. This field is supported only for **American Express Direct**.
-	//
-	// For processor-specific information, see the additional_amount field in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
 	//
 	// Max Length: 12
 	Amount string `json:"amount,omitempty"`
@@ -4280,12 +6152,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditionalAmou
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditionalAmountsItems0) validateAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Amount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("amount", "body", string(o.Amount), 12); err != nil {
+	if err := validate.MaxLength("amount", "body", o.Amount, 12); err != nil {
 		return err
 	}
 
@@ -4293,15 +6164,19 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditionalAmou
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditionalAmountsItems0) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("code", "body", string(o.Code), 3); err != nil {
+	if err := validate.MaxLength("code", "body", o.Code, 3); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information amount details amex additional amounts items0 based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsAmexAdditionalAmountsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -4331,14 +6206,12 @@ type CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0 struc
 	// Indicates the amount of tax based on the `type` field as described in the table below:
 	//
 	// | type      | type description |
-	// |-----------|--------------------|
+	// | ------------- |:-------------:|
 	// | `alternate` | Total amount of alternate tax for the order. |
 	// | `local`     | Sales tax for the order. |
 	// | `national`  | National tax for the order. |
-	// | `vat`       | Total amount of Value Added Tax (VAT) included in the order. |
+	// | `vat`       | Total amount of value added tax (VAT) included in the order. |
 	// | `other`     | Other tax. |
-	//
-	// For processor-specific details, see the `alternate_tax_amount`, `local_tax`, `national_tax`, `vat_tax_amount` or `other_tax#_amount` field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
 	//
 	// Max Length: 13
 	Amount string `json:"amount,omitempty"`
@@ -4350,13 +6223,13 @@ type CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0 struc
 	// - `false`: alternate tax amount is not included in the request.
 	// - `true`: alternate tax amount is included in the request.
 	//
-	// For processor-specific details, see `alternate_tax_amount_indicator` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see `alternate_tax_amount_indicator` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	Applied bool `json:"applied,omitempty"`
 
 	// Type of tax being applied to the item.
 	//
-	// For possible values, see the processor-specific field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm):
+	// For possible values, see the processor-specific field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/):
 	//
 	// #### FDC Nashville Global
 	// - `alternate_tax_type_applied`
@@ -4391,7 +6264,7 @@ type CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0 struc
 	// CyberSource does not verify the value or modify it in any way before sending it to the processor.
 	//
 	// For possible values and important information for using this field, see _Appendix B, "Exemption
-	// Status Values_ and _Offer-Level Tax Fields_ in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// Status Values_ and _Offer-Level Tax Fields_ in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 1
 	ExemptionCode string `json:"exemptionCode,omitempty"`
@@ -4403,7 +6276,7 @@ type CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0 struc
 	// Valid range: 0.01 to 0.99 (1% to 99%, with only whole percentage values accepted; values with additional
 	// decimal places will be truncated)
 	//
-	// For processor-specific details, see the `alternate_tax_amount`, `vat_rate`, `vat_tax_rate`, `local_tax`, `national_tax`, `vat_tax_amount` or `other_tax#_rate` field descriptions in the [Level II and Level III Processing Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see the `alternate_tax_amount`, `vat_rate`, `vat_tax_rate`, `local_tax`, `national_tax`, `vat_tax_amount` or `other_tax#_rate` field descriptions in the [Level II and Level III Processing Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 6
 	Rate string `json:"rate,omitempty"`
@@ -4411,7 +6284,7 @@ type CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0 struc
 	// Your tax ID number to use for the alternate tax amount. Required if you set alternate tax amount to any value,
 	// including zero. You may send this field without sending alternate tax amount.
 	//
-	// For processor-specific details, see `alternate_tax_id` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see `alternate_tax_id` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 15
 	TaxID string `json:"taxId,omitempty"`
@@ -4427,7 +6300,7 @@ type CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0 struc
 	// - `other`
 	//
 	// For processor-specific details, see the `alternate_tax_amount`, `local_tax`, `national_tax` or `vat_tax_amount` field
-	// descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	Type string `json:"type,omitempty"`
 }
@@ -4463,12 +6336,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) 
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) validateAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Amount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("amount", "body", string(o.Amount), 13); err != nil {
+	if err := validate.MaxLength("amount", "body", o.Amount, 13); err != nil {
 		return err
 	}
 
@@ -4476,12 +6348,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) 
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("code", "body", string(o.Code), 4); err != nil {
+	if err := validate.MaxLength("code", "body", o.Code, 4); err != nil {
 		return err
 	}
 
@@ -4489,12 +6360,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) 
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) validateExemptionCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExemptionCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("exemptionCode", "body", string(o.ExemptionCode), 1); err != nil {
+	if err := validate.MaxLength("exemptionCode", "body", o.ExemptionCode, 1); err != nil {
 		return err
 	}
 
@@ -4502,12 +6372,11 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) 
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) validateRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Rate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("rate", "body", string(o.Rate), 6); err != nil {
+	if err := validate.MaxLength("rate", "body", o.Rate, 6); err != nil {
 		return err
 	}
 
@@ -4515,15 +6384,19 @@ func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) 
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) validateTaxID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxId", "body", string(o.TaxID), 15); err != nil {
+	if err := validate.MaxLength("taxId", "body", o.TaxID, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information amount details tax details items0 based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationAmountDetailsTaxDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -4556,74 +6429,142 @@ type CapturePaymentParamsBodyOrderInformationBillTo struct {
 	// This field must not contain colons (:).
 	//
 	// #### CyberSource through VisaNet
-	// **Important** When you populate billing street address 1 and billing street address 2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// **Important** When you populate orderInformation.billTo.address1 and orderInformation.billTo.address2,
+	// CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters,
+	// CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank.
+	// Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless
+	// ASCII characters for transmission to the credit card networks.
 	//
-	// #### For Payouts: This field may be sent only for FDC Compass.
+	// #### FDMS Nashville
+	// When the street name is numeric, it must be sent in numeric format. For example, if the address is _One First Street_,
+	// it must be sent as _1 1st Street_.
+	//
+	// Required if keyed; not used if swiped.
+	//
+	// String (20)
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### All other processors:
+	// Optional.
+	// String (60)
+	//
+	// #### For Payouts
+	// This field may be sent only for FDC Compass.
 	//
 	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
-	//
-	// For processor-specific information, see the `bill_address1` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
 	//
 	// Max Length: 60
 	Address1 string `json:"address1,omitempty"`
 
-	// Additional address information.
+	// Used for additional address information. For example: _Attention: Accounts Payable_
+	// Optional field.
 	//
 	// For Payouts: This field may be sent only for FDC Compass.
 	//
 	// #### Atos
 	// This field must not contain colons (:).
 	//
+	// #### CyberSource through VisaNet
+	// **Important** When you populate `orderInformation.billTo.address1` and `orderInformation.billTo.address2`,
+	// CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters,
+	// CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank.
+	// Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless
+	// ASCII characters for transmission to the credit card networks.
+	//
 	// #### Chase Paymentech Solutions, FDC Compass, and TSYS Acquiring Solutions
 	// This value is used for AVS.
 	//
-	// #### CyberSource through VisaNet
-	// **Important** When you populate billing street address 1 and billing street address 2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// #### FDMS Nashville
+	// `orderInformation.billTo.address1` and `orderInformation.billTo.address2` together cannot exceed 20 characters.
+	// String (20)
 	//
-	// For processor-specific information, see the `bill_address2` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### All Other Processors
+	// String (60)
 	//
 	// Max Length: 60
 	Address2 string `json:"address2,omitempty"`
 
-	// State or province of the billing address. Use the State, Province, and Territory Codes for the United States
-	// and Canada.
+	// State or province of the billing address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).
 	//
 	// For Payouts: This field may be sent only for FDC Compass.
 	//
 	// ##### CyberSource through VisaNet
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless
+	// ASCII characters for transmission to the credit card networks.
 	//
 	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
 	//
-	// For processor-specific information, see the `bill_state` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 20
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
-	// Name of the customer’s company.
-	//
-	// #### CyberSource through VisaNet
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
-	// For processor-specific information, see the company_name field in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
-	//
-	// Max Length: 60
-	Company string `json:"company,omitempty"`
+	// company
+	Company *CapturePaymentParamsBodyOrderInformationBillToCompany `json:"company,omitempty"`
 
-	// Payment card billing country. Use the two-character ISO Standard Country Codes.
+	// Payment card billing country. Use the two-character [ISO Standard Country Codes](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
 	//
 	// #### CyberSource through VisaNet
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII
+	// characters for transmission to the credit card networks.
 	//
 	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
 	//
-	// For processor-specific information, see the `bill_country` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 2
 	Country string `json:"country,omitempty"`
@@ -4641,10 +6582,33 @@ type CapturePaymentParamsBodyOrderInformationBillTo struct {
 	// #### Invoicing
 	// Email address for the customer for sending the invoice. If the invoice is in SENT status and email is updated, the old email customer payment link won't work and you must resend the invoice with the new payment link.
 	//
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
+	//
 	// Max Length: 255
 	Email string `json:"email,omitempty"`
 
 	// Customer’s first name. This name must be the same as the name on the card.
+	//
+	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
 	//
 	// #### CyberSource Latin American Processing
 	// **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\
@@ -4656,15 +6620,39 @@ type CapturePaymentParamsBodyOrderInformationBillTo struct {
 	// #### For Payouts:
 	// This field may be sent only for FDC Compass.
 	//
-	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+	// #### Chase Paymentech Solutions
+	// Optional field.
 	//
-	// For processor-specific information, see the `customer_firstname` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 60
 	FirstName string `json:"firstName,omitempty"`
 
 	// Customer’s last name. This name must be the same as the name on the card.
+	//
+	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+	//
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
 	//
 	// #### CyberSource Latin American Processing
 	// **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\
@@ -4673,13 +6661,26 @@ type CapturePaymentParamsBodyOrderInformationBillTo struct {
 	// #### CyberSource through VisaNet
 	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
 	//
-	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
-	//
 	// #### For Payouts:
 	// This field may be sent only for FDC Compass.
 	//
-	// For processor-specific information, see the `customer_lastname` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### RBS WorldPay Atlanta
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 60
 	LastName string `json:"lastName,omitempty"`
@@ -4695,24 +6696,60 @@ type CapturePaymentParamsBodyOrderInformationBillTo struct {
 	// #### For Payouts:
 	// This field may be sent only for FDC Compass.
 	//
-	// For processor-specific information, see the `bill_city` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 50
 	Locality string `json:"locality,omitempty"`
 
 	// Customer’s phone number.
 	//
-	// #### For Payouts:
-	// This field may be sent only for FDC Compass.
+	// It is recommended that you include the country code when the order is from outside the U.S.
 	//
-	// CyberSource recommends that you include the country code when the order is from outside the U.S.
+	// #### Chase Paymentech Solutions
+	// Optional field.
 	//
-	// For processor-specific information, see the customer_phone field in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// ####  Credit Mutuel-CIC
+	// Optional field.
 	//
 	// #### CyberSource through VisaNet
 	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	//
+	// #### For Payouts:
+	// This field may be sent only for FDC Compass.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Optional field.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 15
 	PhoneNumber string `json:"phoneNumber,omitempty"`
@@ -4741,10 +6778,25 @@ type CapturePaymentParamsBodyOrderInformationBillTo struct {
 	// This field must not contain colons (:).
 	//
 	// #### CyberSource through VisaNet
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII
+	// characters for transmission to the credit card networks.
 	//
-	// For processor-specific information, see the `bill_zip` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### FDMS Nashville
+	// Required if `pointOfSaleInformation.entryMode=keyed` and the address is in the U.S. or Canada.
+	// Optional if `pointOfSaleInformation.entryMode=keyed` and the address is **not** in the U.S. or Canada.
+	// Not used if swiped.
+	//
+	// #### RBS WorldPay Atlanta:
+	// For best card-present keyed rates, send the postal code if `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### All other processors:
+	// Optional field.
 	//
 	// Max Length: 10
 	PostalCode string `json:"postalCode,omitempty"`
@@ -4805,12 +6857,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) Validate(formats strfmt
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateAddress1(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address1) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address1", "body", string(o.Address1), 60); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address1", "body", o.Address1, 60); err != nil {
 		return err
 	}
 
@@ -4818,12 +6869,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateAddress1(format
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateAddress2(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address2) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address2", "body", string(o.Address2), 60); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address2", "body", o.Address2, 60); err != nil {
 		return err
 	}
 
@@ -4831,12 +6881,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateAddress2(format
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateAdministrativeArea(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdministrativeArea) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 20); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"administrativeArea", "body", o.AdministrativeArea, 20); err != nil {
 		return err
 	}
 
@@ -4844,25 +6893,30 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateAdministrativeA
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateCompany(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Company) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company", "body", string(o.Company), 60); err != nil {
-		return err
+	if o.Company != nil {
+		if err := o.Company.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo" + "." + "company")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo" + "." + "company")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -4870,12 +6924,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateCountry(formats
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateEmail(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Email) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"email", "body", string(o.Email), 255); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"email", "body", o.Email, 255); err != nil {
 		return err
 	}
 
@@ -4883,12 +6936,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateEmail(formats s
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"firstName", "body", string(o.FirstName), 60); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"firstName", "body", o.FirstName, 60); err != nil {
 		return err
 	}
 
@@ -4896,12 +6948,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateFirstName(forma
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"lastName", "body", string(o.LastName), 60); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"lastName", "body", o.LastName, 60); err != nil {
 		return err
 	}
 
@@ -4909,12 +6960,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateLastName(format
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"locality", "body", string(o.Locality), 50); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"locality", "body", o.Locality, 50); err != nil {
 		return err
 	}
 
@@ -4922,12 +6972,11 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validateLocality(format
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validatePhoneNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PhoneNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"phoneNumber", "body", string(o.PhoneNumber), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"phoneNumber", "body", o.PhoneNumber, 15); err != nil {
 		return err
 	}
 
@@ -4935,13 +6984,42 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) validatePhoneNumber(for
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"postalCode", "body", string(o.PostalCode), 10); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"postalCode", "body", o.PostalCode, 10); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body order information bill to based on the context it is used
+func (o *CapturePaymentParamsBodyOrderInformationBillTo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCompany(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillTo) contextValidateCompany(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Company != nil {
+		if err := o.Company.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo" + "." + "company")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "billTo" + "." + "company")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -4958,6 +7036,206 @@ func (o *CapturePaymentParamsBodyOrderInformationBillTo) MarshalBinary() ([]byte
 // UnmarshalBinary interface implementation
 func (o *CapturePaymentParamsBodyOrderInformationBillTo) UnmarshalBinary(b []byte) error {
 	var res CapturePaymentParamsBodyOrderInformationBillTo
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyOrderInformationBillToCompany capture payment params body order information bill to company
+swagger:model CapturePaymentParamsBodyOrderInformationBillToCompany
+*/
+type CapturePaymentParamsBodyOrderInformationBillToCompany struct {
+
+	// First line in the street address of the company purchasing the product.
+	// Max Length: 40
+	Address1 string `json:"address1,omitempty"`
+
+	// Additional address information for the company purchasing the product.
+	// Max Length: 40
+	Address2 string `json:"address2,omitempty"`
+
+	// State or province in the address of the company purchasing the product. Use the State, Province, and Territory
+	// Codes for the United States and Canada.
+	//
+	// Max Length: 2
+	AdministrativeArea string `json:"administrativeArea,omitempty"`
+
+	// Country in the address of the company purchasing the product. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
+	//
+	// Max Length: 2
+	Country string `json:"country,omitempty"`
+
+	// City in the address of the company purchasing the product.
+	// Max Length: 30
+	Locality string `json:"locality,omitempty"`
+
+	// Name of the customer’s company.
+	//
+	// **CyberSource through VisaNet**
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	//
+	// For processor-specific information, see the `company_name` field in
+	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	//
+	// Max Length: 60
+	Name string `json:"name,omitempty"`
+
+	// Postal code in the address of the company purchasing the product. The postal code must consist of 5 to 9 digits.
+	//
+	// When the company country is the U.S., the 9-digit postal code must follow this format:
+	// **[5 digits][dash][4 digits]**
+	// #### Example
+	// `12345-6789`
+	//
+	// When the company country is Canada, the 6-digit postal code must follow this format:
+	// **[alpha][numeric][alpha][space][numeric][alpha][numeric]**
+	// #### Example
+	// `A1B 2C3`
+	//
+	// Max Length: 10
+	PostalCode string `json:"postalCode,omitempty"`
+}
+
+// Validate validates this capture payment params body order information bill to company
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAddress1(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAddress2(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAdministrativeArea(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCountry(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLocality(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePostalCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) validateAddress1(formats strfmt.Registry) error {
+	if swag.IsZero(o.Address1) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company"+"."+"address1", "body", o.Address1, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) validateAddress2(formats strfmt.Registry) error {
+	if swag.IsZero(o.Address2) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company"+"."+"address2", "body", o.Address2, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) validateAdministrativeArea(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdministrativeArea) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company"+"."+"administrativeArea", "body", o.AdministrativeArea, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) validateCountry(formats strfmt.Registry) error {
+	if swag.IsZero(o.Country) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company"+"."+"country", "body", o.Country, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) validateLocality(formats strfmt.Registry) error {
+	if swag.IsZero(o.Locality) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company"+"."+"locality", "body", o.Locality, 30); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) validateName(formats strfmt.Registry) error {
+	if swag.IsZero(o.Name) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company"+"."+"name", "body", o.Name, 60); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) validatePostalCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.PostalCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"company"+"."+"postalCode", "body", o.PostalCode, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information bill to company based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyOrderInformationBillToCompany) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyOrderInformationBillToCompany
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -5065,12 +7343,11 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) Validate(format
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validateCommodityCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CommodityCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"commodityCode", "body", string(o.CommodityCode), 4); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"commodityCode", "body", o.CommodityCode, 4); err != nil {
 		return err
 	}
 
@@ -5078,12 +7355,11 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validateCommodi
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validatePurchaseContactName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PurchaseContactName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"purchaseContactName", "body", string(o.PurchaseContactName), 36); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"purchaseContactName", "body", o.PurchaseContactName, 36); err != nil {
 		return err
 	}
 
@@ -5091,12 +7367,11 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validatePurchas
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validatePurchaseOrderDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PurchaseOrderDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"purchaseOrderDate", "body", string(o.PurchaseOrderDate), 10); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"purchaseOrderDate", "body", o.PurchaseOrderDate, 10); err != nil {
 		return err
 	}
 
@@ -5104,12 +7379,11 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validatePurchas
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validatePurchaseOrderNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PurchaseOrderNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"purchaseOrderNumber", "body", string(o.PurchaseOrderNumber), 25); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"purchaseOrderNumber", "body", o.PurchaseOrderNumber, 25); err != nil {
 		return err
 	}
 
@@ -5117,7 +7391,6 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validatePurchas
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validateTransactionAdviceAddendum(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TransactionAdviceAddendum) { // not required
 		return nil
 	}
@@ -5131,6 +7404,8 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validateTransac
 			if err := o.TransactionAdviceAddendum[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails" + "." + "transactionAdviceAddendum" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails" + "." + "transactionAdviceAddendum" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -5142,13 +7417,46 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validateTransac
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) validateVatInvoiceReferenceNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VatInvoiceReferenceNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"vatInvoiceReferenceNumber", "body", string(o.VatInvoiceReferenceNumber), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"invoiceDetails"+"."+"vatInvoiceReferenceNumber", "body", o.VatInvoiceReferenceNumber, 15); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body order information invoice details based on the context it is used
+func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateTransactionAdviceAddendum(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetails) contextValidateTransactionAdviceAddendum(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.TransactionAdviceAddendum); i++ {
+
+		if o.TransactionAdviceAddendum[i] != nil {
+			if err := o.TransactionAdviceAddendum[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails" + "." + "transactionAdviceAddendum" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "orderInformation" + "." + "invoiceDetails" + "." + "transactionAdviceAddendum" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -5203,15 +7511,19 @@ func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetailsTransactionAdvice
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetailsTransactionAdviceAddendumItems0) validateData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Data) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("data", "body", string(o.Data), 40); err != nil {
+	if err := validate.MaxLength("data", "body", o.Data, 40); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information invoice details transaction advice addendum items0 based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationInvoiceDetailsTransactionAdviceAddendumItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -5280,9 +7592,28 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 	// - `P`: The product code is not `electronic_software`.
 	//
 	// For details, see the `fulfillmentType` field description in [Business Center Reporting User Guide.]
-	// (https://apps.cybersource.com/library/documentation/dev_guides/reporting_and_reconciliation/Reporting_User/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// (https://apps.cybersource.com/library/documentation/dev_guides/reporting_and_reconciliation/Reporting_User/html/)
 	//
 	FulfillmentType string `json:"fulfillmentType,omitempty"`
+
+	// This field is only used in DM service.
+	//
+	// Determines whether to assign risk to the order if the billing and shipping addresses specify different cities,
+	// states, or countries. This field can contain one of the following values:
+	// - true: Orders are assigned only slight additional risk if billing and shipping addresses are different.
+	// - false: Orders are assigned higher additional risk if billing and shipping addresses are different.
+	//
+	Gift bool `json:"gift,omitempty"`
+
+	// When `orderInformation.lineItems[].productCode` is "gift_card", this is the
+	// currency used for the gift card purchase.
+	//
+	// For details, see `pa_gift_card_currency` field description in [CyberSource Payer Authentication Using the SCMP API.]
+	// (https://apps.cybersource.com/library/documentation/dev_guides/Payer_Authentication_SCMP_API/Payer_Authentication_SCMP_API.pdf)
+	//
+	// For the possible values, see the [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
+	//
+	GiftCardCurrency int64 `json:"giftCardCurrency,omitempty"`
 
 	// Field to support an invoice number for a transaction. You must specify the number of line items that will
 	// include an invoice number. By default, the first line item will include an invoice number field. The invoice
@@ -5291,43 +7622,69 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 	// Max Length: 23
 	InvoiceNumber string `json:"invoiceNumber,omitempty"`
 
-	// Type of product. This value is used to determine the category that the product is in: electronic, handling,
-	// physical, service, or shipping. The default value is **default**.
-	// If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set this field to a value other than default or any of the values related to
-	// shipping and handling, then the fields `quantity`, `productName`, and `productSku` are required.
-	// It can also have a value of "gift_card".
+	// passenger
+	Passenger *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger `json:"passenger,omitempty"`
+
+	// Type of product. The value for this field is used to identify the product category (electronic, handling, physical,
+	// service, or shipping). The default value is `default`.
 	//
-	// For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// If you are performing an authorization transaction (`processingOptions.capture` is set to `false`), and you set
+	// this field to a value other than `default` or one of the values related to shipping and/or handling, then
+	// `orderInformation.lineItems[].quantity`, `orderInformation.lineItems[].productName`, and
+	// `orderInformation.lineItems[].productSku` fields are required.
+	//
+	// Optional field.
+	//
+	// For details, see the `product_code` field description in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	//
+	// To use the tax calculation service, use values listed in the Tax Product Code Guide. For information about this
+	// document, contact customer support. See "Product Codes," page 14, for more information.
 	//
 	// Max Length: 255
 	ProductCode string `json:"productCode,omitempty"`
 
-	// For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`),
-	// this field is required when `orderInformation.lineItems[].productCode` is not set to `default` or one of
+	// Brief description of item.
+	ProductDescription string `json:"productDescription,omitempty"`
+
+	// For an authorization or capture transaction (`processingOptions.capture` is `true` or `false`),
+	// this field is required when `orderInformation.lineItems[].productCode` is not `default` or one of
 	// the other values that are related to shipping and/or handling.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
 	//
 	// Max Length: 255
 	ProductName string `json:"productName,omitempty"`
 
-	// Stock Keeping Unit (SKU) code for the product.
+	// Product identifier code. Also known as the Stock Keeping Unit (SKU) code for the product.
 	//
-	// For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`), this field is required when _orderInformation.lineItems[].productCode_ is not set to **default** or one of the other values that are related to shipping and/or handling.
+	// For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`), this field is required when `orderInformation.lineItems[].productCode` is not set to **default** or one of the other values that are related to shipping and/or handling.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`), this field is
+	// required when `orderInformation.lineItems[].productCode` is not `default` or one of the values related to shipping and/or handling.
 	//
 	// Max Length: 255
 	ProductSku string `json:"productSku,omitempty"`
 
-	// Number of units for this order.
+	// Number of units for this order. Must be a non-negative integer.
 	//
-	// The default is `1`. For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`), this field is required when _orderInformation.lineItems[].productCode_ is not set to **default** or one of the other values that are related to shipping and/or handling.
+	// The default is `1`. For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`),
+	// this field is required when `orderInformation.lineItems[].productCode` is not `default` or one of the other values
+	// related to shipping and/or handling.
 	//
-	// When orderInformation.lineItems[].productCode is "gift_card",
-	// this is the total count of individual prepaid gift cards purchased.
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
 	//
-	// Maximum: 9.999999999e+09
+	// Maximum: 9.99999999e+08
 	// Minimum: 1
-	Quantity float64 `json:"quantity,omitempty"`
+	Quantity int64 `json:"quantity,omitempty"`
 
-	// Code that identifies the value of the corresponding item_#_referenceData_#_number field. See Numbered Elements.
+	// Code that identifies the value of the corresponding `orderInformation.lineItems[].referenceDataNumber` field.
 	//
 	// Possible values:
 	// - AN: Client-defined asset code
@@ -5340,6 +7697,8 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 	//
 	// This field is a pass-through, which means that CyberSource does not verify the value or modify it in any way
 	// before sending it to the processor.
+	//
+	// For details, see `reference_data_#_code` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 2
 	ReferenceDataCode string `json:"referenceDataCode,omitempty"`
@@ -5360,6 +7719,11 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 	// Max Length: 30
 	ReferenceDataNumber string `json:"referenceDataNumber,omitempty"`
 
+	// Destination to where the item will be shipped. Example: Commercial, Residential, Store
+	//
+	// Max Length: 50
+	ShippingDestinationTypes string `json:"shippingDestinationTypes,omitempty"`
+
 	// Total tax to apply to the product. This value cannot be negative. The tax amount and the offer amount must
 	// be in the same currency. The tax amount field is additive.
 	//
@@ -5370,9 +7734,17 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 	//  ..- 2nd line item has amount=20.00, quantity=1, and taxAmount=1.60
 	//  2. The total amount authorized will be 32.40, not 30.00 with 2.40 of tax included.
 	//
-	// If you want to include the tax amount and also request the ics_tax service, see Tax Calculation Service Using the SCMP API.
+	// Optional field.
 	//
-	// This field is frequently used for Level II and Level III transactions. For details, see `tax_amount` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Airlines processing
+	// Tax portion of the order amount. This value cannot exceed 99999999999999 (fourteen 9s).
+	// Format: English characters only.
+	// Optional request field for a line item.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	//
+	// Note if you send this field in your tax request, the value in the field will override the tax engine
 	//
 	// Max Length: 15
 	TaxAmount string `json:"taxAmount,omitempty"`
@@ -5395,7 +7767,7 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 
 	// Tax rate applied to the item.
 	//
-	// For details, see `tax_rate` field description in the [Level II and Level III Processing Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see `tax_rate` field description in the [Level II and Level III Processing Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// **Visa**: Valid range is 0.01 to 0.99 (1% to 99%, with only whole percentage values accepted; values with additional
 	// decimal places will be truncated).
@@ -5416,7 +7788,7 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 
 	// Type of tax being applied to the item.
 	//
-	// For possible values, see the processor-specific field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm):
+	// For possible values, see the processor-specific field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/):
 	//
 	// #### FDC Nashville Global
 	// - `alternate_tax_type_applied`
@@ -5471,52 +7843,56 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0 struct {
 	// Max Length: 12
 	UnitOfMeasure string `json:"unitOfMeasure,omitempty"`
 
-	// Per-item price of the product. This value cannot be negative. You can include a decimal point (.), but you
-	// cannot include any other special characters. CyberSource truncates the amount to the correct number of decimal
-	// places.
+	// Per-item price of the product. This value for this field cannot be negative.
 	//
-	// For processor-specific information, see the `amount` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// You must include either this field or the request-level field `orderInformation.amountDetails.totalAmount` in your request.
 	//
-	// **Important** Some processors have specific requirements and limitations, such as maximum
-	// amounts and maximum field lengths. See these guides for details:
-	// - [Merchant Descriptors Using the SCMP API Guide]
-	// (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	// - "Capture Information for Specific Processors" section in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// You can include a decimal point (.), but you cannot include any other special characters.
+	// The value is truncated to the correct number of decimal places.
 	//
 	// #### DCC with a Third-Party Provider
 	// Set this field to the converted amount that was returned by the DCC provider. You must include either
-	// the 1st line item in the order and this field, or the request-level field `orderInformation.amountDetails.totalAmount` in your request. For details, see "Dynamic Currency Conversion with a Third Party
-	// Provider" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// the 1st line item in the order and this field, or the request-level field `orderInformation.amountDetails.totalAmount` in your request.
 	//
 	// #### FDMS South
 	// If you accept IDR or CLP currencies, see the entry for FDMS South in the [Merchant Descriptors Using the SCMP API Guide.]
-	// (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)
+	//
+	// #### Tax Calculation
+	// Required field for U.S., Canadian, international and value added taxes.
 	//
 	// #### Zero Amount Authorizations
 	// If your processor supports zero amount authorizations, you can set this field to 0 for the
-	// authorization to check if the card is lost or stolen. See "Zero Amount Authorizations" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// authorization to check if the card is lost or stolen.
+	//
+	// #### Maximum Field Lengths
+	// For GPN and JCN Gateway: Decimal (10)
+	// All other processors: Decimal (15)
 	//
 	// Max Length: 15
 	UnitPrice string `json:"unitPrice,omitempty"`
 
-	// Weight of the item. See Numbered Elements.
+	// Weight of the item.
+	//
+	// For details, see `weight_amount` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
+	//
 	// Max Length: 9
 	Weight string `json:"weight,omitempty"`
 
-	// Type of weight. See Numbered Elements.
+	// Type of weight.
 	//
 	// Possible values:
 	// - B: Billed weight
 	// - N: Actual net weight
 	//
+	// For details, see `weight_identifier` offer-level field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
+	//
 	// Max Length: 1
 	WeightIdentifier string `json:"weightIdentifier,omitempty"`
 
-	// Code that specifies the unit of measurement for the weight amount. For example, OZ specifies ounce and LB
-	// specifies pound. The possible values are defined by the ANSI Accredited Standards Committee (ASC).
+	// Code that specifies the unit of measurement for the weight amount. For example, `OZ` specifies ounce and `LB` specifies pound. The possible values are defined by the ANSI Accredited Standards Committee (ASC).
 	//
-	// See Numbered Elements.
+	// For details, see `weight_unit_measurement` offer-level field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 2
 	WeightUnit string `json:"weightUnit,omitempty"`
@@ -5542,6 +7918,10 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) Validate(forma
 		res = append(res, err)
 	}
 
+	if err := o.validatePassenger(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateProductCode(formats); err != nil {
 		res = append(res, err)
 	}
@@ -5563,6 +7943,10 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) Validate(forma
 	}
 
 	if err := o.validateReferenceDataNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateShippingDestinationTypes(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -5625,12 +8009,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) Validate(forma
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateCommodityCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CommodityCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("commodityCode", "body", string(o.CommodityCode), 15); err != nil {
+	if err := validate.MaxLength("commodityCode", "body", o.CommodityCode, 15); err != nil {
 		return err
 	}
 
@@ -5638,12 +8021,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateCommod
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateDiscountAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DiscountAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("discountAmount", "body", string(o.DiscountAmount), 13); err != nil {
+	if err := validate.MaxLength("discountAmount", "body", o.DiscountAmount, 13); err != nil {
 		return err
 	}
 
@@ -5651,12 +8033,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateDiscou
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateDiscountRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DiscountRate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("discountRate", "body", string(o.DiscountRate), 6); err != nil {
+	if err := validate.MaxLength("discountRate", "body", o.DiscountRate, 6); err != nil {
 		return err
 	}
 
@@ -5664,25 +8045,42 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateDiscou
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateInvoiceNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.InvoiceNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("invoiceNumber", "body", string(o.InvoiceNumber), 23); err != nil {
+	if err := validate.MaxLength("invoiceNumber", "body", o.InvoiceNumber, 23); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateProductCode(formats strfmt.Registry) error {
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validatePassenger(formats strfmt.Registry) error {
+	if swag.IsZero(o.Passenger) { // not required
+		return nil
+	}
 
+	if o.Passenger != nil {
+		if err := o.Passenger.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("passenger")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("passenger")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateProductCode(formats strfmt.Registry) error {
 	if swag.IsZero(o.ProductCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("productCode", "body", string(o.ProductCode), 255); err != nil {
+	if err := validate.MaxLength("productCode", "body", o.ProductCode, 255); err != nil {
 		return err
 	}
 
@@ -5690,12 +8088,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateProduc
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateProductName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProductName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("productName", "body", string(o.ProductName), 255); err != nil {
+	if err := validate.MaxLength("productName", "body", o.ProductName, 255); err != nil {
 		return err
 	}
 
@@ -5703,12 +8100,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateProduc
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateProductSku(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProductSku) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("productSku", "body", string(o.ProductSku), 255); err != nil {
+	if err := validate.MaxLength("productSku", "body", o.ProductSku, 255); err != nil {
 		return err
 	}
 
@@ -5716,16 +8112,15 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateProduc
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateQuantity(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Quantity) { // not required
 		return nil
 	}
 
-	if err := validate.Minimum("quantity", "body", float64(o.Quantity), 1, false); err != nil {
+	if err := validate.MinimumInt("quantity", "body", o.Quantity, 1, false); err != nil {
 		return err
 	}
 
-	if err := validate.Maximum("quantity", "body", float64(o.Quantity), 9.999999999e+09, false); err != nil {
+	if err := validate.MaximumInt("quantity", "body", o.Quantity, 9.99999999e+08, false); err != nil {
 		return err
 	}
 
@@ -5733,12 +8128,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateQuanti
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateReferenceDataCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReferenceDataCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("referenceDataCode", "body", string(o.ReferenceDataCode), 2); err != nil {
+	if err := validate.MaxLength("referenceDataCode", "body", o.ReferenceDataCode, 2); err != nil {
 		return err
 	}
 
@@ -5746,12 +8140,23 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateRefere
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateReferenceDataNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReferenceDataNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("referenceDataNumber", "body", string(o.ReferenceDataNumber), 30); err != nil {
+	if err := validate.MaxLength("referenceDataNumber", "body", o.ReferenceDataNumber, 30); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateShippingDestinationTypes(formats strfmt.Registry) error {
+	if swag.IsZero(o.ShippingDestinationTypes) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("shippingDestinationTypes", "body", o.ShippingDestinationTypes, 50); err != nil {
 		return err
 	}
 
@@ -5759,12 +8164,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateRefere
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxAmount", "body", string(o.TaxAmount), 15); err != nil {
+	if err := validate.MaxLength("taxAmount", "body", o.TaxAmount, 15); err != nil {
 		return err
 	}
 
@@ -5772,12 +8176,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxAmo
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxAppliedAfterDiscount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxAppliedAfterDiscount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxAppliedAfterDiscount", "body", string(o.TaxAppliedAfterDiscount), 1); err != nil {
+	if err := validate.MaxLength("taxAppliedAfterDiscount", "body", o.TaxAppliedAfterDiscount, 1); err != nil {
 		return err
 	}
 
@@ -5785,7 +8188,6 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxApp
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxDetails) { // not required
 		return nil
 	}
@@ -5799,6 +8201,8 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxDet
 			if err := o.TaxDetails[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("taxDetails" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("taxDetails" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -5810,12 +8214,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxDet
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxRate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxRate", "body", string(o.TaxRate), 7); err != nil {
+	if err := validate.MaxLength("taxRate", "body", o.TaxRate, 7); err != nil {
 		return err
 	}
 
@@ -5823,12 +8226,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxRat
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxStatusIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxStatusIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxStatusIndicator", "body", string(o.TaxStatusIndicator), 1); err != nil {
+	if err := validate.MaxLength("taxStatusIndicator", "body", o.TaxStatusIndicator, 1); err != nil {
 		return err
 	}
 
@@ -5836,12 +8238,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxSta
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxTypeCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxTypeCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxTypeCode", "body", string(o.TaxTypeCode), 4); err != nil {
+	if err := validate.MaxLength("taxTypeCode", "body", o.TaxTypeCode, 4); err != nil {
 		return err
 	}
 
@@ -5849,12 +8250,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTaxTyp
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTotalAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("totalAmount", "body", string(o.TotalAmount), 13); err != nil {
+	if err := validate.MaxLength("totalAmount", "body", o.TotalAmount, 13); err != nil {
 		return err
 	}
 
@@ -5862,12 +8262,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTotalA
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTypeOfSupply(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TypeOfSupply) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("typeOfSupply", "body", string(o.TypeOfSupply), 2); err != nil {
+	if err := validate.MaxLength("typeOfSupply", "body", o.TypeOfSupply, 2); err != nil {
 		return err
 	}
 
@@ -5875,12 +8274,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateTypeOf
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateUnitOfMeasure(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.UnitOfMeasure) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("unitOfMeasure", "body", string(o.UnitOfMeasure), 12); err != nil {
+	if err := validate.MaxLength("unitOfMeasure", "body", o.UnitOfMeasure, 12); err != nil {
 		return err
 	}
 
@@ -5888,12 +8286,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateUnitOf
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateUnitPrice(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.UnitPrice) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("unitPrice", "body", string(o.UnitPrice), 15); err != nil {
+	if err := validate.MaxLength("unitPrice", "body", o.UnitPrice, 15); err != nil {
 		return err
 	}
 
@@ -5901,12 +8298,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateUnitPr
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateWeight(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Weight) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("weight", "body", string(o.Weight), 9); err != nil {
+	if err := validate.MaxLength("weight", "body", o.Weight, 9); err != nil {
 		return err
 	}
 
@@ -5914,12 +8310,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateWeight
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateWeightIdentifier(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.WeightIdentifier) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("weightIdentifier", "body", string(o.WeightIdentifier), 1); err != nil {
+	if err := validate.MaxLength("weightIdentifier", "body", o.WeightIdentifier, 1); err != nil {
 		return err
 	}
 
@@ -5927,13 +8322,66 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateWeight
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) validateWeightUnit(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.WeightUnit) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("weightUnit", "body", string(o.WeightUnit), 2); err != nil {
+	if err := validate.MaxLength("weightUnit", "body", o.WeightUnit, 2); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body order information line items items0 based on the context it is used
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePassenger(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTaxDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) contextValidatePassenger(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Passenger != nil {
+		if err := o.Passenger.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("passenger")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("passenger")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) contextValidateTaxDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.TaxDetails); i++ {
+
+		if o.TaxDetails[i] != nil {
+			if err := o.TaxDetails[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("taxDetails" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("taxDetails" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -5957,6 +8405,219 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0) UnmarshalBinar
 	return nil
 }
 
+/*CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger Contains travel-related passenger details used by DM service only.
+swagger:model CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger
+*/
+type CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger struct {
+
+	// Passenger's email address, including the full domain name, such as jdoe@example.com.
+	// Max Length: 255
+	Email string `json:"email,omitempty"`
+
+	// Passenger's first name.
+	// Max Length: 60
+	FirstName string `json:"firstName,omitempty"`
+
+	// ID of the passenger to whom the ticket was issued. For example, you can use this field for the frequent flyer
+	// number.
+	//
+	// Max Length: 40
+	ID string `json:"id,omitempty"`
+
+	// Passenger's last name.
+	// Max Length: 60
+	LastName string `json:"lastName,omitempty"`
+
+	// Passenger's nationality country. Use the two character [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
+	// Max Length: 2
+	Nationality string `json:"nationality,omitempty"`
+
+	// Passenger's phone number. If the order is from outside the U.S., CyberSource recommends that you include
+	// the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
+	//
+	// Max Length: 15
+	Phone string `json:"phone,omitempty"`
+
+	// Your company's passenger classification, such as with a frequent flyer program. In this case, you might use
+	// values such as `standard`, `gold`, or `platinum`.
+	//
+	// Max Length: 32
+	Status string `json:"status,omitempty"`
+
+	// Passenger classification associated with the price of the ticket. You can use one of the following values:
+	// - `ADT`: Adult
+	// - `CNN`: Child
+	// - `INF`: Infant
+	// - `YTH`: Youth
+	// - `STU`: Student
+	// - `SCR`: Senior Citizen
+	// - `MIL`: Military
+	//
+	// Max Length: 32
+	Type string `json:"type,omitempty"`
+}
+
+// Validate validates this capture payment params body order information line items items0 passenger
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateEmail(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateFirstName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLastName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateNationality(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePhone(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validateEmail(formats strfmt.Registry) error {
+	if swag.IsZero(o.Email) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"email", "body", o.Email, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validateFirstName(formats strfmt.Registry) error {
+	if swag.IsZero(o.FirstName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"firstName", "body", o.FirstName, 60); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validateID(formats strfmt.Registry) error {
+	if swag.IsZero(o.ID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"id", "body", o.ID, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validateLastName(formats strfmt.Registry) error {
+	if swag.IsZero(o.LastName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"lastName", "body", o.LastName, 60); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validateNationality(formats strfmt.Registry) error {
+	if swag.IsZero(o.Nationality) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"nationality", "body", o.Nationality, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validatePhone(formats strfmt.Registry) error {
+	if swag.IsZero(o.Phone) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"phone", "body", o.Phone, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validateStatus(formats strfmt.Registry) error {
+	if swag.IsZero(o.Status) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"status", "body", o.Status, 32); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(o.Type) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("passenger"+"."+"type", "body", o.Type, 32); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information line items items0 passenger based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyOrderInformationLineItemsItems0Passenger
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0 capture payment params body order information line items items0 tax details items0
 swagger:model CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0
 */
@@ -5965,14 +8626,12 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0 str
 	// Indicates the amount of tax based on the `type` field as described in the table below:
 	//
 	// | type      | type description |
-	// |-----------|--------------------|
+	// | ------------- |:-------------:|
 	// | `alternate` | Total amount of alternate tax for the order. |
 	// | `local`     | Sales tax for the order. |
 	// | `national`  | National tax for the order. |
-	// | `vat`       | Total amount of Value Added Tax (VAT) included in the order. |
+	// | `vat`       | Total amount of value added tax (VAT) included in the order. |
 	// | `other`     | Other tax. |
-	//
-	// For processor-specific details, see the `alternate_tax_amount`, `local_tax`, `national_tax`, `vat_tax_amount` or `other_tax#_amount` field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
 	//
 	// Max Length: 13
 	Amount string `json:"amount,omitempty"`
@@ -5984,13 +8643,13 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0 str
 	// - `false`: alternate tax amount is not included in the request.
 	// - `true`: alternate tax amount is included in the request.
 	//
-	// For processor-specific details, see `alternate_tax_amount_indicator` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see `alternate_tax_amount_indicator` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	Applied bool `json:"applied,omitempty"`
 
 	// Type of tax being applied to the item.
 	//
-	// For possible values, see the processor-specific field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm):
+	// For possible values, see the processor-specific field descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/):
 	//
 	// #### FDC Nashville Global
 	// - `alternate_tax_type_applied`
@@ -6025,7 +8684,7 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0 str
 	// CyberSource does not verify the value or modify it in any way before sending it to the processor.
 	//
 	// For possible values and important information for using this field, see _Appendix B, "Exemption
-	// Status Values_ and _Offer-Level Tax Fields_ in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// Status Values_ and _Offer-Level Tax Fields_ in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 1
 	ExemptionCode string `json:"exemptionCode,omitempty"`
@@ -6037,7 +8696,7 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0 str
 	// Valid range: 0.01 to 0.99 (1% to 99%, with only whole percentage values accepted; values with additional
 	// decimal places will be truncated)
 	//
-	// For processor-specific details, see the `alternate_tax_amount`, `vat_rate`, `vat_tax_rate`, `local_tax`, `national_tax`, `vat_tax_amount` or `other_tax#_rate` field descriptions in the [Level II and Level III Processing Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see the `alternate_tax_amount`, `vat_rate`, `vat_tax_rate`, `local_tax`, `national_tax`, `vat_tax_amount` or `other_tax#_rate` field descriptions in the [Level II and Level III Processing Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 6
 	Rate string `json:"rate,omitempty"`
@@ -6045,7 +8704,7 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0 str
 	// Your tax ID number to use for the alternate tax amount. Required if you set alternate tax amount to any value,
 	// including zero. You may send this field without sending alternate tax amount.
 	//
-	// For processor-specific details, see `alternate_tax_id` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For processor-specific details, see `alternate_tax_id` field description in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	// Max Length: 15
 	TaxID string `json:"taxId,omitempty"`
@@ -6061,7 +8720,7 @@ type CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0 str
 	// - `other`
 	//
 	// For processor-specific details, see the `alternate_tax_amount`, `local_tax`, `national_tax` or `vat_tax_amount` field
-	// descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// descriptions in [Level II and Level III Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Level_2_3_SCMP_API/html/)
 	//
 	Type string `json:"type,omitempty"`
 }
@@ -6097,12 +8756,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0) validateAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Amount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("amount", "body", string(o.Amount), 13); err != nil {
+	if err := validate.MaxLength("amount", "body", o.Amount, 13); err != nil {
 		return err
 	}
 
@@ -6110,12 +8768,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("code", "body", string(o.Code), 4); err != nil {
+	if err := validate.MaxLength("code", "body", o.Code, 4); err != nil {
 		return err
 	}
 
@@ -6123,12 +8780,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0) validateExemptionCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExemptionCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("exemptionCode", "body", string(o.ExemptionCode), 1); err != nil {
+	if err := validate.MaxLength("exemptionCode", "body", o.ExemptionCode, 1); err != nil {
 		return err
 	}
 
@@ -6136,12 +8792,11 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0) validateRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Rate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("rate", "body", string(o.Rate), 6); err != nil {
+	if err := validate.MaxLength("rate", "body", o.Rate, 6); err != nil {
 		return err
 	}
 
@@ -6149,15 +8804,19 @@ func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0) validateTaxID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxId", "body", string(o.TaxID), 15); err != nil {
+	if err := validate.MaxLength("taxId", "body", o.TaxID, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information line items items0 tax details items0 based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationLineItemsItems0TaxDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6184,17 +8843,33 @@ swagger:model CapturePaymentParamsBodyOrderInformationShipTo
 */
 type CapturePaymentParamsBodyOrderInformationShipTo struct {
 
-	// State or province of the shipping address. Use the State, Province, and Territory Codes for the United States
-	// and Canada.
+	// State or province of the shipping address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf)
+	//
+	// Required field for authorization if any shipping address information is included in the request and shipping to the U.S.
+	// or Canada; otherwise, optional.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
 	//
 	// Max Length: 2
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
-	// Country of the shipping address. Use the two-character ISO Standard Country Codes.
+	// Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)
+	//
+	// Required field for authorization if any shipping address information is included in the request; otherwise, optional.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+	//
 	// Max Length: 2
 	Country string `json:"country,omitempty"`
 
 	// Postal code for the shipping address. The postal code must consist of 5 to 9 digits.
+	//
+	// Required field for authorization if any shipping address information is included in the request and
+	// shipping to the U.S. or Canada; otherwise, optional.
 	//
 	// When the billing country is the U.S., the 9-digit postal code must follow this format:
 	// [5 digits][dash][4 digits]
@@ -6206,9 +8881,12 @@ type CapturePaymentParamsBodyOrderInformationShipTo struct {
 	//
 	// Example A1B 2C3
 	//
-	// **American Express Direct**\
-	// Before sending the postal code to the processor, CyberSource removes all nonalphanumeric characters and, if the
-	// remaining value is longer than nine characters, truncates the value starting from the right side.
+	// #### American Express Direct
+	// Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the
+	// remaining value is longer than nine characters, the value is truncated starting from the right side.
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
 	//
 	// Max Length: 10
 	PostalCode string `json:"postalCode,omitempty"`
@@ -6237,12 +8915,11 @@ func (o *CapturePaymentParamsBodyOrderInformationShipTo) Validate(formats strfmt
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationShipTo) validateAdministrativeArea(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdministrativeArea) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 2); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"administrativeArea", "body", o.AdministrativeArea, 2); err != nil {
 		return err
 	}
 
@@ -6250,12 +8927,11 @@ func (o *CapturePaymentParamsBodyOrderInformationShipTo) validateAdministrativeA
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationShipTo) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -6263,15 +8939,19 @@ func (o *CapturePaymentParamsBodyOrderInformationShipTo) validateCountry(formats
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationShipTo) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"postalCode", "body", string(o.PostalCode), 10); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"postalCode", "body", o.PostalCode, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information ship to based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationShipTo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6335,15 +9015,19 @@ func (o *CapturePaymentParamsBodyOrderInformationShippingDetails) Validate(forma
 }
 
 func (o *CapturePaymentParamsBodyOrderInformationShippingDetails) validateShipFromPostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ShipFromPostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shippingDetails"+"."+"shipFromPostalCode", "body", string(o.ShipFromPostalCode), 10); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"orderInformation"+"."+"shippingDetails"+"."+"shipFromPostalCode", "body", o.ShipFromPostalCode, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body order information shipping details based on context it is used
+func (o *CapturePaymentParamsBodyOrderInformationShippingDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6370,6 +9054,9 @@ swagger:model CapturePaymentParamsBodyPaymentInformation
 */
 type CapturePaymentParamsBodyPaymentInformation struct {
 
+	// card
+	Card *CapturePaymentParamsBodyPaymentInformationCard `json:"card,omitempty"`
+
 	// customer
 	Customer *CapturePaymentParamsBodyPaymentInformationCustomer `json:"customer,omitempty"`
 }
@@ -6377,6 +9064,10 @@ type CapturePaymentParamsBodyPaymentInformation struct {
 // Validate validates this capture payment params body payment information
 func (o *CapturePaymentParamsBodyPaymentInformation) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := o.validateCard(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := o.validateCustomer(formats); err != nil {
 		res = append(res, err)
@@ -6388,8 +9079,26 @@ func (o *CapturePaymentParamsBodyPaymentInformation) Validate(formats strfmt.Reg
 	return nil
 }
 
-func (o *CapturePaymentParamsBodyPaymentInformation) validateCustomer(formats strfmt.Registry) error {
+func (o *CapturePaymentParamsBodyPaymentInformation) validateCard(formats strfmt.Registry) error {
+	if swag.IsZero(o.Card) { // not required
+		return nil
+	}
 
+	if o.Card != nil {
+		if err := o.Card.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPaymentInformation) validateCustomer(formats strfmt.Registry) error {
 	if swag.IsZero(o.Customer) { // not required
 		return nil
 	}
@@ -6398,6 +9107,58 @@ func (o *CapturePaymentParamsBodyPaymentInformation) validateCustomer(formats st
 		if err := o.Customer.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "customer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body payment information based on the context it is used
+func (o *CapturePaymentParamsBodyPaymentInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateCustomer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPaymentInformation) contextValidateCard(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Card != nil {
+		if err := o.Card.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPaymentInformation) contextValidateCustomer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Customer != nil {
+		if err := o.Customer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "paymentInformation" + "." + "customer")
 			}
 			return err
 		}
@@ -6424,6 +9185,117 @@ func (o *CapturePaymentParamsBodyPaymentInformation) UnmarshalBinary(b []byte) e
 	return nil
 }
 
+/*CapturePaymentParamsBodyPaymentInformationCard capture payment params body payment information card
+swagger:model CapturePaymentParamsBodyPaymentInformationCard
+*/
+type CapturePaymentParamsBodyPaymentInformationCard struct {
+
+	// Flag that specifies the type of account associated with the card. The cardholder provides this information
+	// during the payment process.
+	//
+	// This field is required in the following cases:
+	//   - Debit transactions on Cielo and Comercio Latino.
+	//   - Transactions with Brazilian-issued cards on CyberSource through VisaNet.
+	//   - Applicable only for CyberSource through VisaNet (CtV).
+	//
+	// **Note** Combo cards in Brazil contain credit and debit functionality in a single card. Visa systems use a credit bank
+	// identification number (BIN) for this type of card. Using the BIN to determine whether a card is debit or
+	// credit can cause transactions with these cards to be processed incorrectly. CyberSource strongly recommends
+	// that you include this field for combo card transactions.
+	//
+	// Possible values include the following.
+	//
+	//  - `CHECKING`: Checking account
+	//  - `CREDIT`: Credit card account
+	//  - `SAVING`: Saving account
+	//  - `LINE_OF_CREDIT`: Line of credit or credit portion of combo card
+	//  - `PREPAID`: Prepaid card account or prepaid portion of combo card
+	//  - `UNIVERSAL`: Universal account
+	//
+	// Max Length: 20
+	SourceAccountType string `json:"sourceAccountType,omitempty"`
+
+	// Type of account that is being used when the value for the override_payment_method field is line of credit (LI) or prepaid card (PP).
+	// Possible values for line of credit:
+	// - `AGRC`: Visa Agro Custeio
+	// - `AGRE`: Visa Agro Electron
+	// - `AGRI`: Visa Agro Investimento
+	// - `AGRO`: Visa Agro
+	// Possible values for prepaid card:
+	// - `VVA`: Visa Vale Alimentacao
+	// - `VVF`: Visa Vale Flex
+	// - `VVR`: Visa Vale Refeicao
+	// This field is supported only for combo card transactions in Brazil on CyberSource through VisaNet.
+	//
+	// Max Length: 4
+	SourceAccountTypeDetails string `json:"sourceAccountTypeDetails,omitempty"`
+}
+
+// Validate validates this capture payment params body payment information card
+func (o *CapturePaymentParamsBodyPaymentInformationCard) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateSourceAccountType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSourceAccountTypeDetails(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPaymentInformationCard) validateSourceAccountType(formats strfmt.Registry) error {
+	if swag.IsZero(o.SourceAccountType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"sourceAccountType", "body", o.SourceAccountType, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPaymentInformationCard) validateSourceAccountTypeDetails(formats strfmt.Registry) error {
+	if swag.IsZero(o.SourceAccountTypeDetails) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"sourceAccountTypeDetails", "body", o.SourceAccountTypeDetails, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body payment information card based on context it is used
+func (o *CapturePaymentParamsBodyPaymentInformationCard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyPaymentInformationCard) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyPaymentInformationCard) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyPaymentInformationCard
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CapturePaymentParamsBodyPaymentInformationCustomer capture payment params body payment information customer
 swagger:model CapturePaymentParamsBodyPaymentInformationCustomer
 */
@@ -6437,13 +9309,51 @@ type CapturePaymentParamsBodyPaymentInformationCustomer struct {
 	//
 	// **NOTE** When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually the Cybersource payment token for a customer. This token stores information such as the consumer’s card number so it can be applied towards bill payments, recurring payments, or one-time payments. By using this token in a payment API request, the merchant doesn't need to pass in data such as the card number or expiration date in the request itself.
 	//
-	// For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	CustomerID string `json:"customerId,omitempty"`
+
+	// Unique identifier for the Customer token used in the transaction.
+	// When you include this value in your request, many of the fields that are normally required for an authorization or credit
+	// become optional.
+	//
+	// Max Length: 32
+	// Min Length: 1
+	ID string `json:"id,omitempty"`
 }
 
 // Validate validates this capture payment params body payment information customer
 func (o *CapturePaymentParamsBodyPaymentInformationCustomer) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPaymentInformationCustomer) validateID(formats strfmt.Registry) error {
+	if swag.IsZero(o.ID) { // not required
+		return nil
+	}
+
+	if err := validate.MinLength("capturePaymentRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 32); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body payment information customer based on context it is used
+func (o *CapturePaymentParamsBodyPaymentInformationCustomer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6481,9 +9391,9 @@ type CapturePaymentParamsBodyPointOfSaleInformation struct {
 	// CyberSource and perform subsequent services through other financial institutions, you must ensure that your
 	// requests for captures and credits include this value.
 	//
-	// For details, see `auth_pos_data` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see `auth_pos_data` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
-	// Max Length: 12
+	// Max Length: 15
 	AmexCapnData string `json:"amexCapnData,omitempty"`
 
 	// emv
@@ -6509,12 +9419,11 @@ func (o *CapturePaymentParamsBodyPointOfSaleInformation) Validate(formats strfmt
 }
 
 func (o *CapturePaymentParamsBodyPointOfSaleInformation) validateAmexCapnData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmexCapnData) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"pointOfSaleInformation"+"."+"amexCapnData", "body", string(o.AmexCapnData), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"pointOfSaleInformation"+"."+"amexCapnData", "body", o.AmexCapnData, 15); err != nil {
 		return err
 	}
 
@@ -6522,7 +9431,6 @@ func (o *CapturePaymentParamsBodyPointOfSaleInformation) validateAmexCapnData(fo
 }
 
 func (o *CapturePaymentParamsBodyPointOfSaleInformation) validateEmv(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Emv) { // not required
 		return nil
 	}
@@ -6531,6 +9439,38 @@ func (o *CapturePaymentParamsBodyPointOfSaleInformation) validateEmv(formats str
 		if err := o.Emv.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation" + "." + "emv")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation" + "." + "emv")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body point of sale information based on the context it is used
+func (o *CapturePaymentParamsBodyPointOfSaleInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateEmv(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPointOfSaleInformation) contextValidateEmv(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Emv != nil {
+		if err := o.Emv.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation" + "." + "emv")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "pointOfSaleInformation" + "." + "emv")
 			}
 			return err
 		}
@@ -6568,36 +9508,36 @@ type CapturePaymentParamsBodyPointOfSaleInformationEmv struct {
 	//  1. Swipe the card or key the credit card information into the POS terminal.
 	//  2. Use the pointOfSaleInformation.entryMode field to indicate whether the information was swiped or keyed.
 	//
-	// Possible values:
-	//  - **true**
-	//  - **false** (default)
 	//
-	// This field is supported only on **Chase Paymentech Solutions** and **GPN**.
+	// Possible values:
+	// - `true`: Fallback method was used.
+	// - `false` (default): Fallback method was not used.
+	//
+	// This field is supported only on American Express Direct, Chase Paymentech Solutions, CyberSource through VisaNet,
+	// FDC Nashville Global, GPN, JCN Gateway, OmniPay Direct, and SIX.
 	//
 	Fallback *bool `json:"fallback,omitempty"`
 
 	// EMV data that is transmitted from the chip card to the issuer, and from the issuer to the chip card. The EMV
 	// data is in the tag-length-value format and includes chip card tags, terminal tags, and transaction detail tags.
 	//
-	// For details, see the `emv_request_combined_tags` field description in [Card-Present Processing Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Retail_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For information about the individual tags, see the “Application Specification” section in the EMV 4.3 Specifications: http://emvco.com
 	//
-	// **Note** The information about EMV applies to credit card processing and PIN debit
-	// processing. All other information in this guide applies only to credit card processing. PIN debit
-	// processing is available only on FDC Nashville Global.
-	//
-	// **Note** For information about the individual tags, see the “Application Specification” section in the EMV 4.3 Specifications: http://emvco.com
+	// **Note** Card present information about EMV applies only to credit card processing and PIN debit processing.
+	// All other card present information applies only to credit card processing. PIN debit processing is available only
+	// on FDC Nashville Global.
 	//
 	// **Important** The following tags contain sensitive information and **must not** be included in this field:
 	//
-	//  - **56**: Track 1 equivalent data
-	//  - **57**: Track 2 equivalent data
-	//  - **5A**: Application PAN
-	//  - **5F20**: Cardholder name
-	//  - **5F24**: Application expiration date (This sensitivity has been relaxed for cmcic, amexdirect, fdiglobal, opdfde, and six)
-	//  - **99**: Transaction PIN
-	//  - **9F0B**: Cardholder name (extended)
-	//  - **9F1F**: Track 1 discretionary data
-	//  - **9F20**: Track 2 discretionary data
+	//  - `56`: Track 1 equivalent data
+	//  - `57`: Track 2 equivalent data
+	//  - `5A`: Application PAN
+	//  - `5F20`: Cardholder name
+	//  - `5F24`: Application expiration date (This sensitivity has been relaxed for Credit Mutuel-CIC, American Express Direct, FDC Nashville Global, First Data Merchant Solutions, and SIX)
+	//  - `99`: Transaction PIN
+	//  - `9F0B`: Cardholder name (extended)
+	//  - `9F1F`: Track 1 discretionary data
+	//  - `9F20`: Track 2 discretionary data
 	//
 	// For captures, this field is required for contact EMV transactions. Otherwise, it is optional.
 	//
@@ -6608,9 +9548,40 @@ type CapturePaymentParamsBodyPointOfSaleInformationEmv struct {
 	// you must include the following tags in this field. For all other types of EMV transactions, the following tags
 	// are optional.
 	//
-	//  - **95**: Terminal verification results
-	//  - **9F10**: Issuer application data
-	//  - **9F26**: Application cryptogram
+	//  - `95`: Terminal verification results
+	//  - `9F10`: Issuer application data
+	//  - `9F26`: Application cryptogram
+	//
+	//
+	// #### CyberSource through VisaNet
+	// - In Japan: 199 bytes
+	// - In other countries: String (252)
+	//
+	// #### GPX
+	// This field only supports transactions from the following card types:
+	// - Visa
+	// - Mastercard
+	// - AMEX
+	// - Discover
+	// - Diners
+	// - JCB
+	// - Union Pay International
+	//
+	// #### JCN Gateway
+	// The following tags must be included:
+	// - `4F`: Application identifier
+	// - `84`: Dedicated file name
+	//
+	// Data length: 199 bytes
+	//
+	// #### All other processors:
+	// String (999)
+	//
+	// #### Used by
+	// Authorization: Optional
+	// Authorization Reversal: Optional
+	// Credit: Optional
+	// PIN Debit processing (purchase, credit and reversal): Optional
 	//
 	// Max Length: 1998
 	Tags string `json:"tags,omitempty"`
@@ -6631,15 +9602,19 @@ func (o *CapturePaymentParamsBodyPointOfSaleInformationEmv) Validate(formats str
 }
 
 func (o *CapturePaymentParamsBodyPointOfSaleInformationEmv) validateTags(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Tags) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"pointOfSaleInformation"+"."+"emv"+"."+"tags", "body", string(o.Tags), 1998); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"pointOfSaleInformation"+"."+"emv"+"."+"tags", "body", o.Tags, 1998); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body point of sale information emv based on context it is used
+func (o *CapturePaymentParamsBodyPointOfSaleInformationEmv) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6672,22 +9647,31 @@ type CapturePaymentParamsBodyProcessingInformation struct {
 	// capture options
 	CaptureOptions *CapturePaymentParamsBodyProcessingInformationCaptureOptions `json:"captureOptions,omitempty"`
 
-	// Flag that indicates that the transaction includes airline data or restaurant data.
-	//
-	// This field must be set to `airline` in order for airline data to be sent to the processor.
-	//
-	// For example, if this field is not set to airline or is not included in the request, CyberSource does not send airline data to the processor.
-	//
-	// You must set this field to `restaurant` in order for restaurant data to be sent to the processor.
-	//
-	// When this field is not set to restaurant or is not included in the request, CyberSource does not send restaurant data to the processor.
+	// Indicates that the transaction includes industry-specific data.
 	//
 	// Possible Values:
+	// - `airline`
+	// - `restaurant`
+	// - `lodging`
+	// - `auto_rental`
+	// - `transit`
+	// - `healthcare_medical`
+	// - `healthcare_transit`
+	// - `transit`
 	//
-	// - **airline**
-	// - **restaurant**
+	// #### Card Present, Airlines and Auto Rental
+	// You must set this field to `airline` in order for airline data to be sent to the processor. For example, if this
+	// field is not set to `airline` or is not included in the request, no airline data is sent to the processor.
 	//
-	// Max Length: 10
+	// You must set this field to `restaurant` in order for restaurant data to be sent to the processor. When this field
+	// is not set to `restaurant` or is not included in the request, no restaurant data is sent to the processor.
+	//
+	// You must set this field to `auto_rental` in order for auto rental data to be sent to the processor. For example, if this
+	// field is not set to `auto_rental` or is not included in the request, no auto rental data is sent to the processor.
+	//
+	// Restaurant data is supported only on CyberSource through VisaNet.
+	//
+	// Max Length: 20
 	IndustryDataType string `json:"industryDataType,omitempty"`
 
 	// issuer
@@ -6701,21 +9685,35 @@ type CapturePaymentParamsBodyProcessingInformation struct {
 	// - Partial authorizations
 	// - Split shipments
 	//
-	// For details, see `link_to_request` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see `link_to_request` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// Max Length: 26
 	LinkID string `json:"linkId,omitempty"`
 
+	// loan options
+	LoanOptions *CapturePaymentParamsBodyProcessingInformationLoanOptions `json:"loanOptions,omitempty"`
+
+	// Flag that indicates if the transaction is pay by points transaction
+	// true: Transaction uses loyalty points
+	// false: Transaction does not use loyalty points
+	// Default: false
+	//
+	PayByPointsIndicator bool `json:"payByPointsIndicator,omitempty"`
+
 	// Type of digital payment solution for the transaction. Possible Values:
 	//
-	//  - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	//  - `visacheckout`: Visa Checkout. This value is required for Visa Checkout transactions. For details, see `payment_solution` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)
 	//  - `001`: Apple Pay.
 	//  - `004`: Cybersource In-App Solution.
-	//  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see "Masterpass" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	//  - `005`: Masterpass. This value is required for Masterpass transactions on OmniPay Direct. For details, see "Masterpass" in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//  - `006`: Android Pay.
 	//  - `007`: Chase Pay.
 	//  - `008`: Samsung Pay.
 	//  - `012`: Google Pay.
+	//  - `013`: Cybersource P2PE Decryption
+	//  - `014`: Mastercard credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.
+	//  - `015`: Visa credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.
+	//  - `027`: Click to Pay.
 	//
 	// Max Length: 12
 	PaymentSolution string `json:"paymentSolution,omitempty"`
@@ -6733,15 +9731,13 @@ type CapturePaymentParamsBodyProcessingInformation struct {
 
 	// Attribute that lets you define custom grouping for your processor reports. This field is supported only for **Worldpay VAP**.
 	//
-	// For details, see `report_group` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see `report_group` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// Max Length: 25
 	ReportGroup string `json:"reportGroup,omitempty"`
 
 	// Identifier for the **Visa Checkout** order. Visa Checkout provides a unique order ID for every transaction in
 	// the Visa Checkout **callID** field.
-	//
-	// For details, see the `vc_order_id` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
 	//
 	// Max Length: 48
 	VisaCheckoutID string `json:"visaCheckoutId,omitempty"`
@@ -6768,6 +9764,10 @@ func (o *CapturePaymentParamsBodyProcessingInformation) Validate(formats strfmt.
 	}
 
 	if err := o.validateLinkID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLoanOptions(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -6798,7 +9798,6 @@ func (o *CapturePaymentParamsBodyProcessingInformation) Validate(formats strfmt.
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateAuthorizationOptions(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthorizationOptions) { // not required
 		return nil
 	}
@@ -6807,6 +9806,8 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateAuthorizationOpt
 		if err := o.AuthorizationOptions.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "authorizationOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "authorizationOptions")
 			}
 			return err
 		}
@@ -6816,7 +9817,6 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateAuthorizationOpt
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateCaptureOptions(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CaptureOptions) { // not required
 		return nil
 	}
@@ -6825,6 +9825,8 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateCaptureOptions(f
 		if err := o.CaptureOptions.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "captureOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "captureOptions")
 			}
 			return err
 		}
@@ -6834,12 +9836,11 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateCaptureOptions(f
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateIndustryDataType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.IndustryDataType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"industryDataType", "body", string(o.IndustryDataType), 10); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"industryDataType", "body", o.IndustryDataType, 20); err != nil {
 		return err
 	}
 
@@ -6847,7 +9848,6 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateIndustryDataType
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateIssuer(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Issuer) { // not required
 		return nil
 	}
@@ -6856,6 +9856,8 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateIssuer(formats s
 		if err := o.Issuer.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "issuer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "issuer")
 			}
 			return err
 		}
@@ -6865,25 +9867,42 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateIssuer(formats s
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateLinkID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LinkID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"linkId", "body", string(o.LinkID), 26); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"linkId", "body", o.LinkID, 26); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (o *CapturePaymentParamsBodyProcessingInformation) validatePaymentSolution(formats strfmt.Registry) error {
+func (o *CapturePaymentParamsBodyProcessingInformation) validateLoanOptions(formats strfmt.Registry) error {
+	if swag.IsZero(o.LoanOptions) { // not required
+		return nil
+	}
 
+	if o.LoanOptions != nil {
+		if err := o.LoanOptions.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "loanOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "loanOptions")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyProcessingInformation) validatePaymentSolution(formats strfmt.Registry) error {
 	if swag.IsZero(o.PaymentSolution) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"paymentSolution", "body", string(o.PaymentSolution), 12); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"paymentSolution", "body", o.PaymentSolution, 12); err != nil {
 		return err
 	}
 
@@ -6891,12 +9910,11 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validatePaymentSolution(
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validatePurchaseLevel(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PurchaseLevel) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"purchaseLevel", "body", string(o.PurchaseLevel), 1); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"purchaseLevel", "body", o.PurchaseLevel, 1); err != nil {
 		return err
 	}
 
@@ -6904,12 +9922,11 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validatePurchaseLevel(fo
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateReconciliationID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReconciliationID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"reconciliationId", "body", string(o.ReconciliationID), 60); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"reconciliationId", "body", o.ReconciliationID, 60); err != nil {
 		return err
 	}
 
@@ -6917,12 +9934,11 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateReconciliationID
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateReportGroup(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReportGroup) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"reportGroup", "body", string(o.ReportGroup), 25); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"reportGroup", "body", o.ReportGroup, 25); err != nil {
 		return err
 	}
 
@@ -6930,13 +9946,102 @@ func (o *CapturePaymentParamsBodyProcessingInformation) validateReportGroup(form
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformation) validateVisaCheckoutID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VisaCheckoutID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"visaCheckoutId", "body", string(o.VisaCheckoutID), 48); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"visaCheckoutId", "body", o.VisaCheckoutID, 48); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body processing information based on the context it is used
+func (o *CapturePaymentParamsBodyProcessingInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAuthorizationOptions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateCaptureOptions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateIssuer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLoanOptions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyProcessingInformation) contextValidateAuthorizationOptions(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AuthorizationOptions != nil {
+		if err := o.AuthorizationOptions.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "authorizationOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "authorizationOptions")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyProcessingInformation) contextValidateCaptureOptions(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.CaptureOptions != nil {
+		if err := o.CaptureOptions.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "captureOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "captureOptions")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyProcessingInformation) contextValidateIssuer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Issuer != nil {
+		if err := o.Issuer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "issuer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "issuer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyProcessingInformation) contextValidateLoanOptions(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.LoanOptions != nil {
+		if err := o.LoanOptions.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "loanOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "processingInformation" + "." + "loanOptions")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -6972,17 +10077,13 @@ type CapturePaymentParamsBodyProcessingInformationAuthorizationOptions struct {
 	//  - `VERBAL`: forced capture. Include it in the payment request for a forced capture. Include it in the capture request for a verbal payment.
 	//
 	// #### Asia, Middle East, and Africa Gateway; Cielo; Comercio Latino; and CyberSource Latin American Processing
-	// Set this field to `AUTOCAPTURE` and include it in a bundled request to indicate that you are requesting an automatic capture. If your account is configured to enable automatic captures, set this field to `STANDARDCAPTURE` and include it in a standard authorization or bundled request to indicate that you are overriding an automatic capture. For more information, see the `auth_type` field description in [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// Set this field to `AUTOCAPTURE` and include it in a bundled request to indicate that you are requesting an automatic capture. If your account is configured to enable automatic captures, set this field to `STANDARDCAPTURE` and include it in a standard authorization or bundled request to indicate that you are overriding an automatic capture. For more information, see the `auth_type` field description in [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### Forced Capture
 	// Set this field to `VERBAL` and include it in the authorization request to indicate that you are performing a forced capture; therefore, you receive the authorization code outside the CyberSource system.
 	//
-	// For more information, see "Forced Captures" in [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
-	//
 	// #### Verbal Authorization
 	// Set this field to `VERBAL` and include it in the capture request to indicate that the request is for a verbal authorization. For more information, see "Verbal Authorizations" in [Credit Card Services Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html).
-	//
-	// For processor-specific information, see the `auth_type` field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
 	//
 	// Max Length: 15
 	AuthType string `json:"authType,omitempty"`
@@ -6992,6 +10093,11 @@ type CapturePaymentParamsBodyProcessingInformationAuthorizationOptions struct {
 	// #### Forced Capture
 	// Use this field to send the authorization code you received from a payment that you authorized
 	// outside the CyberSource system.
+	//
+	// #### PIN debit
+	// Authorization code that is returned by the processor.
+	//
+	// Returned by PIN debit purchase.
 	//
 	// #### Verbal Authorization
 	// Use this field in CAPTURE API to send the verbally received authorization code.
@@ -7004,18 +10110,11 @@ type CapturePaymentParamsBodyProcessingInformationAuthorizationOptions struct {
 	// Transaction ID (TID).
 	//
 	// #### FDMS South
-	// This field is required for verbal authorizations
-	// and forced captures with the American
-	// Express card type to comply with the CAPN
-	// requirements:
-	// - Forced capture: Obtain the value for this
-	// field from the authorization response.
-	// - Verbal authorization: You cannot obtain a
-	// value for this field so CyberSource uses the
-	// default value of `000000000000000` (15
+	// This field is required for verbal authorizations and forced captures with the American Express card type to comply
+	// with the CAPN requirements:
+	// - Forced capture: Obtain the value for this field from the authorization response.
+	// - Verbal authorization: You cannot obtain a value for this field so CyberSource uses the default value of `000000000000000` (15
 	// zeros).
-	//
-	// For more information about using this default value, see "Verbal Authorizations" in [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
 	//
 	// Max Length: 15
 	VerbalAuthTransactionID string `json:"verbalAuthTransactionId,omitempty"`
@@ -7044,12 +10143,11 @@ func (o *CapturePaymentParamsBodyProcessingInformationAuthorizationOptions) Vali
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformationAuthorizationOptions) validateAuthType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"authorizationOptions"+"."+"authType", "body", string(o.AuthType), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"authorizationOptions"+"."+"authType", "body", o.AuthType, 15); err != nil {
 		return err
 	}
 
@@ -7057,12 +10155,11 @@ func (o *CapturePaymentParamsBodyProcessingInformationAuthorizationOptions) vali
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformationAuthorizationOptions) validateVerbalAuthCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VerbalAuthCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"authorizationOptions"+"."+"verbalAuthCode", "body", string(o.VerbalAuthCode), 7); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"authorizationOptions"+"."+"verbalAuthCode", "body", o.VerbalAuthCode, 7); err != nil {
 		return err
 	}
 
@@ -7070,15 +10167,19 @@ func (o *CapturePaymentParamsBodyProcessingInformationAuthorizationOptions) vali
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformationAuthorizationOptions) validateVerbalAuthTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VerbalAuthTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"authorizationOptions"+"."+"verbalAuthTransactionId", "body", string(o.VerbalAuthTransactionID), 15); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"authorizationOptions"+"."+"verbalAuthTransactionId", "body", o.VerbalAuthTransactionID, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body processing information authorization options based on context it is used
+func (o *CapturePaymentParamsBodyProcessingInformationAuthorizationOptions) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -7147,16 +10248,15 @@ func (o *CapturePaymentParamsBodyProcessingInformationCaptureOptions) Validate(f
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformationCaptureOptions) validateCaptureSequenceNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CaptureSequenceNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"captureSequenceNumber", "body", int64(o.CaptureSequenceNumber), 1, false); err != nil {
+	if err := validate.MinimumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"captureSequenceNumber", "body", o.CaptureSequenceNumber, 1, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"captureSequenceNumber", "body", int64(o.CaptureSequenceNumber), 99, false); err != nil {
+	if err := validate.MaximumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"captureSequenceNumber", "body", o.CaptureSequenceNumber, 99, false); err != nil {
 		return err
 	}
 
@@ -7164,19 +10264,23 @@ func (o *CapturePaymentParamsBodyProcessingInformationCaptureOptions) validateCa
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformationCaptureOptions) validateTotalCaptureCount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalCaptureCount) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"totalCaptureCount", "body", int64(o.TotalCaptureCount), 1, false); err != nil {
+	if err := validate.MinimumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"totalCaptureCount", "body", o.TotalCaptureCount, 1, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"totalCaptureCount", "body", int64(o.TotalCaptureCount), 99, false); err != nil {
+	if err := validate.MaximumInt("capturePaymentRequest"+"."+"processingInformation"+"."+"captureOptions"+"."+"totalCaptureCount", "body", o.TotalCaptureCount, 99, false); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body processing information capture options based on context it is used
+func (o *CapturePaymentParamsBodyProcessingInformationCaptureOptions) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -7209,7 +10313,7 @@ type CapturePaymentParamsBodyProcessingInformationIssuer struct {
 	//
 	// This field is supported only for Visa transactions on **CyberSource through VisaNet**.
 	//
-	// For details, see `issuer_additional_data` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see `issuer_additional_data` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// Max Length: 255
 	DiscretionaryData string `json:"discretionaryData,omitempty"`
@@ -7230,15 +10334,19 @@ func (o *CapturePaymentParamsBodyProcessingInformationIssuer) Validate(formats s
 }
 
 func (o *CapturePaymentParamsBodyProcessingInformationIssuer) validateDiscretionaryData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DiscretionaryData) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"issuer"+"."+"discretionaryData", "body", string(o.DiscretionaryData), 255); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"issuer"+"."+"discretionaryData", "body", o.DiscretionaryData, 255); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body processing information issuer based on context it is used
+func (o *CapturePaymentParamsBodyProcessingInformationIssuer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -7260,103 +10368,49 @@ func (o *CapturePaymentParamsBodyProcessingInformationIssuer) UnmarshalBinary(b 
 	return nil
 }
 
-/*DetailsItems0 details items0
-swagger:model DetailsItems0
+/*CapturePaymentParamsBodyProcessingInformationLoanOptions capture payment params body processing information loan options
+swagger:model CapturePaymentParamsBodyProcessingInformationLoanOptions
 */
-type DetailsItems0 struct {
+type CapturePaymentParamsBodyProcessingInformationLoanOptions struct {
 
-	// This is the flattened JSON object field name/path that is either missing or invalid.
-	Field string `json:"field,omitempty"`
-
-	// Possible reasons for the error.
-	//
+	// Indicates whether a loan is for a recoverable item or a non-recoverable item.
 	// Possible values:
-	//  - MISSING_FIELD
-	//  - INVALID_DATA
+	// - `N`: non-recoverable item
+	// - `R`: recoverable item
+	// This field is supported only for BNDES transactions on CyberSource through VisaNet.
+	// The value for this field corresponds to the following data in the TC 33 capture file5:
+	//  Record: CP07 TCR2, Position: 26, Field: Asset Indicator
 	//
-	Reason string `json:"reason,omitempty"`
+	// Max Length: 1
+	AssetType string `json:"assetType,omitempty"`
+
+	// Type of loan based on an agreement between you and the issuer.
+	// Examples: AGROCUSTEIO, AGRO-INVEST, BNDES-Type1, CBN, FINAME.
+	// This field is supported only for these kinds of payments:
+	// - BNDES transactions on CyberSource through VisaNet.
+	// - Installment payments with Mastercard on CyberSource through VisaNet in Brazil.
+	//
+	// See ""Installment Payments on CyberSource through VisaNet,"" in the SCMP/SO guide
+	//
+	// For BNDES transactions, the value for this field corresponds to the following data in the TC 33 capture file:
+	// - Record: CP07 TCR2, Position: 27-46, Field: Loan Type
+	//
+	// For installment payments with Mastercard in Brazil, the value for this field corresponds to the following data in the TC 33 capture file:
+	// - Record: CP07 TCR4, Position: 5-24,Field: Financing Type
+	//
+	// Max Length: 20
+	Type string `json:"type,omitempty"`
 }
 
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*MerchantDefinedInformationItems0 merchant defined information items0
-swagger:model MerchantDefinedInformationItems0
-*/
-type MerchantDefinedInformationItems0 struct {
-
-	// The number you assign for as the key for your merchant-defined data field. Valid values are 0 to 100.
-	//
-	// For example, to set or access the key for the 2nd merchant-defined data field in the array, you would reference `merchantDefinedInformation[1].key`.
-	//
-	// #### CyberSource through VisaNet
-	// For installment payments with Mastercard in Brazil, use `merchantDefinedInformation[0].key` and
-	// `merchantDefinedInformation[1].key` for data that you want to provide to the issuer to identify the
-	// transaction.
-	//
-	// For details, see the `merchant_defined_data1` request-level field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
-	// Max Length: 50
-	Key string `json:"key,omitempty"`
-
-	// The value you assign for your merchant-defined data field.
-	//
-	// For details, see `merchant_defined_data1` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
-	// **Warning** Merchant-defined data fields are not intended to and must not be used to capture personally identifying information. Accordingly, merchants are prohibited from capturing, obtaining, and/or transmitting any personally identifying information in or via the merchant-defined data fields. Personally identifying information includes, but is not
-	// limited to, address, credit card number, social security number, driver's license number, state-issued identification number, passport number, and card verification numbers (CVV,
-	// CVC2, CVV2, CID, CVN). In the event CyberSource discovers that a merchant is capturing and/or transmitting personally identifying information via the merchant-defined data fields, whether or not intentionally, CyberSource will immediately suspend the merchant's account, which will result in a rejection of any and all transaction requests submitted by the merchant after the point of suspension.
-	//
-	// #### CyberSource through VisaNet
-	// For installment payments with Mastercard in Brazil, use `merchantDefinedInformation[0].value` and
-	// `merchantDefinedInformation[1].value` for data that you want to provide to the issuer to identify the
-	// transaction. For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
-	// For details, see "Installment Payments on CyberSource through VisaNet" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
-	// For installment payments with Mastercard in Brazil:
-	// - The value for merchantDefinedInformation[0].value corresponds to the following data in the TC 33 capture file5:
-	//   - Record: CP07 TCR5
-	//   - Position: 25-44
-	//   - Field: Reference Field 2
-	// - The value for merchantDefinedInformation[1].value corresponds to the following data in the TC 33 capture file5:
-	//   - Record: CP07 TCR5
-	//   - Position: 45-64
-	//   - Field: Reference Field 3
-	//
-	// Max Length: 255
-	Value string `json:"value,omitempty"`
-}
-
-// Validate validates this merchant defined information items0
-func (o *MerchantDefinedInformationItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this capture payment params body processing information loan options
+func (o *CapturePaymentParamsBodyProcessingInformationLoanOptions) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateKey(formats); err != nil {
+	if err := o.validateAssetType(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateValue(formats); err != nil {
+	if err := o.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -7366,34 +10420,37 @@ func (o *MerchantDefinedInformationItems0) Validate(formats strfmt.Registry) err
 	return nil
 }
 
-func (o *MerchantDefinedInformationItems0) validateKey(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Key) { // not required
+func (o *CapturePaymentParamsBodyProcessingInformationLoanOptions) validateAssetType(formats strfmt.Registry) error {
+	if swag.IsZero(o.AssetType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("key", "body", string(o.Key), 50); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"loanOptions"+"."+"assetType", "body", o.AssetType, 1); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (o *MerchantDefinedInformationItems0) validateValue(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Value) { // not required
+func (o *CapturePaymentParamsBodyProcessingInformationLoanOptions) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(o.Type) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("value", "body", string(o.Value), 255); err != nil {
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"processingInformation"+"."+"loanOptions"+"."+"type", "body", o.Type, 20); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this capture payment params body processing information loan options based on context it is used
+func (o *CapturePaymentParamsBodyProcessingInformationLoanOptions) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *MerchantDefinedInformationItems0) MarshalBinary() ([]byte, error) {
+func (o *CapturePaymentParamsBodyProcessingInformationLoanOptions) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -7401,8 +10458,5139 @@ func (o *MerchantDefinedInformationItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *MerchantDefinedInformationItems0) UnmarshalBinary(b []byte) error {
-	var res MerchantDefinedInformationItems0
+func (o *CapturePaymentParamsBodyProcessingInformationLoanOptions) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyProcessingInformationLoanOptions
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyPromotionInformation capture payment params body promotion information
+swagger:model CapturePaymentParamsBodyPromotionInformation
+*/
+type CapturePaymentParamsBodyPromotionInformation struct {
+
+	// Additional rental agency marketed coupons for consumers to discount the rate of the vehicle rental agreement.
+	//
+	// Max Length: 12
+	AdditionalCode string `json:"additionalCode,omitempty"`
+
+	// Code for a promotion or discount.
+	//
+	// Max Length: 12
+	Code string `json:"code,omitempty"`
+}
+
+// Validate validates this capture payment params body promotion information
+func (o *CapturePaymentParamsBodyPromotionInformation) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAdditionalCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPromotionInformation) validateAdditionalCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdditionalCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"promotionInformation"+"."+"additionalCode", "body", o.AdditionalCode, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyPromotionInformation) validateCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.Code) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"promotionInformation"+"."+"code", "body", o.Code, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body promotion information based on context it is used
+func (o *CapturePaymentParamsBodyPromotionInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyPromotionInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyPromotionInformation) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyPromotionInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformation capture payment params body travel information
+swagger:model CapturePaymentParamsBodyTravelInformation
+*/
+type CapturePaymentParamsBodyTravelInformation struct {
+
+	// agency
+	Agency *CapturePaymentParamsBodyTravelInformationAgency `json:"agency,omitempty"`
+
+	// auto rental
+	AutoRental *CapturePaymentParamsBodyTravelInformationAutoRental `json:"autoRental,omitempty"`
+
+	// Duration of the auto rental or lodging rental.
+	//
+	// #### Auto rental
+	// This field is supported for Visa, MasterCard, and American Express.
+	// **Important** If this field is not included when the `processingInformation.industryDataType` is auto rental,
+	// the transaction is declined.
+	//
+	// Max Length: 2
+	Duration string `json:"duration,omitempty"`
+
+	// lodging
+	Lodging *CapturePaymentParamsBodyTravelInformationLodging `json:"lodging,omitempty"`
+
+	// transit
+	Transit *CapturePaymentParamsBodyTravelInformationTransit `json:"transit,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information
+func (o *CapturePaymentParamsBodyTravelInformation) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAgency(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAutoRental(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDuration(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLodging(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTransit(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) validateAgency(formats strfmt.Registry) error {
+	if swag.IsZero(o.Agency) { // not required
+		return nil
+	}
+
+	if o.Agency != nil {
+		if err := o.Agency.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "agency")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "agency")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) validateAutoRental(formats strfmt.Registry) error {
+	if swag.IsZero(o.AutoRental) { // not required
+		return nil
+	}
+
+	if o.AutoRental != nil {
+		if err := o.AutoRental.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) validateDuration(formats strfmt.Registry) error {
+	if swag.IsZero(o.Duration) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"duration", "body", o.Duration, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) validateLodging(formats strfmt.Registry) error {
+	if swag.IsZero(o.Lodging) { // not required
+		return nil
+	}
+
+	if o.Lodging != nil {
+		if err := o.Lodging.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) validateTransit(formats strfmt.Registry) error {
+	if swag.IsZero(o.Transit) { // not required
+		return nil
+	}
+
+	if o.Transit != nil {
+		if err := o.Transit.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body travel information based on the context it is used
+func (o *CapturePaymentParamsBodyTravelInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAgency(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateAutoRental(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLodging(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTransit(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) contextValidateAgency(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Agency != nil {
+		if err := o.Agency.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "agency")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "agency")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) contextValidateAutoRental(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AutoRental != nil {
+		if err := o.AutoRental.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) contextValidateLodging(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Lodging != nil {
+		if err := o.Lodging.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformation) contextValidateTransit(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Transit != nil {
+		if err := o.Transit.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformation) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationAgency capture payment params body travel information agency
+swagger:model CapturePaymentParamsBodyTravelInformationAgency
+*/
+type CapturePaymentParamsBodyTravelInformationAgency struct {
+
+	// International Air Transport Association (IATA) code of travel agency that made the vehicle rental reservation.
+	//
+	// Max Length: 8
+	Code string `json:"code,omitempty"`
+
+	// Name of travel agency that made the reservation.
+	//
+	// Max Length: 25
+	Name string `json:"name,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information agency
+func (o *CapturePaymentParamsBodyTravelInformationAgency) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAgency) validateCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.Code) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"agency"+"."+"code", "body", o.Code, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAgency) validateName(formats strfmt.Registry) error {
+	if swag.IsZero(o.Name) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"agency"+"."+"name", "body", o.Name, 25); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information agency based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationAgency) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAgency) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAgency) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationAgency
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationAutoRental capture payment params body travel information auto rental
+swagger:model CapturePaymentParamsBodyTravelInformationAutoRental
+*/
+type CapturePaymentParamsBodyTravelInformationAutoRental struct {
+
+	// Adjusted Amount indicates whether any miscellaneous charges were incurred after the vehicle was returned.
+	//
+	// For authorizations, this field is supported only for American Express.
+	//
+	// For captures, this field is supported only for MasterCard and American Express.
+	// **NOTE** For American Express, this field is required if the `travelInformation.autoRental.adjustedAmountIndicator` field
+	// is included in the request and has a value; otherwise, this field is optional.
+	//
+	// For all other card types, this field is ignored.
+	//
+	// Max Length: 12
+	AdjustedAmount string `json:"adjustedAmount,omitempty"`
+
+	// For **MasterCard** and **Discover**:
+	// Adjusted amount indicator code that indicates
+	// any miscellaneous charges incurred after the
+	// auto was returned. Possible values:
+	// - `A` - Drop-off charges
+	// - `B` - Delivery charges
+	// - `C` - Parking expenses
+	// - `D` - Extra hours
+	// - `E` - Violations
+	// - `X` - More than one of the above charges
+	//
+	// For **American Express**:
+	// Audit indicator code that indicates any
+	// adjustment for mileage, fuel, auto damage,
+	// etc. made to a rental agreement and whether
+	// the cardholder was notified.
+	//
+	// Possible value for the authorization service:
+	// - `A` (default): adjustment amount greater than 0 (zero)
+	//
+	// Possible values for the capture service:
+	// - `X` - Multiple adjustments
+	// - `Y` - One adjustment only; Cardmember notified
+	// - `Z` - One adjustment only; Cardmember not notified. This value is used as the default if the request does not include this field and includes an adjustment amount greater than 0 (zero).
+	// This is an optional field.
+	//
+	// Max Length: 1
+	AdjustedAmountIndicator string `json:"adjustedAmountIndicator,omitempty"`
+
+	// Auto rental agency’s agreement (invoice) number provided to the customer. It is used to trace any inquiries about transactions.
+	// This field is supported for Visa, MasterCard, and American Express.
+	// This Merchant-defined value, which may be composed of any combination of characters and/or numerals, may become
+	// part of the descriptive bill on the Cardmember's statement.
+	//
+	// Max Length: 25
+	AgreementNumber string `json:"agreementNumber,omitempty"`
+
+	// Commodity code or International description code used to classify the item. Contact your acquirer for a list of
+	// codes.
+	//
+	// Max Length: 15
+	CommodityCode string `json:"commodityCode,omitempty"`
+
+	// Corporate Identifier provides the unique identifier of the corporation or entity renting the vehicle:
+	//
+	// |Card Specific Validation|VISA|MasterCard|Discover|AMEX|
+	// |--- |--- |--- |--- |
+	// | Filed Length| NA| 12| NA| NA|
+	// | Field Type| NA| AN| NA| NA|
+	// | M/O/C| NA| O| NA| NA|
+	//
+	// Max Length: 12
+	CompanyID string `json:"companyId,omitempty"`
+
+	// Name of the individual making the rental agreement.
+	//
+	// Valid data lengths by card:
+	//
+	// |Card Specific Validation|VISA|MasterCard|Discover|AMEX|
+	// |--- |--- |--- |--- |
+	// | Filed Length| 40| 40| 29| 26|
+	// | Field Type| AN| ANS| AN| AN|
+	// | M/O/C| O| M| M| M|
+	//
+	// Max Length: 40
+	CustomerName string `json:"customerName,omitempty"`
+
+	// Customer service telephone number that is used to resolve questions or disputes. Include the area code, exchange, and number.
+	// This field is supported only for MasterCard and American Express.
+	//
+	// Max Length: 17
+	CustomerServicePhoneNumber string `json:"customerServicePhoneNumber,omitempty"`
+
+	// Daily auto rental rate charged.
+	// This field is supported only for MasterCard and American Express.
+	//
+	// Field - Time Period needs to be populated with Daily if this field is present
+	//
+	// Max Length: 12
+	DailyRentalRate string `json:"dailyRentalRate,omitempty"`
+
+	// Total number of miles driven by the customer.
+	// This field is supported only for MasterCard and American Express.
+	//
+	// Max Length: 5
+	DistanceTravelled string `json:"distanceTravelled,omitempty"`
+
+	// Miles/Kilometers Indicator shows whether the “miles” fields are expressed in miles or kilometers.
+	//
+	// Allowed values:
+	// - `K` - Kilometers
+	// - `M` - Miles
+	//
+	// Max Length: 1
+	DistanceUnit string `json:"distanceUnit,omitempty"`
+
+	// Age of the driver renting the vehicle.
+	//
+	// Max Length: 3
+	DriverAge string `json:"driverAge,omitempty"`
+
+	// (Extra Charges) provides the extra charges associated with the vehicle rental.
+	//
+	// Max Length: 12
+	ExtraCharge string `json:"extraCharge,omitempty"`
+
+	// Extra mileage charges that extend beyond the basic rental agreement.
+	// This field is supported only for Visa.
+	//
+	// Max Length: 12
+	ExtraMileageCharge string `json:"extraMileageCharge,omitempty"`
+
+	// Extra gasoline charges that extend beyond the basic rental agreement.
+	// This field is supported only for Visa.
+	//
+	// Max Length: 12
+	FuelCharges string `json:"fuelCharges,omitempty"`
+
+	// Amount charged for renting a Global Positioning Service (GPS).
+	//
+	// Max Length: 12
+	GpsCharge string `json:"gpsCharge,omitempty"`
+
+	// Insurance charges.
+	// Field is conditional and can include decimal point.
+	//
+	// Max Length: 12
+	InsuranceAmount string `json:"insuranceAmount,omitempty"`
+
+	// Used for MC and Discover
+	//
+	// Valid values:
+	// - `true` - Yes (insurance was purchased)
+	// - `false` - No (insurance was not purchased)
+	//
+	InsuranceIndicator bool `json:"insuranceIndicator,omitempty"`
+
+	// Extra charges related to a late return of the rented auto.
+	// This field is supported only for Visa.
+	//
+	// Max Length: 12
+	LateFeeAmount string `json:"lateFeeAmount,omitempty"`
+
+	// Maximum number of free miles or kilometers allowed to a customer for the duration of the auto rental agreement.
+	// This field is supported only for MasterCard and American Express.
+	//
+	// Max Length: 4
+	MaxFreeDistance string `json:"maxFreeDistance,omitempty"`
+
+	// Regular Mileage Charge provides the amount charged for regular miles traveled during vehicle rental. Two decimal places
+	//
+	// Max Length: 12
+	MileageCharge string `json:"mileageCharge,omitempty"`
+
+	// No Show Indicator provides an indicator noting that the individual did not show up after making a reservation for a vehicle.
+	// Possible values:
+	// - true
+	// - false
+	//
+	NoShowIndicator bool `json:"noShowIndicator,omitempty"`
+
+	// The number of additional drivers included on the rental agreement not including the individual who signed the rental agreement.
+	//
+	// Max Length: 1
+	NumberOfAdditionalDrivers string `json:"numberOfAdditionalDrivers,omitempty"`
+
+	// Odometer reading at time of vehicle rental.
+	//
+	// Max Length: 8
+	OdometerReading string `json:"odometerReading,omitempty"`
+
+	// Extra charges incurred for a one-way rental agreement for the auto.
+	// This field is supported only for Visa.
+	//
+	// Max Length: 12
+	OneWayDropOffAmount string `json:"oneWayDropOffAmount,omitempty"`
+
+	// Total amount charged for all other miscellaneous charges not previously defined.
+	//
+	// Max Length: 12
+	OtherCharges string `json:"otherCharges,omitempty"`
+
+	// Extra charges incurred due to a parking violation for the auto.
+	// This field is supported only for Visa.
+	//
+	// Max Length: 12
+	ParkingViolationCharge string `json:"parkingViolationCharge,omitempty"`
+
+	// Additional charges incurred for phone usage included on the total bill.
+	//
+	// Max Length: 12
+	PhoneCharge string `json:"phoneCharge,omitempty"`
+
+	// Used to identify special circumstances applicable to the Card Transaction or Cardholder, such as "renter” or ”show”.
+	//
+	// This code is `2 digit` value agreed by Merchant and processor.
+	//
+	// Max Length: 2
+	ProgramCode string `json:"programCode,omitempty"`
+
+	// Rate charged for each mile.
+	// This field is supported only for MasterCard and American Express.
+	//
+	// Max Length: 12
+	RatePerMile string `json:"ratePerMile,omitempty"`
+
+	// rental address
+	RentalAddress *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress `json:"rentalAddress,omitempty"`
+
+	// Date/time the auto was picked up from the rental agency.
+	// Format: `yyyy-MM-dd HH-mm-ss z`
+	// This field is supported for Visa, MasterCard, and American Express.
+	//
+	// Max Length: 21
+	RentalDateTime string `json:"rentalDateTime,omitempty"`
+
+	// return address
+	ReturnAddress *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress `json:"returnAddress,omitempty"`
+
+	// Date/time the auto was returned to the rental agency.
+	// Format: ``yyyy-MM-dd HH-mm-ss z``
+	// This field is supported for Visa, MasterCard, and American Express.
+	//
+	// Max Length: 21
+	ReturnDateTime string `json:"returnDateTime,omitempty"`
+
+	// Program code used to identify special circumstances, such as “frequent renter” or “no show” status for the renter.
+	// Possible values:
+	// - `0`: not applicable (default)
+	// - `1`: frequent renter
+	// - `2`: no show
+	//
+	// For authorizations, this field is supported only for Visa.
+	//
+	// For captures, this field is supported for Visa, MasterCard, and American Express.
+	//
+	// Code for special programs applicable to the Card Transaction or the Cardholder.
+	//
+	// Max Length: 2
+	SpecialProgramCode string `json:"specialProgramCode,omitempty"`
+
+	// tax details
+	TaxDetails *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails `json:"taxDetails,omitempty"`
+
+	// Indicates the time period for which the vehicle rental rate applies (e.g., daily, weekly or monthly). Daily, Weekly and Monthly are valid values.
+	//
+	// Max Length: 7
+	TimePeriod string `json:"timePeriod,omitempty"`
+
+	// (Towing Charges) provides the amount charged to tow the rental vehicle.
+	//
+	// Max Length: 4
+	TowingCharge string `json:"towingCharge,omitempty"`
+
+	// Classification of the rented auto.
+	//
+	// **NOTE** For VISA, this is a 2-byte optional code.
+	//
+	// Valid values for American Express & MasterCard:
+	//
+	// |American Express |MasterCard |Description|
+	// |--- |--- |--- |
+	// | 0001| 0001| Mini|
+	// | 0002| 0002| Subcompact|
+	// | 0003| 0003| Economy|
+	// | 0004| 0004| Compact|
+	// | 0005| 0005| Midsize|
+	// | 0006| 0006| Intermediate|
+	// | 0007| 0007| Standard|
+	// | 0008| 0008| Fulll size|
+	// | 0009| 0009| Luxury|
+	// | 0010| 0010| Premium|
+	// | 0011| 0011| Minivan|
+	// | 0012| 0012| 12-passenger van|
+	// | 0013| 0013| Moving van|
+	// | 0014| 0014| 15-passenger van|
+	// | 0015| 0015| Cargo van|
+	// | 0016| 0016| 12-foot truck|
+	// | 0017| 0017| 20-foot truck|
+	// | 0018| 0018| 24-foot truck|
+	// | 0019| 0019| 26-foot truck|
+	// | 0020| 0020| Moped|
+	// | 0021| 0021| Stretch|
+	// | 0022| 0022| Regular|
+	// | 0023| 0023| Unique|
+	// | 0024| 0024| Exotic|
+	// | 0025| 0025| Small/medium truck|
+	// | 0026| 0026| Large truck|
+	// | 0027| 0027| Small SUV|
+	// | 0028| 0028| Medium SUV|
+	// | 0029| 0029| Large SUV|
+	// | 0030| 0030| Exotic SUV|
+	// | 9999| 9999| Miscellaneous|
+	//
+	// Additional Values allowed **only** for `American Express`:
+	//
+	// |American Express|MasterCard|Description|
+	// |--- |--- |--- |
+	// | 0031| NA| Four Wheel Drive|
+	// | 0032| NA| Special|
+	// | 0099| NA| Taxi|
+	//
+	// Max Length: 4
+	VehicleClass string `json:"vehicleClass,omitempty"`
+
+	// This field contains a unique identifier assigned by the company to the vehicle.
+	//
+	// Max Length: 20
+	VehicleIdentificationNumber string `json:"vehicleIdentificationNumber,omitempty"`
+
+	// Make of the vehicle being rented (e.g., Chevrolet or Ford).
+	//
+	// Max Length: 10
+	VehicleMake string `json:"vehicleMake,omitempty"`
+
+	// Model of the vehicle being rented (e.g., Cavalier or Focus).
+	//
+	// Max Length: 10
+	VehicleModel string `json:"vehicleModel,omitempty"`
+
+	// Weekly Rental Amount provides the amount charged for a seven-day rental period. Field - Time Period needs to be populated with Weekly if this field is present
+	//
+	// Max Length: 12
+	WeeklyRentalRate string `json:"weeklyRentalRate,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information auto rental
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAdjustedAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAdjustedAmountIndicator(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAgreementNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCommodityCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCompanyID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCustomerName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCustomerServicePhoneNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDailyRentalRate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDistanceTravelled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDistanceUnit(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDriverAge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateExtraCharge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateExtraMileageCharge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateFuelCharges(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateGpsCharge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateInsuranceAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLateFeeAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMaxFreeDistance(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMileageCharge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateNumberOfAdditionalDrivers(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateOdometerReading(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateOneWayDropOffAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateOtherCharges(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateParkingViolationCharge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePhoneCharge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateProgramCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRatePerMile(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRentalAddress(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRentalDateTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReturnAddress(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReturnDateTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSpecialProgramCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTaxDetails(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTimePeriod(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTowingCharge(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateVehicleClass(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateVehicleIdentificationNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateVehicleMake(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateVehicleModel(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateWeeklyRentalRate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateAdjustedAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdjustedAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"adjustedAmount", "body", o.AdjustedAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateAdjustedAmountIndicator(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdjustedAmountIndicator) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"adjustedAmountIndicator", "body", o.AdjustedAmountIndicator, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateAgreementNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.AgreementNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"agreementNumber", "body", o.AgreementNumber, 25); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateCommodityCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.CommodityCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"commodityCode", "body", o.CommodityCode, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateCompanyID(formats strfmt.Registry) error {
+	if swag.IsZero(o.CompanyID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"companyId", "body", o.CompanyID, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateCustomerName(formats strfmt.Registry) error {
+	if swag.IsZero(o.CustomerName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"customerName", "body", o.CustomerName, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateCustomerServicePhoneNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.CustomerServicePhoneNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"customerServicePhoneNumber", "body", o.CustomerServicePhoneNumber, 17); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateDailyRentalRate(formats strfmt.Registry) error {
+	if swag.IsZero(o.DailyRentalRate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"dailyRentalRate", "body", o.DailyRentalRate, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateDistanceTravelled(formats strfmt.Registry) error {
+	if swag.IsZero(o.DistanceTravelled) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"distanceTravelled", "body", o.DistanceTravelled, 5); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateDistanceUnit(formats strfmt.Registry) error {
+	if swag.IsZero(o.DistanceUnit) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"distanceUnit", "body", o.DistanceUnit, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateDriverAge(formats strfmt.Registry) error {
+	if swag.IsZero(o.DriverAge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"driverAge", "body", o.DriverAge, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateExtraCharge(formats strfmt.Registry) error {
+	if swag.IsZero(o.ExtraCharge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"extraCharge", "body", o.ExtraCharge, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateExtraMileageCharge(formats strfmt.Registry) error {
+	if swag.IsZero(o.ExtraMileageCharge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"extraMileageCharge", "body", o.ExtraMileageCharge, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateFuelCharges(formats strfmt.Registry) error {
+	if swag.IsZero(o.FuelCharges) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"fuelCharges", "body", o.FuelCharges, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateGpsCharge(formats strfmt.Registry) error {
+	if swag.IsZero(o.GpsCharge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"gpsCharge", "body", o.GpsCharge, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateInsuranceAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.InsuranceAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"insuranceAmount", "body", o.InsuranceAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateLateFeeAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.LateFeeAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"lateFeeAmount", "body", o.LateFeeAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateMaxFreeDistance(formats strfmt.Registry) error {
+	if swag.IsZero(o.MaxFreeDistance) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"maxFreeDistance", "body", o.MaxFreeDistance, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateMileageCharge(formats strfmt.Registry) error {
+	if swag.IsZero(o.MileageCharge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"mileageCharge", "body", o.MileageCharge, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateNumberOfAdditionalDrivers(formats strfmt.Registry) error {
+	if swag.IsZero(o.NumberOfAdditionalDrivers) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"numberOfAdditionalDrivers", "body", o.NumberOfAdditionalDrivers, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateOdometerReading(formats strfmt.Registry) error {
+	if swag.IsZero(o.OdometerReading) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"odometerReading", "body", o.OdometerReading, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateOneWayDropOffAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.OneWayDropOffAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"oneWayDropOffAmount", "body", o.OneWayDropOffAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateOtherCharges(formats strfmt.Registry) error {
+	if swag.IsZero(o.OtherCharges) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"otherCharges", "body", o.OtherCharges, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateParkingViolationCharge(formats strfmt.Registry) error {
+	if swag.IsZero(o.ParkingViolationCharge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"parkingViolationCharge", "body", o.ParkingViolationCharge, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validatePhoneCharge(formats strfmt.Registry) error {
+	if swag.IsZero(o.PhoneCharge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"phoneCharge", "body", o.PhoneCharge, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateProgramCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.ProgramCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"programCode", "body", o.ProgramCode, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateRatePerMile(formats strfmt.Registry) error {
+	if swag.IsZero(o.RatePerMile) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"ratePerMile", "body", o.RatePerMile, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateRentalAddress(formats strfmt.Registry) error {
+	if swag.IsZero(o.RentalAddress) { // not required
+		return nil
+	}
+
+	if o.RentalAddress != nil {
+		if err := o.RentalAddress.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "rentalAddress")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "rentalAddress")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateRentalDateTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.RentalDateTime) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalDateTime", "body", o.RentalDateTime, 21); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateReturnAddress(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReturnAddress) { // not required
+		return nil
+	}
+
+	if o.ReturnAddress != nil {
+		if err := o.ReturnAddress.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "returnAddress")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "returnAddress")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateReturnDateTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReturnDateTime) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"returnDateTime", "body", o.ReturnDateTime, 21); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateSpecialProgramCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.SpecialProgramCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"specialProgramCode", "body", o.SpecialProgramCode, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateTaxDetails(formats strfmt.Registry) error {
+	if swag.IsZero(o.TaxDetails) { // not required
+		return nil
+	}
+
+	if o.TaxDetails != nil {
+		if err := o.TaxDetails.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "taxDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "taxDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateTimePeriod(formats strfmt.Registry) error {
+	if swag.IsZero(o.TimePeriod) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"timePeriod", "body", o.TimePeriod, 7); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateTowingCharge(formats strfmt.Registry) error {
+	if swag.IsZero(o.TowingCharge) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"towingCharge", "body", o.TowingCharge, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateVehicleClass(formats strfmt.Registry) error {
+	if swag.IsZero(o.VehicleClass) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"vehicleClass", "body", o.VehicleClass, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateVehicleIdentificationNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.VehicleIdentificationNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"vehicleIdentificationNumber", "body", o.VehicleIdentificationNumber, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateVehicleMake(formats strfmt.Registry) error {
+	if swag.IsZero(o.VehicleMake) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"vehicleMake", "body", o.VehicleMake, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateVehicleModel(formats strfmt.Registry) error {
+	if swag.IsZero(o.VehicleModel) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"vehicleModel", "body", o.VehicleModel, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) validateWeeklyRentalRate(formats strfmt.Registry) error {
+	if swag.IsZero(o.WeeklyRentalRate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"weeklyRentalRate", "body", o.WeeklyRentalRate, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body travel information auto rental based on the context it is used
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateRentalAddress(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateReturnAddress(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTaxDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) contextValidateRentalAddress(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.RentalAddress != nil {
+		if err := o.RentalAddress.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "rentalAddress")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "rentalAddress")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) contextValidateReturnAddress(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ReturnAddress != nil {
+		if err := o.ReturnAddress.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "returnAddress")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "returnAddress")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) contextValidateTaxDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.TaxDetails != nil {
+		if err := o.TaxDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "taxDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "autoRental" + "." + "taxDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRental) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationAutoRental
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress capture payment params body travel information auto rental rental address
+swagger:model CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress
+*/
+type CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress struct {
+
+	// Address from where the vehicle was rented.
+	//
+	// Max Length: 13
+	Address1 string `json:"address1,omitempty"`
+
+	// Address from where the vehicle was rented.
+	//
+	// Max Length: 13
+	Address2 string `json:"address2,omitempty"`
+
+	// City in which the auto was rented.
+	//
+	// For authorizations, this field is supported for Visa, MasterCard, and American Express.
+	//
+	// For captures, this field is supported only for American Express.
+	//
+	// For all other card types, this field is ignored.
+	//
+	// Max Length: 25
+	City string `json:"city,omitempty"`
+
+	// Country where the auto was rented. Use the [ISO Standard Country Codes.](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)
+	// This field is supported only for American Express.
+	//
+	// Max Length: 3
+	Country string `json:"country,omitempty"`
+
+	// This field contains the location where a taxi passenger was picked up or where an auto rental vehicle was picked up. In most cases, this is the rental agency's business name that appears on the storefront and/or customer receipts, commonly referred to as the DBA (Doing Business As) name. However, if the vehicle was picked up at another location (e.g., a hotel,auto dealership, repair shop, etc.), the name of that location should be used. This entry must be easily recognized by the Cardmember to avoid unnecessary inquiries. If the name is more than 38  characters, use proper and meaningful abbreviation, when possible.
+	//
+	// Max Length: 38
+	Location string `json:"location,omitempty"`
+
+	// The agency code, address, phone number, etc., used to identify the location where the vehicle was rented.
+	//
+	// Max Length: 10
+	LocationID string `json:"locationId,omitempty"`
+
+	// State in which the auto was rented. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).
+	//
+	// Max Length: 3
+	State string `json:"state,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information auto rental rental address
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAddress1(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAddress2(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCity(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCountry(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLocation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLocationID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateState(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) validateAddress1(formats strfmt.Registry) error {
+	if swag.IsZero(o.Address1) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalAddress"+"."+"address1", "body", o.Address1, 13); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) validateAddress2(formats strfmt.Registry) error {
+	if swag.IsZero(o.Address2) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalAddress"+"."+"address2", "body", o.Address2, 13); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) validateCity(formats strfmt.Registry) error {
+	if swag.IsZero(o.City) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalAddress"+"."+"city", "body", o.City, 25); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) validateCountry(formats strfmt.Registry) error {
+	if swag.IsZero(o.Country) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalAddress"+"."+"country", "body", o.Country, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) validateLocation(formats strfmt.Registry) error {
+	if swag.IsZero(o.Location) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalAddress"+"."+"location", "body", o.Location, 38); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) validateLocationID(formats strfmt.Registry) error {
+	if swag.IsZero(o.LocationID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalAddress"+"."+"locationId", "body", o.LocationID, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) validateState(formats strfmt.Registry) error {
+	if swag.IsZero(o.State) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"rentalAddress"+"."+"state", "body", o.State, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information auto rental rental address based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationAutoRentalRentalAddress
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress capture payment params body travel information auto rental return address
+swagger:model CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress
+*/
+type CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress struct {
+
+	// City where the auto was returned to the rental agency.
+	//
+	// Max Length: 25
+	City string `json:"city,omitempty"`
+
+	// Country where the auto was returned to the rental agency. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
+	//
+	// Max Length: 3
+	Country string `json:"country,omitempty"`
+
+	// This field contains the location where the taxi passenger was dropped off or where the auto rental vehicle was returned.
+	//
+	// Max Length: 38
+	Location string `json:"location,omitempty"`
+
+	// Code, address, phone number, etc. used to identify the location of the auto rental return.
+	// This field is supported only for MasterCard and American Express.
+	//
+	// Max Length: 10
+	LocationID string `json:"locationId,omitempty"`
+
+	// State in which the auto was returned to the rental agency. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).
+	//
+	// For authorizations, this field is supported for Visa, MasterCard, and American Express.
+	//
+	// For captures, this field is supported only for MasterCard and American Express.
+	//
+	// Max Length: 3
+	State string `json:"state,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information auto rental return address
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCity(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCountry(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLocation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLocationID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateState(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) validateCity(formats strfmt.Registry) error {
+	if swag.IsZero(o.City) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"returnAddress"+"."+"city", "body", o.City, 25); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) validateCountry(formats strfmt.Registry) error {
+	if swag.IsZero(o.Country) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"returnAddress"+"."+"country", "body", o.Country, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) validateLocation(formats strfmt.Registry) error {
+	if swag.IsZero(o.Location) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"returnAddress"+"."+"location", "body", o.Location, 38); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) validateLocationID(formats strfmt.Registry) error {
+	if swag.IsZero(o.LocationID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"returnAddress"+"."+"locationId", "body", o.LocationID, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) validateState(formats strfmt.Registry) error {
+	if swag.IsZero(o.State) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"returnAddress"+"."+"state", "body", o.State, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information auto rental return address based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationAutoRentalReturnAddress
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails capture payment params body travel information auto rental tax details
+swagger:model CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails
+*/
+type CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails struct {
+
+	// Indicates the amount of tax based on the `type` field as described in the table below:
+	//
+	// Max Length: 13
+	Amount string `json:"amount,omitempty"`
+
+	// Flag that indicates whether the tax amount (`travelInformation.autoRental.taxDetails.amount`) is
+	// included in the request.
+	//
+	// Possible values:
+	// - `false`: tax amount is not included in the request.
+	// - `true`:  tax amount is included in the request.
+	//
+	Applied bool `json:"applied,omitempty"`
+
+	// Status code for exemption from sales and use tax. This field is a pass-through, which means that
+	// CyberSource does not verify the value or modify it in any way before sending it to the processor.
+	//
+	// Max Length: 1
+	ExemptionCode string `json:"exemptionCode,omitempty"`
+
+	// Rate of VAT or other tax for the order.
+	//
+	// Example 0.040 (=4%)
+	//
+	// Valid range: 0.01 to 0.99 (1% to 99%, with only whole percentage values accepted; values with additional
+	// decimal places will be truncated)
+	//
+	// Max Length: 6
+	Rate string `json:"rate,omitempty"`
+
+	// Summary of all tax types
+	//
+	// Max Length: 12
+	TaxSummary string `json:"taxSummary,omitempty"`
+
+	// Different taxes the rental agency applies to the rental agreement such as tourist tax, airport tax, or rental tax.
+	//
+	// Max Length: 10
+	TaxType string `json:"taxType,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information auto rental tax details
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateExemptionCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTaxSummary(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTaxType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) validateAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.Amount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"taxDetails"+"."+"amount", "body", o.Amount, 13); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) validateExemptionCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.ExemptionCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"taxDetails"+"."+"exemptionCode", "body", o.ExemptionCode, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) validateRate(formats strfmt.Registry) error {
+	if swag.IsZero(o.Rate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"taxDetails"+"."+"rate", "body", o.Rate, 6); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) validateTaxSummary(formats strfmt.Registry) error {
+	if swag.IsZero(o.TaxSummary) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"taxDetails"+"."+"taxSummary", "body", o.TaxSummary, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) validateTaxType(formats strfmt.Registry) error {
+	if swag.IsZero(o.TaxType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"autoRental"+"."+"taxDetails"+"."+"taxType", "body", o.TaxType, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information auto rental tax details based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationAutoRentalTaxDetails
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationLodging capture payment params body travel information lodging
+swagger:model CapturePaymentParamsBodyTravelInformationLodging
+*/
+type CapturePaymentParamsBodyTravelInformationLodging struct {
+
+	// Amount of an additional coupon or discount.
+	//
+	// Max Length: 12
+	AdditionalDiscountAmount string `json:"additionalDiscountAmount,omitempty"`
+
+	// Adjusted amount charged in addition to the reservation amount after the stay is complete.
+	//
+	// Max Length: 12
+	AdjustmentAmount string `json:"adjustmentAmount,omitempty"`
+
+	// Cost of audio visual services.
+	//
+	// Max Length: 12
+	AudioVisualCost string `json:"audioVisualCost,omitempty"`
+
+	// Cost of banquet services.
+	//
+	// Max Length: 12
+	BanquestCost string `json:"banquestCost,omitempty"`
+
+	// Cost of business center services.
+	//
+	// Max Length: 12
+	BusinessCenterCost string `json:"businessCenterCost,omitempty"`
+
+	// Cost of the cash that was disbursed plus any associated service fees
+	//
+	// Max Length: 12
+	CashDisbursementCost string `json:"cashDisbursementCost,omitempty"`
+
+	// Date on which the guest checked in. In the case of a no-show or a reservation, the scheduled arrival date.
+	// Format: `MMDDYY`. For best interchange rates, make sure it is a valid date.
+	//
+	// Max Length: 6
+	CheckInDate string `json:"checkInDate,omitempty"`
+
+	// Date on which the guest checked out.
+	// Format: `MMDDYY`. For best interchange rates, make sure it is a valid date.
+	//
+	// Max Length: 6
+	CheckOutDate string `json:"checkOutDate,omitempty"`
+
+	// Cost of conference room services.
+	//
+	// Max Length: 12
+	ConferenceRoomCost string `json:"conferenceRoomCost,omitempty"`
+
+	// Code assigned to a business. You can use this code to identify corporate rates and discounts for guests.
+	//
+	// Max Length: 17
+	CorporateClientCode string `json:"corporateClientCode,omitempty"`
+
+	// Your toll-free customer service phone number.
+	//
+	// Max Length: 17
+	CustomerServicePhoneNumber string `json:"customerServicePhoneNumber,omitempty"`
+
+	// Service fee for early departure.
+	//
+	// Max Length: 12
+	EarlyCheckOutCost string `json:"earlyCheckOutCost,omitempty"`
+
+	// Cost for all food and beverages.
+	//
+	// Max Length: 12
+	FoodAndBeverageCost string `json:"foodAndBeverageCost,omitempty"`
+
+	// Cost of gift shop purchases.
+	//
+	// Max Length: 12
+	GiftShopCost string `json:"giftShopCost,omitempty"`
+
+	// Gratuity.
+	//
+	// Max Length: 12
+	GratuityAmount string `json:"gratuityAmount,omitempty"`
+
+	// Name of the guest under which the room is reserved.
+	//
+	// Max Length: 40
+	GuestName string `json:"guestName,omitempty"`
+
+	// Cost of health club services.
+	//
+	// Max Length: 12
+	HealthClubCost string `json:"healthClubCost,omitempty"`
+
+	// Cost of Internet access.
+	//
+	// Max Length: 12
+	InternetAccessCost string `json:"internetAccessCost,omitempty"`
+
+	// Cost of laundry services.
+	//
+	// Max Length: 12
+	LaundryCost string `json:"laundryCost,omitempty"`
+
+	// Cost of lounge and bar purchases.
+	//
+	// Max Length: 12
+	LoungeBarCost string `json:"loungeBarCost,omitempty"`
+
+	// Cost of mini-bar purchases.
+	//
+	// Max Length: 12
+	MiniBarCost string `json:"miniBarCost,omitempty"`
+
+	// Miscellaneous costs.
+	//
+	// Max Length: 12
+	MiscellaneousCost string `json:"miscellaneousCost,omitempty"`
+
+	// Cost of movies.
+	//
+	// Max Length: 12
+	MovieCost string `json:"movieCost,omitempty"`
+
+	// Cost of non-room purchases, such as meals and gifts.
+	//
+	// Max Length: 12
+	NonRoomCost string `json:"nonRoomCost,omitempty"`
+
+	// Tax on non-room purchases.
+	//
+	// Max Length: 12
+	NonRoomTaxAmount string `json:"nonRoomTaxAmount,omitempty"`
+
+	// Number of guests staying in the room.
+	//
+	// Maximum: 99
+	// Minimum: 1
+	NumberOfGuests int64 `json:"numberOfGuests,omitempty"`
+
+	// Number of rooms booked by the cardholder.
+	//
+	// Maximum: 99
+	// Minimum: 1
+	NumberOfRooms int64 `json:"numberOfRooms,omitempty"`
+
+	// Cost of telephone services.
+	//
+	// Max Length: 12
+	PhoneCost string `json:"phoneCost,omitempty"`
+
+	// Prepaid amount, such as a deposit.
+	//
+	// Max Length: 12
+	PrepaidCost string `json:"prepaidCost,omitempty"`
+
+	// Cost of restaurant purchases
+	//
+	// Max Length: 12
+	RestaurantCost string `json:"restaurantCost,omitempty"`
+
+	// The object containing the number of nights and the daily rate that applies for that no of nights.
+	//
+	Room []*CapturePaymentParamsBodyTravelInformationLodgingRoomItems0 `json:"room"`
+
+	// Type of room, such as queen, king, or two doubles.
+	//
+	// Max Length: 12
+	RoomBedType string `json:"roomBedType,omitempty"`
+
+	// Location of room, such as lake view or ocean view.
+	//
+	// Max Length: 10
+	RoomLocation string `json:"roomLocation,omitempty"`
+
+	// Type of rate, such as corporate or senior citizen.
+	//
+	// Max Length: 12
+	RoomRateType string `json:"roomRateType,omitempty"`
+
+	// Cost of room service.
+	//
+	// Max Length: 12
+	RoomServiceCost string `json:"roomServiceCost,omitempty"`
+
+	// Total tax for the room.
+	//
+	// Max Length: 12
+	RoomTaxAmount string `json:"roomTaxAmount,omitempty"`
+
+	// Type of tax, such as tourist or hotel.
+	//
+	// Max Length: 10
+	RoomTaxType string `json:"roomTaxType,omitempty"`
+
+	// Smoking preference of the guest.
+	// Possible values:
+	// - `Y`: smoking room
+	// - `N`: non-smoking room
+	//
+	// Max Length: 1
+	SmokingPreference string `json:"smokingPreference,omitempty"`
+
+	// Code that identifies special circumstances.
+	// Possible values:
+	// - `1`: lodging (default)
+	// - `2`: no show reservation
+	// - `3`: advanced deposit
+	//
+	// Max Length: 1
+	SpecialProgramCode string `json:"specialProgramCode,omitempty"`
+
+	// Total tax amount.
+	//
+	// Max Length: 12
+	TotalTaxAmount string `json:"totalTaxAmount,omitempty"`
+
+	// Cost of transportation services.
+	//
+	// Max Length: 12
+	TransportationCost string `json:"transportationCost,omitempty"`
+
+	// Cost of valet parking services.
+	//
+	// Max Length: 12
+	ValetParkingCost string `json:"valetParkingCost,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information lodging
+func (o *CapturePaymentParamsBodyTravelInformationLodging) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAdditionalDiscountAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAdjustmentAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAudioVisualCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateBanquestCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateBusinessCenterCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCashDisbursementCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCheckInDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCheckOutDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateConferenceRoomCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCorporateClientCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCustomerServicePhoneNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateEarlyCheckOutCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateFoodAndBeverageCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateGiftShopCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateGratuityAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateGuestName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateHealthClubCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateInternetAccessCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLaundryCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLoungeBarCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMiniBarCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMiscellaneousCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateMovieCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateNonRoomCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateNonRoomTaxAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateNumberOfGuests(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateNumberOfRooms(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePhoneCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePrepaidCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRestaurantCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRoom(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRoomBedType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRoomLocation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRoomRateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRoomServiceCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRoomTaxAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRoomTaxType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSmokingPreference(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSpecialProgramCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTotalTaxAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTransportationCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateValetParkingCost(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateAdditionalDiscountAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdditionalDiscountAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"additionalDiscountAmount", "body", o.AdditionalDiscountAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateAdjustmentAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdjustmentAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"adjustmentAmount", "body", o.AdjustmentAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateAudioVisualCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.AudioVisualCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"audioVisualCost", "body", o.AudioVisualCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateBanquestCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.BanquestCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"banquestCost", "body", o.BanquestCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateBusinessCenterCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.BusinessCenterCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"businessCenterCost", "body", o.BusinessCenterCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateCashDisbursementCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.CashDisbursementCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"cashDisbursementCost", "body", o.CashDisbursementCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateCheckInDate(formats strfmt.Registry) error {
+	if swag.IsZero(o.CheckInDate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"checkInDate", "body", o.CheckInDate, 6); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateCheckOutDate(formats strfmt.Registry) error {
+	if swag.IsZero(o.CheckOutDate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"checkOutDate", "body", o.CheckOutDate, 6); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateConferenceRoomCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.ConferenceRoomCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"conferenceRoomCost", "body", o.ConferenceRoomCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateCorporateClientCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.CorporateClientCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"corporateClientCode", "body", o.CorporateClientCode, 17); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateCustomerServicePhoneNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.CustomerServicePhoneNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"customerServicePhoneNumber", "body", o.CustomerServicePhoneNumber, 17); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateEarlyCheckOutCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.EarlyCheckOutCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"earlyCheckOutCost", "body", o.EarlyCheckOutCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateFoodAndBeverageCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.FoodAndBeverageCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"foodAndBeverageCost", "body", o.FoodAndBeverageCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateGiftShopCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.GiftShopCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"giftShopCost", "body", o.GiftShopCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateGratuityAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.GratuityAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"gratuityAmount", "body", o.GratuityAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateGuestName(formats strfmt.Registry) error {
+	if swag.IsZero(o.GuestName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"guestName", "body", o.GuestName, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateHealthClubCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.HealthClubCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"healthClubCost", "body", o.HealthClubCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateInternetAccessCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.InternetAccessCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"internetAccessCost", "body", o.InternetAccessCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateLaundryCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.LaundryCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"laundryCost", "body", o.LaundryCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateLoungeBarCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.LoungeBarCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"loungeBarCost", "body", o.LoungeBarCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateMiniBarCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.MiniBarCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"miniBarCost", "body", o.MiniBarCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateMiscellaneousCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.MiscellaneousCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"miscellaneousCost", "body", o.MiscellaneousCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateMovieCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.MovieCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"movieCost", "body", o.MovieCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateNonRoomCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.NonRoomCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"nonRoomCost", "body", o.NonRoomCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateNonRoomTaxAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.NonRoomTaxAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"nonRoomTaxAmount", "body", o.NonRoomTaxAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateNumberOfGuests(formats strfmt.Registry) error {
+	if swag.IsZero(o.NumberOfGuests) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"numberOfGuests", "body", o.NumberOfGuests, 1, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"numberOfGuests", "body", o.NumberOfGuests, 99, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateNumberOfRooms(formats strfmt.Registry) error {
+	if swag.IsZero(o.NumberOfRooms) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"numberOfRooms", "body", o.NumberOfRooms, 1, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"numberOfRooms", "body", o.NumberOfRooms, 99, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validatePhoneCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.PhoneCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"phoneCost", "body", o.PhoneCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validatePrepaidCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.PrepaidCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"prepaidCost", "body", o.PrepaidCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRestaurantCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.RestaurantCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"restaurantCost", "body", o.RestaurantCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRoom(formats strfmt.Registry) error {
+	if swag.IsZero(o.Room) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Room); i++ {
+		if swag.IsZero(o.Room[i]) { // not required
+			continue
+		}
+
+		if o.Room[i] != nil {
+			if err := o.Room[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging" + "." + "room" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging" + "." + "room" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRoomBedType(formats strfmt.Registry) error {
+	if swag.IsZero(o.RoomBedType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"roomBedType", "body", o.RoomBedType, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRoomLocation(formats strfmt.Registry) error {
+	if swag.IsZero(o.RoomLocation) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"roomLocation", "body", o.RoomLocation, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRoomRateType(formats strfmt.Registry) error {
+	if swag.IsZero(o.RoomRateType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"roomRateType", "body", o.RoomRateType, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRoomServiceCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.RoomServiceCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"roomServiceCost", "body", o.RoomServiceCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRoomTaxAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.RoomTaxAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"roomTaxAmount", "body", o.RoomTaxAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateRoomTaxType(formats strfmt.Registry) error {
+	if swag.IsZero(o.RoomTaxType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"roomTaxType", "body", o.RoomTaxType, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateSmokingPreference(formats strfmt.Registry) error {
+	if swag.IsZero(o.SmokingPreference) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"smokingPreference", "body", o.SmokingPreference, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateSpecialProgramCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.SpecialProgramCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"specialProgramCode", "body", o.SpecialProgramCode, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateTotalTaxAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TotalTaxAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"totalTaxAmount", "body", o.TotalTaxAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateTransportationCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.TransportationCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"transportationCost", "body", o.TransportationCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) validateValetParkingCost(formats strfmt.Registry) error {
+	if swag.IsZero(o.ValetParkingCost) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"lodging"+"."+"valetParkingCost", "body", o.ValetParkingCost, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body travel information lodging based on the context it is used
+func (o *CapturePaymentParamsBodyTravelInformationLodging) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateRoom(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodging) contextValidateRoom(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Room); i++ {
+
+		if o.Room[i] != nil {
+			if err := o.Room[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging" + "." + "room" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "lodging" + "." + "room" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationLodging) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationLodging) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationLodging
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationLodgingRoomItems0 capture payment params body travel information lodging room items0
+swagger:model CapturePaymentParamsBodyTravelInformationLodgingRoomItems0
+*/
+type CapturePaymentParamsBodyTravelInformationLodgingRoomItems0 struct {
+
+	// Daily cost of the room.
+	//
+	// Max Length: 8
+	DailyRate string `json:"dailyRate,omitempty"`
+
+	// Number of nights billed at the rate specified by `travelInformation.lodging.room[].dailyRate`.
+	//
+	// Maximum: 9999
+	// Minimum: 1
+	NumberOfNights int64 `json:"numberOfNights,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information lodging room items0
+func (o *CapturePaymentParamsBodyTravelInformationLodgingRoomItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateDailyRate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateNumberOfNights(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodgingRoomItems0) validateDailyRate(formats strfmt.Registry) error {
+	if swag.IsZero(o.DailyRate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("dailyRate", "body", o.DailyRate, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationLodgingRoomItems0) validateNumberOfNights(formats strfmt.Registry) error {
+	if swag.IsZero(o.NumberOfNights) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("numberOfNights", "body", o.NumberOfNights, 1, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("numberOfNights", "body", o.NumberOfNights, 9999, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information lodging room items0 based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationLodgingRoomItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationLodgingRoomItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationLodgingRoomItems0) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationLodgingRoomItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationTransit capture payment params body travel information transit
+swagger:model CapturePaymentParamsBodyTravelInformationTransit
+*/
+type CapturePaymentParamsBodyTravelInformationTransit struct {
+
+	// airline
+	Airline *CapturePaymentParamsBodyTravelInformationTransitAirline `json:"airline,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information transit
+func (o *CapturePaymentParamsBodyTravelInformationTransit) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAirline(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransit) validateAirline(formats strfmt.Registry) error {
+	if swag.IsZero(o.Airline) { // not required
+		return nil
+	}
+
+	if o.Airline != nil {
+		if err := o.Airline.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body travel information transit based on the context it is used
+func (o *CapturePaymentParamsBodyTravelInformationTransit) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAirline(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransit) contextValidateAirline(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Airline != nil {
+		if err := o.Airline.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransit) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransit) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationTransit
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationTransitAirline capture payment params body travel information transit airline
+swagger:model CapturePaymentParamsBodyTravelInformationTransitAirline
+*/
+type CapturePaymentParamsBodyTravelInformationTransitAirline struct {
+
+	// Description of the charge if the charge does not involve an airline ticket.
+	// For example: Excess baggage.
+	//
+	// Max Length: 20
+	AdditionalCharges string `json:"additionalCharges,omitempty"`
+
+	// ancillary information
+	AncillaryInformation *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation `json:"ancillaryInformation,omitempty"`
+
+	// Date of arrival for the last leg of the trip.
+	// Format: `MMDDYYYY`
+	// English characters only.
+	// Optional request field.
+	//
+	// Max Length: 8
+	ArrivalDate string `json:"arrivalDate,omitempty"`
+
+	// Boarding fee.
+	//
+	// Max Length: 12
+	BoardingFeeAmount string `json:"boardingFeeAmount,omitempty"`
+
+	// Reference number for the airline booking.
+	// Required if ticket numbers are not issued.
+	//
+	// Max Length: 15
+	BookingReferenceNumber string `json:"bookingReferenceNumber,omitempty"`
+
+	// Airline that generated the ticket.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 15
+	CarrierName string `json:"carrierName,omitempty"`
+
+	// Check digit for the ticket number. CyberSource recommends that you validate the check digit.
+	// With Discover and Diners Club, a valid ticket number has these characteristics:
+	// - The value is numeric.
+	// - The first three digits are a valid IATA2 license plate carrier code.
+	// - The last digit is a check digit or zero (0).
+	// - All remaining digits are nonzero.
+	//
+	// Max Length: 1
+	CheckDigit string `json:"checkDigit,omitempty"`
+
+	// Total number of clearing messages associated with the authorization request.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 2
+	ClearingCount string `json:"clearingCount,omitempty"`
+
+	// Number that identifies the clearing message when multiple clearing messages are allowed per authorized transaction.
+	// Each clearing message linked to one authorization request must include a unique clearing sequence number between 1 and the total number of clearing records.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 2
+	ClearingSequence string `json:"clearingSequence,omitempty"`
+
+	// Reason for the credit.
+	// Possible values:
+	// - `A`: Cancellation of the ancillary passenger transport purchase.
+	// - `B`: Cancellation of the airline ticket and the passenger transport ancillary purchase.
+	// - `C`: Cancellation of the airline ticket.
+	// - `O`: Other.
+	// - `P`: Partial refund of the airline ticket.
+	// Format: English characters only.
+	//
+	// Optional request field.
+	//
+	// Max Length: 1
+	CreditReasonIndicator string `json:"creditReasonIndicator,omitempty"`
+
+	// Reference number or code that identifies the cardholder.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces;
+	// special characters are not included.
+	// Optional request field.
+	//
+	// Max Length: 40
+	CustomerCode string `json:"customerCode,omitempty"`
+
+	// The field is not currently supported.
+	//
+	// Max Length: 14
+	DocumentNumber string `json:"documentNumber,omitempty"`
+
+	// The field is not currently supported.
+	//
+	DocumentNumberOfParts int64 `json:"documentNumberOfParts,omitempty"`
+
+	// Airline document type code that specifies the purpose of the transaction.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// | Code | Description |
+	// | --- | --- |
+	// | 01 | Passenger ticket |
+	// | 02 | Additional collection |
+	// | 03 | Excess baggage |
+	// | 04 | Miscellaneous charge order (MCO) or prepaid ticket authorization |
+	// | 05 | Special service ticket |
+	// | 06 | Supported refund |
+	// | 07 | Unsupported refund |
+	// | 08 | Lost ticket application |
+	// | 09 | Tour order voucher |
+	// | 10 | Ticket by mail |
+	// | 11 | Undercharge adjustment |
+	// | 12 | Group ticket |
+	// | 13 | Exchange adjustment |
+	// | 14 | SPD or air freight |
+	// | 15 | In-flight adjustment |
+	// | 16 | Agency passenger ticket |
+	// | 17 | Agency tour order or voucher |
+	// | 18 | Agency miscellaneous charge order (MCO) |
+	// | 19 | Agency exchange order |
+	// | 20 | Agency group ticket |
+	// | 21 | Debit adjustment for duplicate refund or use |
+	// | 22 | In-flight merchandise order |
+	// | 23 | Catalogue merchandise order |
+	// | 24 | In-flight phone charges |
+	// | 25 | Frequent flyer fee or purchase |
+	// | 26 | Kennel charge |
+	// | 27 | Animal transportation charge |
+	// | 28 | Firearms case |
+	// | 29 | Upgrade charge |
+	// | 30 | Credit for unused transportation |
+	// | 31 | Credit for class of service adjustment |
+	// | 32 | Credit for denied boarding |
+	// | 33 | Credit for miscellaneous refund |
+	// | 34 | Credit for lost ticket refund |
+	// | 35 | Credit for exchange refund |
+	// | 36 | Credit for overcharge adjustment |
+	// | 37 | Credit for multiple Unused tickets |
+	// | 38 | Exchange order |
+	// | 39 | Self-service ticket |
+	// | 41 | In-flight duty-free purchase |
+	// | 42 | Senior citizen discount booklets |
+	// | 43 | Club membership fee |
+	// | 44 | Coupon book |
+	// | 45 | In-flight charges |
+	// | 46 | Tour deposit |
+	// | 47 | Frequent flyer overnight delivery charge |
+	// | 48 | Frequent flyer fulfillment |
+	// | 49 | Small package delivery |
+	// | 50 | Vendor sale |
+	// | 51 | Miscellaneous taxes or fees |
+	// | 52 | Travel agency fee |
+	// | 60 | Vendor refund or credit |
+	// | 64 | Duty free sale |
+	// | 65 | Preferred seat upgrade |
+	// | 66 | Cabin upgrade |
+	// | 67 | Lounge or club access or day pass |
+	// | 68 | Agent assisted reservation or ticketing fee |
+	// | 69 | Ticket change or cancel fee |
+	// | 70 | Trip insurance |
+	// | 71 | Unaccompanied minor |
+	// | 72 | Standby fee |
+	// | 73 | Curbside baggage |
+	// | 74 | In-flight medical equipment |
+	// | 75 | Ticket or pass print fee |
+	// | 76 | Checked sporting or special equipment |
+	// | 77 | Dry ice fee |
+	// | 78 | Mail or postage fee |
+	// | 79 | Club membership fee or temporary trial |
+	// | 80 | Frequent flyer activation or reinstatement |
+	// | 81 | Gift certificate |
+	// | 82 | Onboard or in-flight prepaid voucher |
+	// | 83 | Optional services fee |
+	// | 84 | Advance purchase for excess baggage |
+	// | 85 | Advance purchase for preferred seat upgrade |
+	// | 86 | Advance purchase for cabin upgrade |
+	// | 87 | Advance purchase for optional services |
+	// | 88 | WiFi |
+	// | 89 | Packages |
+	// | 90 | In-flight entertainment or internet access |
+	// | 91 | Overweight bag fee |
+	// | 92 | Sleep sets |
+	// | 93 | Special purchase fee |
+	//
+	// Max Length: 1
+	DocumentType string `json:"documentType,omitempty"`
+
+	// Flag that indicates whether an electronic ticket was issued.
+	// Possible values:
+	// - `true`
+	// - `false`
+	// Optional request field.
+	//
+	ElectronicTicketIndicator bool `json:"electronicTicketIndicator,omitempty"`
+
+	// Amount of the exchanged ticket.
+	// Format: English characters only.
+	//
+	// Max Length: 12
+	ExchangeTicketAmount string `json:"exchangeTicketAmount,omitempty"`
+
+	// Fee for exchanging the ticket.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 12
+	ExchangeTicketFeeAmount string `json:"exchangeTicketFeeAmount,omitempty"`
+
+	// The field is not currently supported.
+	//
+	// Max Length: 3
+	ExtendedPaymentCode string `json:"extendedPaymentCode,omitempty"`
+
+	// Invoice date. The format is YYYYMMDD.
+	// If this value is
+	// included in the request, it is used in the creation of the invoice number. See "Invoice Number,"
+	//
+	InvoiceDate int64 `json:"invoiceDate,omitempty"`
+
+	// Invoice number for the airline transaction.
+	//
+	// Max Length: 25
+	InvoiceNumber string `json:"invoiceNumber,omitempty"`
+
+	// legs
+	Legs []*CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0 `json:"legs"`
+
+	// Number of passengers for whom the ticket was issued.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	NumberOfPassengers int64 `json:"numberOfPassengers,omitempty"`
+
+	// Original ticket number when the transaction is for a replacement ticket.
+	//
+	// Max Length: 14
+	OriginalTicketNumber string `json:"originalTicketNumber,omitempty"`
+
+	// Name of the passenger to whom the ticket was issued.  This will always be a single passenger's name.
+	// If there are more than one passengers, provide only the primary passenger's name.
+	// Do not include special characters such as commas, hyphens, or apostrophes.
+	// Only ASCII characters are supported.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 42
+	PassengerName string `json:"passengerName,omitempty"`
+
+	// Plan number based on the fare.
+	// This value is provided by the airline.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 1
+	PlanNumber string `json:"planNumber,omitempty"`
+
+	// Airline process identifier. This value is the airline’s three-digit IATA1 code
+	// which is used to process extended payment airline tickets.
+	//
+	// Max Length: 3
+	ProcessIdentifier string `json:"processIdentifier,omitempty"`
+
+	// Type of purchase. Possible values:
+	// - `EXC`: Exchange ticket
+	// - `MSC`: Miscellaneous (not a ticket purchase and not a transaction related to an exchange ticket)
+	// - `REF`: Refund
+	// - `TKT`: Ticket
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 3
+	PurchaseType string `json:"purchaseType,omitempty"`
+
+	// Code that specifies the computerized reservation system used to make the reservation and purchase the ticket.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces;
+	// special characters are not included.
+	// Optional request field.
+	//
+	// Max Length: 4
+	ReservationSystemCode string `json:"reservationSystemCode,omitempty"`
+
+	// The field is not currently supported.
+	//
+	// Max Length: 32
+	ReservationType string `json:"reservationType,omitempty"`
+
+	// Text that describes the ticket limitations, such as _nonrefundable_.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 20
+	RestrictedTicketDesciption string `json:"restrictedTicketDesciption,omitempty"`
+
+	// Flag that indicates whether or not the ticket is restricted (nonrefundable).
+	// Possible values:
+	// - 0: No restriction (refundable)
+	// - 1: Restricted (nonrefundable)
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces;
+	// special characters are not included.
+	// Optional request field.
+	//
+	RestrictedTicketIndicator int64 `json:"restrictedTicketIndicator,omitempty"`
+
+	// Type of update.
+	// Possible values:
+	// - `C`: Change to the existing ticket.
+	// - `N`: New ticket.
+	// Format: English characters only
+	// Optional request field.
+	//
+	// Max Length: 1
+	TicketChangeIndicator string `json:"ticketChangeIndicator,omitempty"`
+
+	// Date on which the transaction occurred.
+	// Format: `YYYYMMDD`
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 8
+	TicketIssueDate string `json:"ticketIssueDate,omitempty"`
+
+	// ticket issuer
+	TicketIssuer *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer `json:"ticketIssuer,omitempty"`
+
+	// Ticket number.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces;
+	// special characters are not included.
+	// Optional request field.
+	//
+	// Max Length: 15
+	TicketNumber string `json:"ticketNumber,omitempty"`
+
+	// Total clearing amount for all transactions in the clearing count set.
+	// This value cannot exceed `99999999999999999999` (twenty 9s).
+	// Format: English characters only.
+	// If this field is not set and if the total amount from the original authorization is not NULL,
+	// the total clearing amount is set to the total amount from the original authorization.
+	//
+	// Max Length: 20
+	TotalClearingAmount string `json:"totalClearingAmount,omitempty"`
+
+	// Total fee for the ticket. This value cannot exceed `99999999999999999999` (twenty 9s).
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 12
+	TotalFeeAmount string `json:"totalFeeAmount,omitempty"`
+
+	// Type of charge.
+	// Possible values:
+	// - 01: Charge is for an airline ticket
+	// - 02: Charge is for an item that is not an airline ticket
+	//
+	TransactionType int64 `json:"transactionType,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information transit airline
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAdditionalCharges(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAncillaryInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateArrivalDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateBoardingFeeAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateBookingReferenceNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCarrierName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCheckDigit(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateClearingCount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateClearingSequence(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCreditReasonIndicator(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCustomerCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDocumentNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDocumentType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateExchangeTicketAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateExchangeTicketFeeAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateExtendedPaymentCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateInvoiceNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLegs(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateOriginalTicketNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePassengerName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePlanNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateProcessIdentifier(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePurchaseType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReservationSystemCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReservationType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRestrictedTicketDesciption(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTicketChangeIndicator(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTicketIssueDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTicketIssuer(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTicketNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTotalClearingAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTotalFeeAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateAdditionalCharges(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdditionalCharges) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"additionalCharges", "body", o.AdditionalCharges, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateAncillaryInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.AncillaryInformation) { // not required
+		return nil
+	}
+
+	if o.AncillaryInformation != nil {
+		if err := o.AncillaryInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateArrivalDate(formats strfmt.Registry) error {
+	if swag.IsZero(o.ArrivalDate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"arrivalDate", "body", o.ArrivalDate, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateBoardingFeeAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.BoardingFeeAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"boardingFeeAmount", "body", o.BoardingFeeAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateBookingReferenceNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.BookingReferenceNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"bookingReferenceNumber", "body", o.BookingReferenceNumber, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateCarrierName(formats strfmt.Registry) error {
+	if swag.IsZero(o.CarrierName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"carrierName", "body", o.CarrierName, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateCheckDigit(formats strfmt.Registry) error {
+	if swag.IsZero(o.CheckDigit) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"checkDigit", "body", o.CheckDigit, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateClearingCount(formats strfmt.Registry) error {
+	if swag.IsZero(o.ClearingCount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"clearingCount", "body", o.ClearingCount, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateClearingSequence(formats strfmt.Registry) error {
+	if swag.IsZero(o.ClearingSequence) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"clearingSequence", "body", o.ClearingSequence, 2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateCreditReasonIndicator(formats strfmt.Registry) error {
+	if swag.IsZero(o.CreditReasonIndicator) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"creditReasonIndicator", "body", o.CreditReasonIndicator, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateCustomerCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.CustomerCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"customerCode", "body", o.CustomerCode, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateDocumentNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.DocumentNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"documentNumber", "body", o.DocumentNumber, 14); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateDocumentType(formats strfmt.Registry) error {
+	if swag.IsZero(o.DocumentType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"documentType", "body", o.DocumentType, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateExchangeTicketAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.ExchangeTicketAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"exchangeTicketAmount", "body", o.ExchangeTicketAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateExchangeTicketFeeAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.ExchangeTicketFeeAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"exchangeTicketFeeAmount", "body", o.ExchangeTicketFeeAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateExtendedPaymentCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.ExtendedPaymentCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"extendedPaymentCode", "body", o.ExtendedPaymentCode, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateInvoiceNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.InvoiceNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"invoiceNumber", "body", o.InvoiceNumber, 25); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateLegs(formats strfmt.Registry) error {
+	if swag.IsZero(o.Legs) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Legs); i++ {
+		if swag.IsZero(o.Legs[i]) { // not required
+			continue
+		}
+
+		if o.Legs[i] != nil {
+			if err := o.Legs[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "legs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "legs" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateOriginalTicketNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.OriginalTicketNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"originalTicketNumber", "body", o.OriginalTicketNumber, 14); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validatePassengerName(formats strfmt.Registry) error {
+	if swag.IsZero(o.PassengerName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"passengerName", "body", o.PassengerName, 42); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validatePlanNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.PlanNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"planNumber", "body", o.PlanNumber, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateProcessIdentifier(formats strfmt.Registry) error {
+	if swag.IsZero(o.ProcessIdentifier) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"processIdentifier", "body", o.ProcessIdentifier, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validatePurchaseType(formats strfmt.Registry) error {
+	if swag.IsZero(o.PurchaseType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"purchaseType", "body", o.PurchaseType, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateReservationSystemCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReservationSystemCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"reservationSystemCode", "body", o.ReservationSystemCode, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateReservationType(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReservationType) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"reservationType", "body", o.ReservationType, 32); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateRestrictedTicketDesciption(formats strfmt.Registry) error {
+	if swag.IsZero(o.RestrictedTicketDesciption) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"restrictedTicketDesciption", "body", o.RestrictedTicketDesciption, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateTicketChangeIndicator(formats strfmt.Registry) error {
+	if swag.IsZero(o.TicketChangeIndicator) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketChangeIndicator", "body", o.TicketChangeIndicator, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateTicketIssueDate(formats strfmt.Registry) error {
+	if swag.IsZero(o.TicketIssueDate) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssueDate", "body", o.TicketIssueDate, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateTicketIssuer(formats strfmt.Registry) error {
+	if swag.IsZero(o.TicketIssuer) { // not required
+		return nil
+	}
+
+	if o.TicketIssuer != nil {
+		if err := o.TicketIssuer.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ticketIssuer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ticketIssuer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateTicketNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.TicketNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketNumber", "body", o.TicketNumber, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateTotalClearingAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TotalClearingAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"totalClearingAmount", "body", o.TotalClearingAmount, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) validateTotalFeeAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TotalFeeAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"totalFeeAmount", "body", o.TotalFeeAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body travel information transit airline based on the context it is used
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAncillaryInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLegs(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTicketIssuer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) contextValidateAncillaryInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AncillaryInformation != nil {
+		if err := o.AncillaryInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) contextValidateLegs(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Legs); i++ {
+
+		if o.Legs[i] != nil {
+			if err := o.Legs[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "legs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "legs" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) contextValidateTicketIssuer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.TicketIssuer != nil {
+		if err := o.TicketIssuer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ticketIssuer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ticketIssuer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirline) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationTransitAirline
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation capture payment params body travel information transit airline ancillary information
+swagger:model CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation
+*/
+type CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation struct {
+
+	// Number for the airline ticket to which the ancillary purchase is connected.
+	//
+	// If this purchase has a connection or relationship to another purchase such as a baggage fee for a passenger transport ticket, this field must contain the ticket number for the other purchase.
+	//
+	// For a stand-alone purchase, the value for this field must be the same as the value for the `travelInformation.transit.airline.ancillaryInformation.ticketNumber` field.
+	// **Important** This field is required in the U.S. in order for you to qualify for either the custom payment service (CPS) or the electronic interchange reimbursement fee (EIRF)
+	// program.
+	// Format: English characters only.
+	// Optional request field for ancillary services.
+	//
+	// Max Length: 15
+	ConnectedTicketNumber string `json:"connectedTicketNumber,omitempty"`
+
+	// Reason for the credit.
+	// Possible values:
+	// - `A`: Cancellation of the ancillary passenger transport purchase.
+	// - `B`: Cancellation of the airline ticket and the passenger transport ancillary purchase.
+	// - `C`: Cancellation of the airline ticket.
+	// - `O`: Other.
+	// - `P`: Partial refund of the airline ticket.
+	// Format: English characters only.
+	// Optional field for ancillary services.
+	//
+	// Max Length: 15
+	CreditReasonIndicator string `json:"creditReasonIndicator,omitempty"`
+
+	// Name of the passenger. If the passenger’s name is not available, this value is the cardholder’s name. If neither the passenger’s name nor the cardholder’s name is available,
+	// this value is a description of the ancillary purchase.
+	// **Important** This field is required in the U.S. in order for you to qualify for either the custom payment service (CPS) or the electronic interchange reimbursement fee (EIRF)
+	// program.
+	// Format: English characters only.
+	// Optional field for ancillary service.
+	//
+	// Max Length: 20
+	PassengerName string `json:"passengerName,omitempty"`
+
+	// service
+	Service []*CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0 `json:"service"`
+
+	// Ticket number, which consists of the carrier code, form, and serial number, without the check digit.
+	// **Important** This field is required in the U.S. in order for you to qualify for either the
+	// custom payment service (CPS) or the electronic interchange reimbursement fee (EIRF) program.
+	// Format: English characters only.
+	// Optional field for ancillary services.
+	//
+	// Max Length: 15
+	TicketNumber string `json:"ticketNumber,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information transit airline ancillary information
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateConnectedTicketNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCreditReasonIndicator(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePassengerName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateService(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTicketNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) validateConnectedTicketNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.ConnectedTicketNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ancillaryInformation"+"."+"connectedTicketNumber", "body", o.ConnectedTicketNumber, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) validateCreditReasonIndicator(formats strfmt.Registry) error {
+	if swag.IsZero(o.CreditReasonIndicator) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ancillaryInformation"+"."+"creditReasonIndicator", "body", o.CreditReasonIndicator, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) validatePassengerName(formats strfmt.Registry) error {
+	if swag.IsZero(o.PassengerName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ancillaryInformation"+"."+"passengerName", "body", o.PassengerName, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) validateService(formats strfmt.Registry) error {
+	if swag.IsZero(o.Service) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Service); i++ {
+		if swag.IsZero(o.Service[i]) { // not required
+			continue
+		}
+
+		if o.Service[i] != nil {
+			if err := o.Service[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation" + "." + "service" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation" + "." + "service" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) validateTicketNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.TicketNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ancillaryInformation"+"."+"ticketNumber", "body", o.TicketNumber, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this capture payment params body travel information transit airline ancillary information based on the context it is used
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateService(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) contextValidateService(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Service); i++ {
+
+		if o.Service[i] != nil {
+			if err := o.Service[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation" + "." + "service" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("capturePaymentRequest" + "." + "travelInformation" + "." + "transit" + "." + "airline" + "." + "ancillaryInformation" + "." + "service" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0 capture payment params body travel information transit airline ancillary information service items0
+swagger:model CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0
+*/
+type CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0 struct {
+
+	// Category code for the ancillary service that is provided. Obtain the codes from the International
+	// Air Transport Association (IATA).
+	// **Note** `#` is either 0, 1, 2, or 3.
+	// **Important** This field is required in the U.S. in order for you to qualify for either the custom
+	// payment service (CPS) or the electronic interchange reimbursement fee (EIRF)program.
+	// Format: English characters only.
+	// Optional request field for ancillary services.
+	//
+	// Max Length: 4
+	CategoryCode string `json:"categoryCode,omitempty"`
+
+	// Subcategory code for the ancillary service category. Obtain the codes from the International
+	// Air Transport Association (IATA).
+	// **Note** `#` is either 0, 1, 2, or 3.
+	// Format  English characters only.
+	// Optional request field for ancillary services.
+	//
+	// Max Length: 4
+	SubCategoryCode string `json:"subCategoryCode,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information transit airline ancillary information service items0
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCategoryCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSubCategoryCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0) validateCategoryCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.CategoryCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("categoryCode", "body", o.CategoryCode, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0) validateSubCategoryCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.SubCategoryCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("subCategoryCode", "body", o.SubCategoryCode, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information transit airline ancillary information service items0 based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationTransitAirlineAncillaryInformationServiceItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0 capture payment params body travel information transit airline legs items0
+swagger:model CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0
+*/
+type CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0 struct {
+
+	// Time of arrival for this leg of the trip.
+	// The format is military time and HHMM:
+	// If not all zeros, then the hours must be `00-23` and the minutes must be `00-59`
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	ArrivalTime int64 `json:"arrivalTime,omitempty"`
+
+	// AM or PM for the arrival time for this leg of the trip.
+	// Possible values:
+	// - `A`: 12:00 midnight to 11:59 a.m.
+	// - `P`: 12:00 noon to 11:59 p.m.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 1
+	ArrivalTimeMeridian string `json:"arrivalTimeMeridian,omitempty"`
+
+	// IATA code for the carrier for this leg of the trip.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 4
+	CarrierCode string `json:"carrierCode,omitempty"`
+
+	// IATA code for the class of service for this leg of the trip.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 3
+	Class string `json:"class,omitempty"`
+
+	// Ticket that contains additional coupons for this leg of the trip on an itinerary that has more than four segments.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 25
+	ConjunctionTicket string `json:"conjunctionTicket,omitempty"`
+
+	// Coupon number. Each leg on the ticket requires a separate coupon, and each coupon is identified by the coupon number.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 1
+	CouponNumber string `json:"couponNumber,omitempty"`
+
+	// Amount of departure tax for this leg of the trip.
+	//
+	// Max Length: 12
+	DepartTaxAmount string `json:"departTaxAmount,omitempty"`
+
+	// Departure date for the first leg of the trip.
+	// Format: `YYYYMMDD`.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	DepartureDate int64 `json:"departureDate,omitempty"`
+
+	// Time of departure for this leg of the trip. The format is military time and HHMM:
+	// If not all zeros, then the hours must be `00-23` and the minutes must be `00-59`.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	DepartureTime int64 `json:"departureTime,omitempty"`
+
+	// AM or PM for the departure time.
+	// Possible values:
+	// - A: 12:00 midnight to 11:59 a.m.
+	// - P: 12:00 noon to 11:59 p.m
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 1
+	DepartureTimeMeridian string `json:"departureTimeMeridian,omitempty"`
+
+	// IATA code for the destination airport for this leg of the trip.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 3
+	DestinationAirportCode string `json:"destinationAirportCode,omitempty"`
+
+	// Notes or notations about endorsements and restrictions for this leg of the trip.
+	// Endorsements can be notations added by the travel agency, including mandatory government-required notations such as value added tax.
+	// Restrictions are limitations for the ticket based on the type of fare, such as a nonrefundable ticket or a 3-day minimum stay.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 20
+	EndorsementsRestrictions string `json:"endorsementsRestrictions,omitempty"`
+
+	// New ticket number that is issued when the ticket is exchanged for this leg of the trip.
+	// Restrictions are limitations for the ticket based on the type of fare, such as a nonrefundable ticket or a 3-day minimum stay.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 25
+	ExchangeTicketNumber string `json:"exchangeTicketNumber,omitempty"`
+
+	// Code for the fare basis for this leg of the trip.
+	// The fare basis is assigned by the carriers and indicates a particular ticket type,
+	// such as business class or discounted/nonrefundable.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Format: English characters only.
+	// Optional request field for travel legs.auto_rental_regular_mileage_cost
+	//
+	// Max Length: 15
+	FareBasis string `json:"fareBasis,omitempty"`
+
+	// Fee for this leg of the trip, such as an airport fee or country fee.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 12
+	FeeAmount string `json:"feeAmount,omitempty"`
+
+	// Flight number for this leg of the trip.
+	// Restrictions are limitations for the ticket based on the type of fare, such as a nonrefundable ticket or a 3-day minimum stay.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 6
+	FlightNumber string `json:"flightNumber,omitempty"`
+
+	// IATA code for the originating airport for this leg of the trip.
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 5
+	OriginatingAirportCode string `json:"originatingAirportCode,omitempty"`
+
+	// Code that indicates whether a stopover is allowed on this leg of the trip. Possible values:
+	// - `O` (capital letter “O”) (default): Stopover allowed
+	// - `X` (capital letter “X”): Stopover not allowed
+	// Format: English characters only.
+	// Restricted string data type that indicates a sequence of letters, numbers, and spaces; special characters are not included.
+	// Optional request field for travel legs.
+	//
+	StopoverIndicator int64 `json:"stopoverIndicator,omitempty"`
+
+	// Tax for this leg of the trip.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 12
+	TaxAmount string `json:"taxAmount,omitempty"`
+
+	// Total fare for this leg of the trip.
+	// Format: English characters only.
+	// Optional request field for travel legs.
+	//
+	// Max Length: 15
+	TotalFareAmount string `json:"totalFareAmount,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information transit airline legs items0
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateArrivalTimeMeridian(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCarrierCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateClass(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateConjunctionTicket(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCouponNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDepartTaxAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDepartureTimeMeridian(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDestinationAirportCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateEndorsementsRestrictions(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateExchangeTicketNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateFareBasis(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateFeeAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateFlightNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateOriginatingAirportCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTaxAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTotalFareAmount(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateArrivalTimeMeridian(formats strfmt.Registry) error {
+	if swag.IsZero(o.ArrivalTimeMeridian) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("arrivalTimeMeridian", "body", o.ArrivalTimeMeridian, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateCarrierCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.CarrierCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("carrierCode", "body", o.CarrierCode, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateClass(formats strfmt.Registry) error {
+	if swag.IsZero(o.Class) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("class", "body", o.Class, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateConjunctionTicket(formats strfmt.Registry) error {
+	if swag.IsZero(o.ConjunctionTicket) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("conjunctionTicket", "body", o.ConjunctionTicket, 25); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateCouponNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.CouponNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("couponNumber", "body", o.CouponNumber, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateDepartTaxAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.DepartTaxAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("departTaxAmount", "body", o.DepartTaxAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateDepartureTimeMeridian(formats strfmt.Registry) error {
+	if swag.IsZero(o.DepartureTimeMeridian) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("departureTimeMeridian", "body", o.DepartureTimeMeridian, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateDestinationAirportCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.DestinationAirportCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("destinationAirportCode", "body", o.DestinationAirportCode, 3); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateEndorsementsRestrictions(formats strfmt.Registry) error {
+	if swag.IsZero(o.EndorsementsRestrictions) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("endorsementsRestrictions", "body", o.EndorsementsRestrictions, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateExchangeTicketNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.ExchangeTicketNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("exchangeTicketNumber", "body", o.ExchangeTicketNumber, 25); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateFareBasis(formats strfmt.Registry) error {
+	if swag.IsZero(o.FareBasis) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("fareBasis", "body", o.FareBasis, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateFeeAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.FeeAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("feeAmount", "body", o.FeeAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateFlightNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.FlightNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("flightNumber", "body", o.FlightNumber, 6); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateOriginatingAirportCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.OriginatingAirportCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("originatingAirportCode", "body", o.OriginatingAirportCode, 5); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateTaxAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TaxAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("taxAmount", "body", o.TaxAmount, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) validateTotalFareAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TotalFareAmount) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("totalFareAmount", "body", o.TotalFareAmount, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information transit airline legs items0 based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationTransitAirlineLegsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer capture payment params body travel information transit airline ticket issuer
+swagger:model CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer
+*/
+type CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer struct {
+
+	// Address of the company issuing the ticket.
+	//
+	// Max Length: 16
+	Address string `json:"address,omitempty"`
+
+	// State in which transaction occured.
+	//
+	// Max Length: 18
+	AdministrativeArea string `json:"administrativeArea,omitempty"`
+
+	// IATA2 airline code.
+	// Format: English characters only.
+	// Required for Mastercard; optional for all other card types.
+	//
+	// Max Length: 4
+	Code string `json:"code,omitempty"`
+
+	// Country in which transaction occured.
+	//
+	// Max Length: 18
+	Country string `json:"country,omitempty"`
+
+	// City in which the transaction occurred.
+	// If the name of the city exceeds 18 characters, use meaningful abbreviations.
+	// Format: English characters only.
+	// Optional request field.
+	//
+	// Max Length: 18
+	Locality string `json:"locality,omitempty"`
+
+	// Name of the ticket issuer. If you do not include this field,
+	// CyberSource uses the value for your merchant name that is in the CyberSource merchant configuration database.
+	//
+	// Max Length: 20
+	Name string `json:"name,omitempty"`
+
+	// Zip code of the city in which transaction occured.
+	//
+	// Max Length: 15
+	PostalCode string `json:"postalCode,omitempty"`
+}
+
+// Validate validates this capture payment params body travel information transit airline ticket issuer
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAddress(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateAdministrativeArea(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCountry(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLocality(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePostalCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) validateAddress(formats strfmt.Registry) error {
+	if swag.IsZero(o.Address) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssuer"+"."+"address", "body", o.Address, 16); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) validateAdministrativeArea(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdministrativeArea) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssuer"+"."+"administrativeArea", "body", o.AdministrativeArea, 18); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) validateCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.Code) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssuer"+"."+"code", "body", o.Code, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) validateCountry(formats strfmt.Registry) error {
+	if swag.IsZero(o.Country) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssuer"+"."+"country", "body", o.Country, 18); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) validateLocality(formats strfmt.Registry) error {
+	if swag.IsZero(o.Locality) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssuer"+"."+"locality", "body", o.Locality, 18); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) validateName(formats strfmt.Registry) error {
+	if swag.IsZero(o.Name) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssuer"+"."+"name", "body", o.Name, 20); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) validatePostalCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.PostalCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("capturePaymentRequest"+"."+"travelInformation"+"."+"transit"+"."+"airline"+"."+"ticketIssuer"+"."+"postalCode", "body", o.PostalCode, 15); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this capture payment params body travel information transit airline ticket issuer based on context it is used
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer) UnmarshalBinary(b []byte) error {
+	var res CapturePaymentParamsBodyTravelInformationTransitAirlineTicketIssuer
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

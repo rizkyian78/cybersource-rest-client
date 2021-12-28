@@ -16,59 +16,73 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetDTDV2Params creates a new GetDTDV2Params object
-// with the default values initialized.
+// NewGetDTDV2Params creates a new GetDTDV2Params object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetDTDV2Params() *GetDTDV2Params {
-	var ()
 	return &GetDTDV2Params{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetDTDV2ParamsWithTimeout creates a new GetDTDV2Params object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetDTDV2ParamsWithTimeout(timeout time.Duration) *GetDTDV2Params {
-	var ()
 	return &GetDTDV2Params{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetDTDV2ParamsWithContext creates a new GetDTDV2Params object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetDTDV2ParamsWithContext(ctx context.Context) *GetDTDV2Params {
-	var ()
 	return &GetDTDV2Params{
-
 		Context: ctx,
 	}
 }
 
 // NewGetDTDV2ParamsWithHTTPClient creates a new GetDTDV2Params object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetDTDV2ParamsWithHTTPClient(client *http.Client) *GetDTDV2Params {
-	var ()
 	return &GetDTDV2Params{
 		HTTPClient: client,
 	}
 }
 
-/*GetDTDV2Params contains all the parameters to send to the API endpoint
-for the get d t d v2 operation typically these are written to a http.Request
+/* GetDTDV2Params contains all the parameters to send to the API endpoint
+   for the get d t d v2 operation.
+
+   Typically these are written to a http.Request.
 */
 type GetDTDV2Params struct {
 
-	/*ReportDefinitionNameVersion
-	  Name and version of DTD file to download. Some DTDs only have one version. In that case version name is not needed. Some example values are ctdr-1.0, tdr, pbdr-1.1
+	/* ReportDefinitionNameVersion.
 
+	   Name and version of DTD file to download. Some DTDs only have one version. In that case version name is not needed. Some example values are ctdr-1.0, tdr, pbdr-1.1
 	*/
 	ReportDefinitionNameVersion string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get d t d v2 params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetDTDV2Params) WithDefaults() *GetDTDV2Params {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get d t d v2 params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetDTDV2Params) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get d t d v2 params

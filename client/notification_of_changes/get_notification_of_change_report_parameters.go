@@ -16,74 +16,93 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetNotificationOfChangeReportParams creates a new GetNotificationOfChangeReportParams object
-// with the default values initialized.
+// NewGetNotificationOfChangeReportParams creates a new GetNotificationOfChangeReportParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetNotificationOfChangeReportParams() *GetNotificationOfChangeReportParams {
-	var ()
 	return &GetNotificationOfChangeReportParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetNotificationOfChangeReportParamsWithTimeout creates a new GetNotificationOfChangeReportParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetNotificationOfChangeReportParamsWithTimeout(timeout time.Duration) *GetNotificationOfChangeReportParams {
-	var ()
 	return &GetNotificationOfChangeReportParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetNotificationOfChangeReportParamsWithContext creates a new GetNotificationOfChangeReportParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetNotificationOfChangeReportParamsWithContext(ctx context.Context) *GetNotificationOfChangeReportParams {
-	var ()
 	return &GetNotificationOfChangeReportParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetNotificationOfChangeReportParamsWithHTTPClient creates a new GetNotificationOfChangeReportParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetNotificationOfChangeReportParamsWithHTTPClient(client *http.Client) *GetNotificationOfChangeReportParams {
-	var ()
 	return &GetNotificationOfChangeReportParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetNotificationOfChangeReportParams contains all the parameters to send to the API endpoint
-for the get notification of change report operation typically these are written to a http.Request
+/* GetNotificationOfChangeReportParams contains all the parameters to send to the API endpoint
+   for the get notification of change report operation.
+
+   Typically these are written to a http.Request.
 */
 type GetNotificationOfChangeReportParams struct {
 
-	/*EndTime
-	  Valid report End Time in **ISO 8601 format**
+	/* EndTime.
+
+	     Valid report End Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	EndTime strfmt.DateTime
-	/*StartTime
-	  Valid report Start Time in **ISO 8601 format**
+
+	/* StartTime.
+
+	     Valid report Start Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	StartTime strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get notification of change report params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetNotificationOfChangeReportParams) WithDefaults() *GetNotificationOfChangeReportParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get notification of change report params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetNotificationOfChangeReportParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get notification of change report params
@@ -153,6 +172,7 @@ func (o *GetNotificationOfChangeReportParams) WriteToRequest(r runtime.ClientReq
 	qrEndTime := o.EndTime
 	qEndTime := qrEndTime.String()
 	if qEndTime != "" {
+
 		if err := r.SetQueryParam("endTime", qEndTime); err != nil {
 			return err
 		}
@@ -162,6 +182,7 @@ func (o *GetNotificationOfChangeReportParams) WriteToRequest(r runtime.ClientReq
 	qrStartTime := o.StartTime
 	qStartTime := qrStartTime.String()
 	if qStartTime != "" {
+
 		if err := r.SetQueryParam("startTime", qStartTime); err != nil {
 			return err
 		}

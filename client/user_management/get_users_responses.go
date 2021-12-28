@@ -6,6 +6,7 @@ package user_management
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *GetUsersReader) ReadResponse(response runtime.ClientResponse, consumer 
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewGetUsersOK() *GetUsersOK {
 	return &GetUsersOK{}
 }
 
-/*GetUsersOK handles this case with default header values.
+/* GetUsersOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -65,7 +65,6 @@ type GetUsersOK struct {
 func (o *GetUsersOK) Error() string {
 	return fmt.Sprintf("[GET /ums/v1/users][%d] getUsersOK  %+v", 200, o.Payload)
 }
-
 func (o *GetUsersOK) GetPayload() *GetUsersOKBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewGetUsersBadRequest() *GetUsersBadRequest {
 	return &GetUsersBadRequest{}
 }
 
-/*GetUsersBadRequest handles this case with default header values.
+/* GetUsersBadRequest describes a response with status code 400, with default header values.
 
 Invalid request.
 */
@@ -98,7 +97,6 @@ type GetUsersBadRequest struct {
 func (o *GetUsersBadRequest) Error() string {
 	return fmt.Sprintf("[GET /ums/v1/users][%d] getUsersBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *GetUsersBadRequest) GetPayload() *GetUsersBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewGetUsersInternalServerError() *GetUsersInternalServerError {
 	return &GetUsersInternalServerError{}
 }
 
-/*GetUsersInternalServerError handles this case with default header values.
+/* GetUsersInternalServerError describes a response with status code 500, with default header values.
 
 Unexpected server error.
 */
@@ -136,53 +134,13 @@ func (o *GetUsersInternalServerError) readResponse(response runtime.ClientRespon
 	return nil
 }
 
-/*DetailsItems0 details items0
-swagger:model DetailsItems0
-*/
-type DetailsItems0 struct {
-
-	// This is the flattened JSON object field name/path that is either missing or invalid.
-	Field string `json:"field,omitempty"`
-
-	// Possible reasons for the error.
-	//
-	// Possible values:
-	//  - MISSING_FIELD
-	//  - INVALID_DATA
-	//
-	Reason string `json:"reason,omitempty"`
-}
-
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
 /*GetUsersBadRequestBody umsV1UsersGet400Response
 swagger:model GetUsersBadRequestBody
 */
 type GetUsersBadRequestBody struct {
 
 	// details
-	Details []*DetailsItems0 `json:"details"`
+	Details []*GetUsersBadRequestBodyDetailsItems0 `json:"details"`
 
 	// The detail message related to the status and reason listed above.
 	Message string `json:"message,omitempty"`
@@ -209,8 +167,10 @@ type GetUsersBadRequestBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -230,7 +190,6 @@ func (o *GetUsersBadRequestBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *GetUsersBadRequestBody) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -244,6 +203,42 @@ func (o *GetUsersBadRequestBody) validateDetails(formats strfmt.Registry) error 
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getUsersBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getUsersBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get users bad request body based on the context it is used
+func (o *GetUsersBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetUsersBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getUsersBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getUsersBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -272,13 +267,59 @@ func (o *GetUsersBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*GetUsersBadRequestBodyDetailsItems0 get users bad request body details items0
+swagger:model GetUsersBadRequestBodyDetailsItems0
+*/
+type GetUsersBadRequestBodyDetailsItems0 struct {
+
+	// This is the flattened JSON object field name/path that is either missing or invalid.
+	Field string `json:"field,omitempty"`
+
+	// Possible reasons for the error.
+	//
+	// Possible values:
+	//  - MISSING_FIELD
+	//  - INVALID_DATA
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this get users bad request body details items0
+func (o *GetUsersBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get users bad request body details items0 based on context it is used
+func (o *GetUsersBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetUsersBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetUsersBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res GetUsersBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*GetUsersOKBody umsV1UsersGet200Response
+// Example: {"users":[{"accountInformation":{"createdTime":"2018-06-14T19:45:52.093Z","languagePreference":"en-US","lastAccessTime":"2018-06-14T19:45:52.093Z","permissions":["ReportViewPermission","ReportGeneratePermission"],"roleId":"admin","status":"active","timezone":"America/Los_Angeles","userName":"auto_nonmember"},"contactInformation":{"email":"auto_nonmember@exchange.com","firstName":"Zeta","lastName":"DMH","phoneNumber":"4445551234"},"customFields":{"department":"map","employeeDesignation":"abc","employeeId":"12344","employeeName":"John Doe","zone":"NA"},"organizationInformation":{"organizationId":"auto_nonmember"}}]}
 swagger:model GetUsersOKBody
 */
 type GetUsersOKBody struct {
 
 	// users
-	Users []*UsersItems0 `json:"users"`
+	Users []*GetUsersOKBodyUsersItems0 `json:"users"`
 }
 
 // Validate validates this get users o k body
@@ -296,7 +337,6 @@ func (o *GetUsersOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *GetUsersOKBody) validateUsers(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Users) { // not required
 		return nil
 	}
@@ -310,6 +350,42 @@ func (o *GetUsersOKBody) validateUsers(formats strfmt.Registry) error {
 			if err := o.Users[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getUsersOK" + "." + "users" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getUsersOK" + "." + "users" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get users o k body based on the context it is used
+func (o *GetUsersOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateUsers(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetUsersOKBody) contextValidateUsers(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Users); i++ {
+
+		if o.Users[i] != nil {
+			if err := o.Users[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getUsersOK" + "." + "users" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getUsersOK" + "." + "users" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -338,26 +414,26 @@ func (o *GetUsersOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UsersItems0 users items0
-swagger:model UsersItems0
+/*GetUsersOKBodyUsersItems0 get users o k body users items0
+swagger:model GetUsersOKBodyUsersItems0
 */
-type UsersItems0 struct {
+type GetUsersOKBodyUsersItems0 struct {
 
 	// account information
-	AccountInformation *UsersItems0AccountInformation `json:"accountInformation,omitempty"`
+	AccountInformation *GetUsersOKBodyUsersItems0AccountInformation `json:"accountInformation,omitempty"`
 
 	// contact information
-	ContactInformation *UsersItems0ContactInformation `json:"contactInformation,omitempty"`
+	ContactInformation *GetUsersOKBodyUsersItems0ContactInformation `json:"contactInformation,omitempty"`
 
 	// custom fields
 	CustomFields map[string]string `json:"customFields,omitempty"`
 
 	// organization information
-	OrganizationInformation *UsersItems0OrganizationInformation `json:"organizationInformation,omitempty"`
+	OrganizationInformation *GetUsersOKBodyUsersItems0OrganizationInformation `json:"organizationInformation,omitempty"`
 }
 
-// Validate validates this users items0
-func (o *UsersItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this get users o k body users items0
+func (o *GetUsersOKBodyUsersItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateAccountInformation(formats); err != nil {
@@ -378,8 +454,7 @@ func (o *UsersItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *UsersItems0) validateAccountInformation(formats strfmt.Registry) error {
-
+func (o *GetUsersOKBodyUsersItems0) validateAccountInformation(formats strfmt.Registry) error {
 	if swag.IsZero(o.AccountInformation) { // not required
 		return nil
 	}
@@ -388,6 +463,8 @@ func (o *UsersItems0) validateAccountInformation(formats strfmt.Registry) error 
 		if err := o.AccountInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("accountInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("accountInformation")
 			}
 			return err
 		}
@@ -396,8 +473,7 @@ func (o *UsersItems0) validateAccountInformation(formats strfmt.Registry) error 
 	return nil
 }
 
-func (o *UsersItems0) validateContactInformation(formats strfmt.Registry) error {
-
+func (o *GetUsersOKBodyUsersItems0) validateContactInformation(formats strfmt.Registry) error {
 	if swag.IsZero(o.ContactInformation) { // not required
 		return nil
 	}
@@ -406,6 +482,8 @@ func (o *UsersItems0) validateContactInformation(formats strfmt.Registry) error 
 		if err := o.ContactInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("contactInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("contactInformation")
 			}
 			return err
 		}
@@ -414,8 +492,7 @@ func (o *UsersItems0) validateContactInformation(formats strfmt.Registry) error 
 	return nil
 }
 
-func (o *UsersItems0) validateOrganizationInformation(formats strfmt.Registry) error {
-
+func (o *GetUsersOKBodyUsersItems0) validateOrganizationInformation(formats strfmt.Registry) error {
 	if swag.IsZero(o.OrganizationInformation) { // not required
 		return nil
 	}
@@ -424,6 +501,78 @@ func (o *UsersItems0) validateOrganizationInformation(formats strfmt.Registry) e
 		if err := o.OrganizationInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("organizationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("organizationInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get users o k body users items0 based on the context it is used
+func (o *GetUsersOKBodyUsersItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAccountInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateContactInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrganizationInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetUsersOKBodyUsersItems0) contextValidateAccountInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AccountInformation != nil {
+		if err := o.AccountInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("accountInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("accountInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *GetUsersOKBodyUsersItems0) contextValidateContactInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ContactInformation != nil {
+		if err := o.ContactInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("contactInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("contactInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *GetUsersOKBodyUsersItems0) contextValidateOrganizationInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrganizationInformation != nil {
+		if err := o.OrganizationInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("organizationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("organizationInformation")
 			}
 			return err
 		}
@@ -433,7 +582,7 @@ func (o *UsersItems0) validateOrganizationInformation(formats strfmt.Registry) e
 }
 
 // MarshalBinary interface implementation
-func (o *UsersItems0) MarshalBinary() ([]byte, error) {
+func (o *GetUsersOKBodyUsersItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -441,8 +590,8 @@ func (o *UsersItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UsersItems0) UnmarshalBinary(b []byte) error {
-	var res UsersItems0
+func (o *GetUsersOKBodyUsersItems0) UnmarshalBinary(b []byte) error {
+	var res GetUsersOKBodyUsersItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -450,10 +599,10 @@ func (o *UsersItems0) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UsersItems0AccountInformation users items0 account information
-swagger:model UsersItems0AccountInformation
+/*GetUsersOKBodyUsersItems0AccountInformation get users o k body users items0 account information
+swagger:model GetUsersOKBodyUsersItems0AccountInformation
 */
-type UsersItems0AccountInformation struct {
+type GetUsersOKBodyUsersItems0AccountInformation struct {
 
 	// created time
 	// Format: date-time
@@ -489,8 +638,8 @@ type UsersItems0AccountInformation struct {
 	UserName string `json:"userName,omitempty"`
 }
 
-// Validate validates this users items0 account information
-func (o *UsersItems0AccountInformation) Validate(formats strfmt.Registry) error {
+// Validate validates this get users o k body users items0 account information
+func (o *GetUsersOKBodyUsersItems0AccountInformation) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateCreatedTime(formats); err != nil {
@@ -507,8 +656,7 @@ func (o *UsersItems0AccountInformation) Validate(formats strfmt.Registry) error 
 	return nil
 }
 
-func (o *UsersItems0AccountInformation) validateCreatedTime(formats strfmt.Registry) error {
-
+func (o *GetUsersOKBodyUsersItems0AccountInformation) validateCreatedTime(formats strfmt.Registry) error {
 	if swag.IsZero(o.CreatedTime) { // not required
 		return nil
 	}
@@ -520,8 +668,7 @@ func (o *UsersItems0AccountInformation) validateCreatedTime(formats strfmt.Regis
 	return nil
 }
 
-func (o *UsersItems0AccountInformation) validateLastAccessTime(formats strfmt.Registry) error {
-
+func (o *GetUsersOKBodyUsersItems0AccountInformation) validateLastAccessTime(formats strfmt.Registry) error {
 	if swag.IsZero(o.LastAccessTime) { // not required
 		return nil
 	}
@@ -533,8 +680,13 @@ func (o *UsersItems0AccountInformation) validateLastAccessTime(formats strfmt.Re
 	return nil
 }
 
+// ContextValidate validates this get users o k body users items0 account information based on context it is used
+func (o *GetUsersOKBodyUsersItems0AccountInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (o *UsersItems0AccountInformation) MarshalBinary() ([]byte, error) {
+func (o *GetUsersOKBodyUsersItems0AccountInformation) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -542,8 +694,8 @@ func (o *UsersItems0AccountInformation) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UsersItems0AccountInformation) UnmarshalBinary(b []byte) error {
-	var res UsersItems0AccountInformation
+func (o *GetUsersOKBodyUsersItems0AccountInformation) UnmarshalBinary(b []byte) error {
+	var res GetUsersOKBodyUsersItems0AccountInformation
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -551,10 +703,10 @@ func (o *UsersItems0AccountInformation) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UsersItems0ContactInformation users items0 contact information
-swagger:model UsersItems0ContactInformation
+/*GetUsersOKBodyUsersItems0ContactInformation get users o k body users items0 contact information
+swagger:model GetUsersOKBodyUsersItems0ContactInformation
 */
-type UsersItems0ContactInformation struct {
+type GetUsersOKBodyUsersItems0ContactInformation struct {
 
 	// email
 	Email string `json:"email,omitempty"`
@@ -569,13 +721,18 @@ type UsersItems0ContactInformation struct {
 	PhoneNumber string `json:"phoneNumber,omitempty"`
 }
 
-// Validate validates this users items0 contact information
-func (o *UsersItems0ContactInformation) Validate(formats strfmt.Registry) error {
+// Validate validates this get users o k body users items0 contact information
+func (o *GetUsersOKBodyUsersItems0ContactInformation) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get users o k body users items0 contact information based on context it is used
+func (o *GetUsersOKBodyUsersItems0ContactInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *UsersItems0ContactInformation) MarshalBinary() ([]byte, error) {
+func (o *GetUsersOKBodyUsersItems0ContactInformation) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -583,8 +740,8 @@ func (o *UsersItems0ContactInformation) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UsersItems0ContactInformation) UnmarshalBinary(b []byte) error {
-	var res UsersItems0ContactInformation
+func (o *GetUsersOKBodyUsersItems0ContactInformation) UnmarshalBinary(b []byte) error {
+	var res GetUsersOKBodyUsersItems0ContactInformation
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -592,22 +749,27 @@ func (o *UsersItems0ContactInformation) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*UsersItems0OrganizationInformation users items0 organization information
-swagger:model UsersItems0OrganizationInformation
+/*GetUsersOKBodyUsersItems0OrganizationInformation get users o k body users items0 organization information
+swagger:model GetUsersOKBodyUsersItems0OrganizationInformation
 */
-type UsersItems0OrganizationInformation struct {
+type GetUsersOKBodyUsersItems0OrganizationInformation struct {
 
 	// organization Id
 	OrganizationID string `json:"organizationId,omitempty"`
 }
 
-// Validate validates this users items0 organization information
-func (o *UsersItems0OrganizationInformation) Validate(formats strfmt.Registry) error {
+// Validate validates this get users o k body users items0 organization information
+func (o *GetUsersOKBodyUsersItems0OrganizationInformation) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get users o k body users items0 organization information based on context it is used
+func (o *GetUsersOKBodyUsersItems0OrganizationInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *UsersItems0OrganizationInformation) MarshalBinary() ([]byte, error) {
+func (o *GetUsersOKBodyUsersItems0OrganizationInformation) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -615,8 +777,8 @@ func (o *UsersItems0OrganizationInformation) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *UsersItems0OrganizationInformation) UnmarshalBinary(b []byte) error {
-	var res UsersItems0OrganizationInformation
+func (o *GetUsersOKBodyUsersItems0OrganizationInformation) UnmarshalBinary(b []byte) error {
+	var res GetUsersOKBodyUsersItems0OrganizationInformation
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

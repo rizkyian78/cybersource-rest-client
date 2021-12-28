@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetFileParams creates a new GetFileParams object
-// with the default values initialized.
+// NewGetFileParams creates a new GetFileParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetFileParams() *GetFileParams {
-	var ()
 	return &GetFileParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetFileParamsWithTimeout creates a new GetFileParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetFileParamsWithTimeout(timeout time.Duration) *GetFileParams {
-	var ()
 	return &GetFileParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetFileParamsWithContext creates a new GetFileParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetFileParamsWithContext(ctx context.Context) *GetFileParams {
-	var ()
 	return &GetFileParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetFileParamsWithHTTPClient creates a new GetFileParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetFileParamsWithHTTPClient(client *http.Client) *GetFileParams {
-	var ()
 	return &GetFileParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetFileParams contains all the parameters to send to the API endpoint
-for the get file operation typically these are written to a http.Request
+/* GetFileParams contains all the parameters to send to the API endpoint
+   for the get file operation.
+
+   Typically these are written to a http.Request.
 */
 type GetFileParams struct {
 
-	/*FileID
-	  Unique identifier for each file
+	/* FileID.
 
+	   Unique identifier for each file
 	*/
 	FileID string
-	/*OrganizationID
-	  Valid Cybersource Organization Id
 
+	/* OrganizationID.
+
+	   Valid Cybersource Organization Id
 	*/
 	OrganizationID *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get file params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetFileParams) WithDefaults() *GetFileParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get file params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetFileParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get file params
@@ -148,16 +163,17 @@ func (o *GetFileParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

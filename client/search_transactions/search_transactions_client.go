@@ -25,11 +25,14 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateSearch(params *CreateSearchParams) (*CreateSearchCreated, error)
+	CreateSearch(params *CreateSearchParams, opts ...ClientOption) (*CreateSearchCreated, error)
 
-	GetSearch(params *GetSearchParams) (*GetSearchOK, error)
+	GetSearch(params *GetSearchParams, opts ...ClientOption) (*GetSearchOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -40,13 +43,12 @@ type ClientService interface {
   Create a search request.
 
 */
-func (a *Client) CreateSearch(params *CreateSearchParams) (*CreateSearchCreated, error) {
+func (a *Client) CreateSearch(params *CreateSearchParams, opts ...ClientOption) (*CreateSearchCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateSearchParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "createSearch",
 		Method:             "POST",
 		PathPattern:        "/tss/v2/searches",
@@ -57,7 +59,12 @@ func (a *Client) CreateSearch(params *CreateSearchParams) (*CreateSearchCreated,
 		Reader:             &CreateSearchReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -76,24 +83,28 @@ func (a *Client) CreateSearch(params *CreateSearchParams) (*CreateSearchCreated,
 
   Include the Search ID in the GET request to retrieve the search results.
 */
-func (a *Client) GetSearch(params *GetSearchParams) (*GetSearchOK, error) {
+func (a *Client) GetSearch(params *GetSearchParams, opts ...ClientOption) (*GetSearchOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetSearchParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getSearch",
 		Method:             "GET",
 		PathPattern:        "/tss/v2/searches/{searchId}",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ProducesMediaTypes: []string{"*/*"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &GetSearchReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetPaymentInstrumentParams creates a new GetPaymentInstrumentParams object
-// with the default values initialized.
+// NewGetPaymentInstrumentParams creates a new GetPaymentInstrumentParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetPaymentInstrumentParams() *GetPaymentInstrumentParams {
-	var ()
 	return &GetPaymentInstrumentParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetPaymentInstrumentParamsWithTimeout creates a new GetPaymentInstrumentParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetPaymentInstrumentParamsWithTimeout(timeout time.Duration) *GetPaymentInstrumentParams {
-	var ()
 	return &GetPaymentInstrumentParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetPaymentInstrumentParamsWithContext creates a new GetPaymentInstrumentParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetPaymentInstrumentParamsWithContext(ctx context.Context) *GetPaymentInstrumentParams {
-	var ()
 	return &GetPaymentInstrumentParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetPaymentInstrumentParamsWithHTTPClient creates a new GetPaymentInstrumentParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetPaymentInstrumentParamsWithHTTPClient(client *http.Client) *GetPaymentInstrumentParams {
-	var ()
 	return &GetPaymentInstrumentParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetPaymentInstrumentParams contains all the parameters to send to the API endpoint
-for the get payment instrument operation typically these are written to a http.Request
+/* GetPaymentInstrumentParams contains all the parameters to send to the API endpoint
+   for the get payment instrument operation.
+
+   Typically these are written to a http.Request.
 */
 type GetPaymentInstrumentParams struct {
 
-	/*ProfileID
-	  The id of a profile containing user specific TMS configuration.
+	/* PaymentInstrumentTokenID.
 
+	   The TokenId of a payment instrument.
 	*/
-	ProfileID string
-	/*TokenID
-	  The TokenId of a Payment Instrument.
+	PaymentInstrumentTokenID string
 
+	/* ProfileID.
+
+	   The id of a profile containing user specific TMS configuration.
 	*/
-	TokenID string
+	ProfileID *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get payment instrument params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPaymentInstrumentParams) WithDefaults() *GetPaymentInstrumentParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get payment instrument params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPaymentInstrumentParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get payment instrument params
@@ -109,26 +124,26 @@ func (o *GetPaymentInstrumentParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithPaymentInstrumentTokenID adds the paymentInstrumentTokenID to the get payment instrument params
+func (o *GetPaymentInstrumentParams) WithPaymentInstrumentTokenID(paymentInstrumentTokenID string) *GetPaymentInstrumentParams {
+	o.SetPaymentInstrumentTokenID(paymentInstrumentTokenID)
+	return o
+}
+
+// SetPaymentInstrumentTokenID adds the paymentInstrumentTokenId to the get payment instrument params
+func (o *GetPaymentInstrumentParams) SetPaymentInstrumentTokenID(paymentInstrumentTokenID string) {
+	o.PaymentInstrumentTokenID = paymentInstrumentTokenID
+}
+
 // WithProfileID adds the profileID to the get payment instrument params
-func (o *GetPaymentInstrumentParams) WithProfileID(profileID string) *GetPaymentInstrumentParams {
+func (o *GetPaymentInstrumentParams) WithProfileID(profileID *string) *GetPaymentInstrumentParams {
 	o.SetProfileID(profileID)
 	return o
 }
 
 // SetProfileID adds the profileId to the get payment instrument params
-func (o *GetPaymentInstrumentParams) SetProfileID(profileID string) {
+func (o *GetPaymentInstrumentParams) SetProfileID(profileID *string) {
 	o.ProfileID = profileID
-}
-
-// WithTokenID adds the tokenID to the get payment instrument params
-func (o *GetPaymentInstrumentParams) WithTokenID(tokenID string) *GetPaymentInstrumentParams {
-	o.SetTokenID(tokenID)
-	return o
-}
-
-// SetTokenID adds the tokenId to the get payment instrument params
-func (o *GetPaymentInstrumentParams) SetTokenID(tokenID string) {
-	o.TokenID = tokenID
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -139,14 +154,17 @@ func (o *GetPaymentInstrumentParams) WriteToRequest(r runtime.ClientRequest, reg
 	}
 	var res []error
 
-	// header param profile-id
-	if err := r.SetHeaderParam("profile-id", o.ProfileID); err != nil {
+	// path param paymentInstrumentTokenId
+	if err := r.SetPathParam("paymentInstrumentTokenId", o.PaymentInstrumentTokenID); err != nil {
 		return err
 	}
 
-	// path param tokenId
-	if err := r.SetPathParam("tokenId", o.TokenID); err != nil {
-		return err
+	if o.ProfileID != nil {
+
+		// header param profile-id
+		if err := r.SetHeaderParam("profile-id", *o.ProfileID); err != nil {
+			return err
+		}
 	}
 
 	if len(res) > 0 {

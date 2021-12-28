@@ -6,6 +6,7 @@ package secure_file_share
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *GetFileReader) ReadResponse(response runtime.ClientResponse, consumer r
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewGetFileOK() *GetFileOK {
 	return &GetFileOK{}
 }
 
-/*GetFileOK handles this case with default header values.
+/* GetFileOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -75,7 +75,7 @@ func NewGetFileBadRequest() *GetFileBadRequest {
 	return &GetFileBadRequest{}
 }
 
-/*GetFileBadRequest handles this case with default header values.
+/* GetFileBadRequest describes a response with status code 400, with default header values.
 
 Invalid Request
 */
@@ -86,7 +86,6 @@ type GetFileBadRequest struct {
 func (o *GetFileBadRequest) Error() string {
 	return fmt.Sprintf("[GET /sfs/v1/files/{fileId}][%d] getFileBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *GetFileBadRequest) GetPayload() *GetFileBadRequestBody {
 	return o.Payload
 }
@@ -108,7 +107,7 @@ func NewGetFileNotFound() *GetFileNotFound {
 	return &GetFileNotFound{}
 }
 
-/*GetFileNotFound handles this case with default header values.
+/* GetFileNotFound describes a response with status code 404, with default header values.
 
 No Reports Found
 */
@@ -121,44 +120,6 @@ func (o *GetFileNotFound) Error() string {
 
 func (o *GetFileNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	return nil
-}
-
-/*FieldsItems0 Provide validation failed input field details
-swagger:model FieldsItems0
-*/
-type FieldsItems0 struct {
-
-	// Localized Key Name
-	LocalizationKey string `json:"localizationKey,omitempty"`
-
-	// Error description about validation failed field
-	Message string `json:"message,omitempty"`
-
-	// Path of the failed property
-	Path string `json:"path,omitempty"`
-}
-
-// Validate validates this fields items0
-func (o *FieldsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FieldsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FieldsItems0) UnmarshalBinary(b []byte) error {
-	var res FieldsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }
 
@@ -178,7 +139,7 @@ type GetFileBadRequestBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*FieldsItems0 `json:"fields"`
+	Fields []*GetFileBadRequestBodyFieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -220,7 +181,6 @@ func (o *GetFileBadRequestBody) validateCode(formats strfmt.Registry) error {
 }
 
 func (o *GetFileBadRequestBody) validateFields(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Fields) { // not required
 		return nil
 	}
@@ -234,6 +194,8 @@ func (o *GetFileBadRequestBody) validateFields(formats strfmt.Registry) error {
 			if err := o.Fields[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getFileBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -253,6 +215,40 @@ func (o *GetFileBadRequestBody) validateMessage(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validate this get file bad request body based on the context it is used
+func (o *GetFileBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFields(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileBadRequestBody) contextValidateFields(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Fields); i++ {
+
+		if o.Fields[i] != nil {
+			if err := o.Fields[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getFileBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetFileBadRequestBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -264,6 +260,49 @@ func (o *GetFileBadRequestBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *GetFileBadRequestBody) UnmarshalBinary(b []byte) error {
 	var res GetFileBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetFileBadRequestBodyFieldsItems0 Provide validation failed input field details
+swagger:model GetFileBadRequestBodyFieldsItems0
+*/
+type GetFileBadRequestBodyFieldsItems0 struct {
+
+	// Localized Key Name
+	LocalizationKey string `json:"localizationKey,omitempty"`
+
+	// Error description about validation failed field
+	Message string `json:"message,omitempty"`
+
+	// Path of the failed property
+	Path string `json:"path,omitempty"`
+}
+
+// Validate validates this get file bad request body fields items0
+func (o *GetFileBadRequestBodyFieldsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get file bad request body fields items0 based on context it is used
+func (o *GetFileBadRequestBodyFieldsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetFileBadRequestBodyFieldsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetFileBadRequestBodyFieldsItems0) UnmarshalBinary(b []byte) error {
+	var res GetFileBadRequestBodyFieldsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -44,9 +44,8 @@ func (o *GetXSDV2Reader) ReadResponse(response runtime.ClientResponse, consumer 
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -55,7 +54,7 @@ func NewGetXSDV2OK() *GetXSDV2OK {
 	return &GetXSDV2OK{}
 }
 
-/*GetXSDV2OK handles this case with default header values.
+/* GetXSDV2OK describes a response with status code 200, with default header values.
 
 Ok
 */
@@ -63,7 +62,7 @@ type GetXSDV2OK struct {
 }
 
 func (o *GetXSDV2OK) Error() string {
-	return fmt.Sprintf("[GET /xsds/{reportDefinitionNameVersion}][%d] getXSDV2OK ", 200)
+	return fmt.Sprintf("[GET /reporting/v3/xsds/{reportDefinitionNameVersion}][%d] getXSDV2OK ", 200)
 }
 
 func (o *GetXSDV2OK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -76,7 +75,7 @@ func NewGetXSDV2BadRequest() *GetXSDV2BadRequest {
 	return &GetXSDV2BadRequest{}
 }
 
-/*GetXSDV2BadRequest handles this case with default header values.
+/* GetXSDV2BadRequest describes a response with status code 400, with default header values.
 
 Bad request. XSD file name may be invalid
 */
@@ -84,7 +83,7 @@ type GetXSDV2BadRequest struct {
 }
 
 func (o *GetXSDV2BadRequest) Error() string {
-	return fmt.Sprintf("[GET /xsds/{reportDefinitionNameVersion}][%d] getXSDV2BadRequest ", 400)
+	return fmt.Sprintf("[GET /reporting/v3/xsds/{reportDefinitionNameVersion}][%d] getXSDV2BadRequest ", 400)
 }
 
 func (o *GetXSDV2BadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -97,7 +96,7 @@ func NewGetXSDV2NotFound() *GetXSDV2NotFound {
 	return &GetXSDV2NotFound{}
 }
 
-/*GetXSDV2NotFound handles this case with default header values.
+/* GetXSDV2NotFound describes a response with status code 404, with default header values.
 
 XSD file not found
 */
@@ -105,7 +104,7 @@ type GetXSDV2NotFound struct {
 }
 
 func (o *GetXSDV2NotFound) Error() string {
-	return fmt.Sprintf("[GET /xsds/{reportDefinitionNameVersion}][%d] getXSDV2NotFound ", 404)
+	return fmt.Sprintf("[GET /reporting/v3/xsds/{reportDefinitionNameVersion}][%d] getXSDV2NotFound ", 404)
 }
 
 func (o *GetXSDV2NotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -118,7 +117,7 @@ func NewGetXSDV2InternalServerError() *GetXSDV2InternalServerError {
 	return &GetXSDV2InternalServerError{}
 }
 
-/*GetXSDV2InternalServerError handles this case with default header values.
+/* GetXSDV2InternalServerError describes a response with status code 500, with default header values.
 
 Internal Server Error
 */
@@ -126,7 +125,7 @@ type GetXSDV2InternalServerError struct {
 }
 
 func (o *GetXSDV2InternalServerError) Error() string {
-	return fmt.Sprintf("[GET /xsds/{reportDefinitionNameVersion}][%d] getXSDV2InternalServerError ", 500)
+	return fmt.Sprintf("[GET /reporting/v3/xsds/{reportDefinitionNameVersion}][%d] getXSDV2InternalServerError ", 500)
 }
 
 func (o *GetXSDV2InternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

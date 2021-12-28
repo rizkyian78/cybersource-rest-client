@@ -44,9 +44,8 @@ func (o *GetDTDV2Reader) ReadResponse(response runtime.ClientResponse, consumer 
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -55,7 +54,7 @@ func NewGetDTDV2OK() *GetDTDV2OK {
 	return &GetDTDV2OK{}
 }
 
-/*GetDTDV2OK handles this case with default header values.
+/* GetDTDV2OK describes a response with status code 200, with default header values.
 
 Ok
 */
@@ -63,7 +62,7 @@ type GetDTDV2OK struct {
 }
 
 func (o *GetDTDV2OK) Error() string {
-	return fmt.Sprintf("[GET /dtds/{reportDefinitionNameVersion}][%d] getDTDV2OK ", 200)
+	return fmt.Sprintf("[GET /reporting/v3/dtds/{reportDefinitionNameVersion}][%d] getDTDV2OK ", 200)
 }
 
 func (o *GetDTDV2OK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -76,7 +75,7 @@ func NewGetDTDV2BadRequest() *GetDTDV2BadRequest {
 	return &GetDTDV2BadRequest{}
 }
 
-/*GetDTDV2BadRequest handles this case with default header values.
+/* GetDTDV2BadRequest describes a response with status code 400, with default header values.
 
 Bad request. DTD file name may be invalid
 */
@@ -84,7 +83,7 @@ type GetDTDV2BadRequest struct {
 }
 
 func (o *GetDTDV2BadRequest) Error() string {
-	return fmt.Sprintf("[GET /dtds/{reportDefinitionNameVersion}][%d] getDTDV2BadRequest ", 400)
+	return fmt.Sprintf("[GET /reporting/v3/dtds/{reportDefinitionNameVersion}][%d] getDTDV2BadRequest ", 400)
 }
 
 func (o *GetDTDV2BadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -97,7 +96,7 @@ func NewGetDTDV2NotFound() *GetDTDV2NotFound {
 	return &GetDTDV2NotFound{}
 }
 
-/*GetDTDV2NotFound handles this case with default header values.
+/* GetDTDV2NotFound describes a response with status code 404, with default header values.
 
 DTD file not found
 */
@@ -105,7 +104,7 @@ type GetDTDV2NotFound struct {
 }
 
 func (o *GetDTDV2NotFound) Error() string {
-	return fmt.Sprintf("[GET /dtds/{reportDefinitionNameVersion}][%d] getDTDV2NotFound ", 404)
+	return fmt.Sprintf("[GET /reporting/v3/dtds/{reportDefinitionNameVersion}][%d] getDTDV2NotFound ", 404)
 }
 
 func (o *GetDTDV2NotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -118,7 +117,7 @@ func NewGetDTDV2InternalServerError() *GetDTDV2InternalServerError {
 	return &GetDTDV2InternalServerError{}
 }
 
-/*GetDTDV2InternalServerError handles this case with default header values.
+/* GetDTDV2InternalServerError describes a response with status code 500, with default header values.
 
 Internal Server Error
 */
@@ -126,7 +125,7 @@ type GetDTDV2InternalServerError struct {
 }
 
 func (o *GetDTDV2InternalServerError) Error() string {
-	return fmt.Sprintf("[GET /dtds/{reportDefinitionNameVersion}][%d] getDTDV2InternalServerError ", 500)
+	return fmt.Sprintf("[GET /reporting/v3/dtds/{reportDefinitionNameVersion}][%d] getDTDV2InternalServerError ", 500)
 }
 
 func (o *GetDTDV2InternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

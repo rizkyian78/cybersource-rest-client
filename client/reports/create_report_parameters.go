@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewCreateReportParams creates a new CreateReportParams object
-// with the default values initialized.
+// NewCreateReportParams creates a new CreateReportParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCreateReportParams() *CreateReportParams {
-	var ()
 	return &CreateReportParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCreateReportParamsWithTimeout creates a new CreateReportParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCreateReportParamsWithTimeout(timeout time.Duration) *CreateReportParams {
-	var ()
 	return &CreateReportParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCreateReportParamsWithContext creates a new CreateReportParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCreateReportParamsWithContext(ctx context.Context) *CreateReportParams {
-	var ()
 	return &CreateReportParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCreateReportParamsWithHTTPClient creates a new CreateReportParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCreateReportParamsWithHTTPClient(client *http.Client) *CreateReportParams {
-	var ()
 	return &CreateReportParams{
 		HTTPClient: client,
 	}
 }
 
-/*CreateReportParams contains all the parameters to send to the API endpoint
-for the create report operation typically these are written to a http.Request
+/* CreateReportParams contains all the parameters to send to the API endpoint
+   for the create report operation.
+
+   Typically these are written to a http.Request.
 */
 type CreateReportParams struct {
 
-	/*OrganizationID
-	  Valid Cybersource Organization Id
+	/* CreateAdhocReportRequest.
 
+	   Report subscription request payload
+	*/
+	CreateAdhocReportRequest CreateReportBody
+
+	/* OrganizationID.
+
+	   Valid Organization Id
 	*/
 	OrganizationID *string
-	/*RequestBody
-	  Report subscription request payload
-
-	*/
-	RequestBody CreateReportBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the create report params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateReportParams) WithDefaults() *CreateReportParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the create report params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateReportParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the create report params
@@ -109,6 +124,17 @@ func (o *CreateReportParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithCreateAdhocReportRequest adds the createAdhocReportRequest to the create report params
+func (o *CreateReportParams) WithCreateAdhocReportRequest(createAdhocReportRequest CreateReportBody) *CreateReportParams {
+	o.SetCreateAdhocReportRequest(createAdhocReportRequest)
+	return o
+}
+
+// SetCreateAdhocReportRequest adds the createAdhocReportRequest to the create report params
+func (o *CreateReportParams) SetCreateAdhocReportRequest(createAdhocReportRequest CreateReportBody) {
+	o.CreateAdhocReportRequest = createAdhocReportRequest
+}
+
 // WithOrganizationID adds the organizationID to the create report params
 func (o *CreateReportParams) WithOrganizationID(organizationID *string) *CreateReportParams {
 	o.SetOrganizationID(organizationID)
@@ -120,17 +146,6 @@ func (o *CreateReportParams) SetOrganizationID(organizationID *string) {
 	o.OrganizationID = organizationID
 }
 
-// WithRequestBody adds the requestBody to the create report params
-func (o *CreateReportParams) WithRequestBody(requestBody CreateReportBody) *CreateReportParams {
-	o.SetRequestBody(requestBody)
-	return o
-}
-
-// SetRequestBody adds the requestBody to the create report params
-func (o *CreateReportParams) SetRequestBody(requestBody CreateReportBody) {
-	o.RequestBody = requestBody
-}
-
 // WriteToRequest writes these params to a swagger request
 func (o *CreateReportParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -138,25 +153,25 @@ func (o *CreateReportParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		return err
 	}
 	var res []error
+	if err := r.SetBodyParam(o.CreateAdhocReportRequest); err != nil {
+		return err
+	}
 
 	if o.OrganizationID != nil {
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
-	}
-
-	if err := r.SetBodyParam(o.RequestBody); err != nil {
-		return err
 	}
 
 	if len(res) > 0 {

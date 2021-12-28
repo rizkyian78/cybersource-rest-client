@@ -9,4 +9,4 @@ rm -rf ../models
 
 echo Command to generate SDK
 
-swagger generate client -A Cybersource -f cybersource-rest-spec-fixed.json -t ../
+swagger generate client -A Cybersource -f cybersource-rest-spec.json -t ../

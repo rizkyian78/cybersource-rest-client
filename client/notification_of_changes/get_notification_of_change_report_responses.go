@@ -6,6 +6,7 @@ package notification_of_changes
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -55,9 +56,8 @@ func (o *GetNotificationOfChangeReportReader) ReadResponse(response runtime.Clie
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -66,7 +66,7 @@ func NewGetNotificationOfChangeReportOK() *GetNotificationOfChangeReportOK {
 	return &GetNotificationOfChangeReportOK{}
 }
 
-/*GetNotificationOfChangeReportOK handles this case with default header values.
+/* GetNotificationOfChangeReportOK describes a response with status code 200, with default header values.
 
 Ok
 */
@@ -77,7 +77,6 @@ type GetNotificationOfChangeReportOK struct {
 func (o *GetNotificationOfChangeReportOK) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/notification-of-changes][%d] getNotificationOfChangeReportOK  %+v", 200, o.Payload)
 }
-
 func (o *GetNotificationOfChangeReportOK) GetPayload() *GetNotificationOfChangeReportOKBody {
 	return o.Payload
 }
@@ -99,7 +98,7 @@ func NewGetNotificationOfChangeReportBadRequest() *GetNotificationOfChangeReport
 	return &GetNotificationOfChangeReportBadRequest{}
 }
 
-/*GetNotificationOfChangeReportBadRequest handles this case with default header values.
+/* GetNotificationOfChangeReportBadRequest describes a response with status code 400, with default header values.
 
 Invalid request
 */
@@ -110,7 +109,6 @@ type GetNotificationOfChangeReportBadRequest struct {
 func (o *GetNotificationOfChangeReportBadRequest) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/notification-of-changes][%d] getNotificationOfChangeReportBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *GetNotificationOfChangeReportBadRequest) GetPayload() *GetNotificationOfChangeReportBadRequestBody {
 	return o.Payload
 }
@@ -132,7 +130,7 @@ func NewGetNotificationOfChangeReportUnauthorized() *GetNotificationOfChangeRepo
 	return &GetNotificationOfChangeReportUnauthorized{}
 }
 
-/*GetNotificationOfChangeReportUnauthorized handles this case with default header values.
+/* GetNotificationOfChangeReportUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized. Token provided is no more valid.
 */
@@ -153,7 +151,7 @@ func NewGetNotificationOfChangeReportNotFound() *GetNotificationOfChangeReportNo
 	return &GetNotificationOfChangeReportNotFound{}
 }
 
-/*GetNotificationOfChangeReportNotFound handles this case with default header values.
+/* GetNotificationOfChangeReportNotFound describes a response with status code 404, with default header values.
 
 Report not found
 */
@@ -164,7 +162,6 @@ type GetNotificationOfChangeReportNotFound struct {
 func (o *GetNotificationOfChangeReportNotFound) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/notification-of-changes][%d] getNotificationOfChangeReportNotFound  %+v", 404, o.Payload)
 }
-
 func (o *GetNotificationOfChangeReportNotFound) GetPayload() *GetNotificationOfChangeReportNotFoundBody {
 	return o.Payload
 }
@@ -186,7 +183,7 @@ func NewGetNotificationOfChangeReportInternalServerError() *GetNotificationOfCha
 	return &GetNotificationOfChangeReportInternalServerError{}
 }
 
-/*GetNotificationOfChangeReportInternalServerError handles this case with default header values.
+/* GetNotificationOfChangeReportInternalServerError describes a response with status code 500, with default header values.
 
 Internal Server Error
 */
@@ -197,7 +194,6 @@ type GetNotificationOfChangeReportInternalServerError struct {
 func (o *GetNotificationOfChangeReportInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/notification-of-changes][%d] getNotificationOfChangeReportInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetNotificationOfChangeReportInternalServerError) GetPayload() *GetNotificationOfChangeReportInternalServerErrorBody {
 	return o.Payload
 }
@@ -214,44 +210,6 @@ func (o *GetNotificationOfChangeReportInternalServerError) readResponse(response
 	return nil
 }
 
-/*DetailsItems0 Provides failed validation input field detail
-//
-swagger:model DetailsItems0
-*/
-type DetailsItems0 struct {
-
-	// Field in request that caused an error
-	//
-	Field string `json:"field,omitempty"`
-
-	// Documented reason code
-	//
-	Reason string `json:"reason,omitempty"`
-}
-
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
 /*GetNotificationOfChangeReportBadRequestBody reportingV3NotificationofChangesGet400Response
 //
 // HTTP status code for client application
@@ -262,20 +220,23 @@ type GetNotificationOfChangeReportBadRequestBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*GetNotificationOfChangeReportBadRequestBodyDetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
+	// Example: One or more fields contains invalid data
 	// Required: true
 	Message *string `json:"message"`
 
 	// Documented reason code
 	//
+	// Example: INVALID_DATA
 	// Required: true
 	Reason *string `json:"reason"`
 
 	// Time of request in UTC.
 	//
+	// Example: 2016-08-11T22:47:57Z
 	// Required: true
 	// Format: date-time
 	SubmitTimeUtc *strfmt.DateTime `json:"submitTimeUtc"`
@@ -322,6 +283,8 @@ func (o *GetNotificationOfChangeReportBadRequestBody) validateDetails(formats st
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getNotificationOfChangeReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -363,6 +326,40 @@ func (o *GetNotificationOfChangeReportBadRequestBody) validateSubmitTimeUtc(form
 	return nil
 }
 
+// ContextValidate validate this get notification of change report bad request body based on the context it is used
+func (o *GetNotificationOfChangeReportBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetNotificationOfChangeReportBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getNotificationOfChangeReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetNotificationOfChangeReportBadRequestBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -381,6 +378,49 @@ func (o *GetNotificationOfChangeReportBadRequestBody) UnmarshalBinary(b []byte) 
 	return nil
 }
 
+/*GetNotificationOfChangeReportBadRequestBodyDetailsItems0 Provides failed validation input field detail
+//
+swagger:model GetNotificationOfChangeReportBadRequestBodyDetailsItems0
+*/
+type GetNotificationOfChangeReportBadRequestBodyDetailsItems0 struct {
+
+	// Field in request that caused an error
+	//
+	Field string `json:"field,omitempty"`
+
+	// Documented reason code
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this get notification of change report bad request body details items0
+func (o *GetNotificationOfChangeReportBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get notification of change report bad request body details items0 based on context it is used
+func (o *GetNotificationOfChangeReportBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetNotificationOfChangeReportBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetNotificationOfChangeReportBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res GetNotificationOfChangeReportBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*GetNotificationOfChangeReportInternalServerErrorBody reportingV3NotificationofChangesGet500Response
 //
 // HTTP status code for client application
@@ -391,20 +431,23 @@ type GetNotificationOfChangeReportInternalServerErrorBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
+	// Example: One or more fields contains invalid data
 	// Required: true
 	Message *string `json:"message"`
 
 	// Documented reason code
 	//
+	// Example: INVALID_DATA
 	// Required: true
 	Reason *string `json:"reason"`
 
 	// Time of request in UTC.
 	//
+	// Example: 2016-08-11T22:47:57Z
 	// Required: true
 	// Format: date-time
 	SubmitTimeUtc *strfmt.DateTime `json:"submitTimeUtc"`
@@ -451,6 +494,8 @@ func (o *GetNotificationOfChangeReportInternalServerErrorBody) validateDetails(f
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getNotificationOfChangeReportInternalServerError" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportInternalServerError" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -492,6 +537,40 @@ func (o *GetNotificationOfChangeReportInternalServerErrorBody) validateSubmitTim
 	return nil
 }
 
+// ContextValidate validate this get notification of change report internal server error body based on the context it is used
+func (o *GetNotificationOfChangeReportInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetNotificationOfChangeReportInternalServerErrorBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getNotificationOfChangeReportInternalServerError" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportInternalServerError" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetNotificationOfChangeReportInternalServerErrorBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -510,6 +589,49 @@ func (o *GetNotificationOfChangeReportInternalServerErrorBody) UnmarshalBinary(b
 	return nil
 }
 
+/*GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0 Provides failed validation input field detail
+//
+swagger:model GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0
+*/
+type GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0 struct {
+
+	// Field in request that caused an error
+	//
+	Field string `json:"field,omitempty"`
+
+	// Documented reason code
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this get notification of change report internal server error body details items0
+func (o *GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get notification of change report internal server error body details items0 based on context it is used
+func (o *GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res GetNotificationOfChangeReportInternalServerErrorBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*GetNotificationOfChangeReportNotFoundBody reportingV3NotificationofChangesGet404Response
 //
 // HTTP status code for client application
@@ -520,20 +642,23 @@ type GetNotificationOfChangeReportNotFoundBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*GetNotificationOfChangeReportNotFoundBodyDetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
+	// Example: One or more fields contains invalid data
 	// Required: true
 	Message *string `json:"message"`
 
 	// Documented reason code
 	//
+	// Example: INVALID_DATA
 	// Required: true
 	Reason *string `json:"reason"`
 
 	// Time of request in UTC.
 	//
+	// Example: 2016-08-11T22:47:57Z
 	// Required: true
 	// Format: date-time
 	SubmitTimeUtc *strfmt.DateTime `json:"submitTimeUtc"`
@@ -580,6 +705,8 @@ func (o *GetNotificationOfChangeReportNotFoundBody) validateDetails(formats strf
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getNotificationOfChangeReportNotFound" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportNotFound" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -621,6 +748,40 @@ func (o *GetNotificationOfChangeReportNotFoundBody) validateSubmitTimeUtc(format
 	return nil
 }
 
+// ContextValidate validate this get notification of change report not found body based on the context it is used
+func (o *GetNotificationOfChangeReportNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetNotificationOfChangeReportNotFoundBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getNotificationOfChangeReportNotFound" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportNotFound" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetNotificationOfChangeReportNotFoundBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -639,13 +800,56 @@ func (o *GetNotificationOfChangeReportNotFoundBody) UnmarshalBinary(b []byte) er
 	return nil
 }
 
+/*GetNotificationOfChangeReportNotFoundBodyDetailsItems0 Provides failed validation input field detail
+//
+swagger:model GetNotificationOfChangeReportNotFoundBodyDetailsItems0
+*/
+type GetNotificationOfChangeReportNotFoundBodyDetailsItems0 struct {
+
+	// Field in request that caused an error
+	//
+	Field string `json:"field,omitempty"`
+
+	// Documented reason code
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this get notification of change report not found body details items0
+func (o *GetNotificationOfChangeReportNotFoundBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get notification of change report not found body details items0 based on context it is used
+func (o *GetNotificationOfChangeReportNotFoundBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetNotificationOfChangeReportNotFoundBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetNotificationOfChangeReportNotFoundBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res GetNotificationOfChangeReportNotFoundBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*GetNotificationOfChangeReportOKBody reportingV3NotificationofChangesGet200Response
 swagger:model GetNotificationOfChangeReportOKBody
 */
 type GetNotificationOfChangeReportOKBody struct {
 
 	// List of Notification Of Change Info values
-	NotificationOfChanges []*NotificationOfChangesItems0 `json:"notificationOfChanges"`
+	NotificationOfChanges []*GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0 `json:"notificationOfChanges"`
 }
 
 // Validate validates this get notification of change report o k body
@@ -663,7 +867,6 @@ func (o *GetNotificationOfChangeReportOKBody) Validate(formats strfmt.Registry) 
 }
 
 func (o *GetNotificationOfChangeReportOKBody) validateNotificationOfChanges(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.NotificationOfChanges) { // not required
 		return nil
 	}
@@ -677,6 +880,42 @@ func (o *GetNotificationOfChangeReportOKBody) validateNotificationOfChanges(form
 			if err := o.NotificationOfChanges[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getNotificationOfChangeReportOK" + "." + "notificationOfChanges" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportOK" + "." + "notificationOfChanges" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get notification of change report o k body based on the context it is used
+func (o *GetNotificationOfChangeReportOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateNotificationOfChanges(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetNotificationOfChangeReportOKBody) contextValidateNotificationOfChanges(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.NotificationOfChanges); i++ {
+
+		if o.NotificationOfChanges[i] != nil {
+			if err := o.NotificationOfChanges[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getNotificationOfChangeReportOK" + "." + "notificationOfChanges" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getNotificationOfChangeReportOK" + "." + "notificationOfChanges" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -705,39 +944,47 @@ func (o *GetNotificationOfChangeReportOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*NotificationOfChangesItems0 Notification Of Change
-swagger:model NotificationOfChangesItems0
+/*GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0 Notification Of Change
+swagger:model GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0
 */
-type NotificationOfChangesItems0 struct {
+type GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0 struct {
 
 	// Account Number
+	// Example: ############1234
 	AccountNumber string `json:"accountNumber,omitempty"`
 
 	// Account Type
+	// Example: Checking Account
 	AccountType string `json:"accountType,omitempty"`
 
 	// Merchant Reference Number
+	// Example: TC30877-10
 	Code string `json:"code,omitempty"`
 
 	// Consumer Name
+	// Example: Consumer Name
 	ConsumerName string `json:"consumerName,omitempty"`
 
 	// Merchant Reference Number
+	// Example: TC30877-10
 	MerchantReferenceNumber string `json:"merchantReferenceNumber,omitempty"`
 
 	// Routing Number
+	// Example: 123456789
 	RoutingNumber string `json:"routingNumber,omitempty"`
 
 	// Notification Of Change Date(ISO 8601 Extended)
+	// Example: 2017-10-01T10:10:10+05:00
 	// Format: date-time
 	Time strfmt.DateTime `json:"time,omitempty"`
 
 	// Transaction Reference Number
+	// Example: 55563
 	TransactionReferenceNumber string `json:"transactionReferenceNumber,omitempty"`
 }
 
-// Validate validates this notification of changes items0
-func (o *NotificationOfChangesItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this get notification of change report o k body notification of changes items0
+func (o *GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateTime(formats); err != nil {
@@ -750,8 +997,7 @@ func (o *NotificationOfChangesItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *NotificationOfChangesItems0) validateTime(formats strfmt.Registry) error {
-
+func (o *GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0) validateTime(formats strfmt.Registry) error {
 	if swag.IsZero(o.Time) { // not required
 		return nil
 	}
@@ -763,8 +1009,13 @@ func (o *NotificationOfChangesItems0) validateTime(formats strfmt.Registry) erro
 	return nil
 }
 
+// ContextValidate validates this get notification of change report o k body notification of changes items0 based on context it is used
+func (o *GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (o *NotificationOfChangesItems0) MarshalBinary() ([]byte, error) {
+func (o *GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -772,8 +1023,8 @@ func (o *NotificationOfChangesItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *NotificationOfChangesItems0) UnmarshalBinary(b []byte) error {
-	var res NotificationOfChangesItems0
+func (o *GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0) UnmarshalBinary(b []byte) error {
+	var res GetNotificationOfChangeReportOKBodyNotificationOfChangesItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

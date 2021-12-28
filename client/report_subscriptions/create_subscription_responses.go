@@ -6,6 +6,7 @@ package report_subscriptions
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *CreateSubscriptionReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewCreateSubscriptionOK() *CreateSubscriptionOK {
 	return &CreateSubscriptionOK{}
 }
 
-/*CreateSubscriptionOK handles this case with default header values.
+/* CreateSubscriptionOK describes a response with status code 200, with default header values.
 
 Ok
 */
@@ -75,7 +75,7 @@ func NewCreateSubscriptionNotModified() *CreateSubscriptionNotModified {
 	return &CreateSubscriptionNotModified{}
 }
 
-/*CreateSubscriptionNotModified handles this case with default header values.
+/* CreateSubscriptionNotModified describes a response with status code 304, with default header values.
 
 NOT MODIFIED
 */
@@ -96,7 +96,7 @@ func NewCreateSubscriptionBadRequest() *CreateSubscriptionBadRequest {
 	return &CreateSubscriptionBadRequest{}
 }
 
-/*CreateSubscriptionBadRequest handles this case with default header values.
+/* CreateSubscriptionBadRequest describes a response with status code 400, with default header values.
 
 Invalid request
 */
@@ -107,7 +107,6 @@ type CreateSubscriptionBadRequest struct {
 func (o *CreateSubscriptionBadRequest) Error() string {
 	return fmt.Sprintf("[PUT /reporting/v3/report-subscriptions][%d] createSubscriptionBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *CreateSubscriptionBadRequest) GetPayload() *CreateSubscriptionBadRequestBody {
 	return o.Payload
 }
@@ -140,7 +139,7 @@ type CreateSubscriptionBadRequestBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*FieldsItems0 `json:"fields"`
+	Fields []*CreateSubscriptionBadRequestBodyFieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -182,7 +181,6 @@ func (o *CreateSubscriptionBadRequestBody) validateCode(formats strfmt.Registry)
 }
 
 func (o *CreateSubscriptionBadRequestBody) validateFields(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Fields) { // not required
 		return nil
 	}
@@ -196,6 +194,8 @@ func (o *CreateSubscriptionBadRequestBody) validateFields(formats strfmt.Registr
 			if err := o.Fields[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("createSubscriptionBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("createSubscriptionBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -210,6 +210,40 @@ func (o *CreateSubscriptionBadRequestBody) validateMessage(formats strfmt.Regist
 
 	if err := validate.Required("createSubscriptionBadRequest"+"."+"message", "body", o.Message); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this create subscription bad request body based on the context it is used
+func (o *CreateSubscriptionBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFields(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CreateSubscriptionBadRequestBody) contextValidateFields(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Fields); i++ {
+
+		if o.Fields[i] != nil {
+			if err := o.Fields[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("createSubscriptionBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("createSubscriptionBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -233,20 +267,66 @@ func (o *CreateSubscriptionBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*CreateSubscriptionBadRequestBodyFieldsItems0 Provide validation failed input field details
+swagger:model CreateSubscriptionBadRequestBodyFieldsItems0
+*/
+type CreateSubscriptionBadRequestBodyFieldsItems0 struct {
+
+	// Localized Key Name
+	LocalizationKey string `json:"localizationKey,omitempty"`
+
+	// Error description about validation failed field
+	Message string `json:"message,omitempty"`
+
+	// Path of the failed property
+	Path string `json:"path,omitempty"`
+}
+
+// Validate validates this create subscription bad request body fields items0
+func (o *CreateSubscriptionBadRequestBodyFieldsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this create subscription bad request body fields items0 based on context it is used
+func (o *CreateSubscriptionBadRequestBodyFieldsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CreateSubscriptionBadRequestBodyFieldsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CreateSubscriptionBadRequestBodyFieldsItems0) UnmarshalBinary(b []byte) error {
+	var res CreateSubscriptionBadRequestBodyFieldsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CreateSubscriptionBody create subscription body
 swagger:model CreateSubscriptionBody
 */
 type CreateSubscriptionBody struct {
 
 	// Valid GroupName
+	// Example: CEMEA Group
 	// Pattern: [a-zA-Z0-9-_ ]+
 	GroupName string `json:"groupName,omitempty"`
 
 	// Valid CyberSource organizationId
+	// Example: Merchant 1
 	// Pattern: [a-zA-Z0-9-_]+
 	OrganizationID string `json:"organizationId,omitempty"`
 
 	// Valid Report Definition Name
+	// Example: TransactionDetailReportClass
 	// Required: true
 	// Max Length: 80
 	// Min Length: 1
@@ -254,31 +334,46 @@ type CreateSubscriptionBody struct {
 	ReportDefinitionName *string `json:"reportDefinitionName"`
 
 	// report fields
+	// Example: ["Request.RequestID","Request.TransactionDate","Request.MerchantID"]
 	// Required: true
 	ReportFields []string `json:"reportFields"`
 
 	// List of filters to apply
+	// Example: {"Application.Name":["ics_auth","ics_bill"]}
 	ReportFilters map[string][]string `json:"reportFilters,omitempty"`
 
 	// 'The frequency for which subscription is created.'
+	// **NOTE: Do not document USER_DEFINED Frequency field in developer center**
+	// Valid Values:
+	//   - 'DAILY'
+	//   - 'WEEKLY'
+	//   - 'MONTHLY'
+	//   - 'USER_DEFINED'
 	//
-	// Valid values:
-	// - 'DAILY'
-	// - 'WEEKLY'
-	// - 'MONTHLY'
-	// - 'ADHOC'
-	//
+	// Example: DAILY
 	// Required: true
 	ReportFrequency *string `json:"reportFrequency"`
+
+	// If the reportFrequency is User-defined, reportInterval should be in **ISO 8601 time format**
+	// Please refer the following link to know more about ISO 8601 format.[Rfc Time Format](https://en.wikipedia.org/wiki/ISO_8601#Durations)
+	//
+	// **Example time format for 2 hours and 30 Mins:**
+	//   - PT2H30M
+	// **NOTE: Do not document reportInterval field in developer center**
+	//
+	// Pattern: ^PT((([1-9]|1[0-9]|2[0-3])H(([1-9]|[1-4][0-9]|5[0-9])M)?)|((([1-9]|1[0-9]|2[0-3])H)?([1-9]|[1-4][0-9]|5[0-9])M))$
+	ReportInterval string `json:"reportInterval,omitempty"`
 
 	// Valid values:
 	// - application/xml
 	// - text/csv
 	//
+	// Example: application/xml
 	// Required: true
 	ReportMimeType *string `json:"reportMimeType"`
 
 	// report name
+	// Example: My Daily Subscription
 	// Required: true
 	// Max Length: 128
 	// Min Length: 1
@@ -294,10 +389,12 @@ type CreateSubscriptionBody struct {
 	StartDay int64 `json:"startDay,omitempty"`
 
 	// The hour at which the report generation should start. It should be in hhmm format.
+	// Example: 0900
 	// Required: true
 	StartTime *string `json:"startTime"`
 
 	// timezone
+	// Example: America/Chicago
 	// Required: true
 	Timezone *string `json:"timezone"`
 }
@@ -323,6 +420,10 @@ func (o *CreateSubscriptionBody) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := o.validateReportFrequency(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReportInterval(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -357,12 +458,11 @@ func (o *CreateSubscriptionBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *CreateSubscriptionBody) validateGroupName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.GroupName) { // not required
 		return nil
 	}
 
-	if err := validate.Pattern("requestBody"+"."+"groupName", "body", string(o.GroupName), `[a-zA-Z0-9-_ ]+`); err != nil {
+	if err := validate.Pattern("createReportSubscriptionRequest"+"."+"groupName", "body", o.GroupName, `[a-zA-Z0-9-_ ]+`); err != nil {
 		return err
 	}
 
@@ -370,12 +470,11 @@ func (o *CreateSubscriptionBody) validateGroupName(formats strfmt.Registry) erro
 }
 
 func (o *CreateSubscriptionBody) validateOrganizationID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrganizationID) { // not required
 		return nil
 	}
 
-	if err := validate.Pattern("requestBody"+"."+"organizationId", "body", string(o.OrganizationID), `[a-zA-Z0-9-_]+`); err != nil {
+	if err := validate.Pattern("createReportSubscriptionRequest"+"."+"organizationId", "body", o.OrganizationID, `[a-zA-Z0-9-_]+`); err != nil {
 		return err
 	}
 
@@ -384,19 +483,19 @@ func (o *CreateSubscriptionBody) validateOrganizationID(formats strfmt.Registry)
 
 func (o *CreateSubscriptionBody) validateReportDefinitionName(formats strfmt.Registry) error {
 
-	if err := validate.Required("requestBody"+"."+"reportDefinitionName", "body", o.ReportDefinitionName); err != nil {
+	if err := validate.Required("createReportSubscriptionRequest"+"."+"reportDefinitionName", "body", o.ReportDefinitionName); err != nil {
 		return err
 	}
 
-	if err := validate.MinLength("requestBody"+"."+"reportDefinitionName", "body", string(*o.ReportDefinitionName), 1); err != nil {
+	if err := validate.MinLength("createReportSubscriptionRequest"+"."+"reportDefinitionName", "body", *o.ReportDefinitionName, 1); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("requestBody"+"."+"reportDefinitionName", "body", string(*o.ReportDefinitionName), 80); err != nil {
+	if err := validate.MaxLength("createReportSubscriptionRequest"+"."+"reportDefinitionName", "body", *o.ReportDefinitionName, 80); err != nil {
 		return err
 	}
 
-	if err := validate.Pattern("requestBody"+"."+"reportDefinitionName", "body", string(*o.ReportDefinitionName), `[a-zA-Z0-9-]+`); err != nil {
+	if err := validate.Pattern("createReportSubscriptionRequest"+"."+"reportDefinitionName", "body", *o.ReportDefinitionName, `[a-zA-Z0-9-]+`); err != nil {
 		return err
 	}
 
@@ -405,7 +504,7 @@ func (o *CreateSubscriptionBody) validateReportDefinitionName(formats strfmt.Reg
 
 func (o *CreateSubscriptionBody) validateReportFields(formats strfmt.Registry) error {
 
-	if err := validate.Required("requestBody"+"."+"reportFields", "body", o.ReportFields); err != nil {
+	if err := validate.Required("createReportSubscriptionRequest"+"."+"reportFields", "body", o.ReportFields); err != nil {
 		return err
 	}
 
@@ -414,7 +513,19 @@ func (o *CreateSubscriptionBody) validateReportFields(formats strfmt.Registry) e
 
 func (o *CreateSubscriptionBody) validateReportFrequency(formats strfmt.Registry) error {
 
-	if err := validate.Required("requestBody"+"."+"reportFrequency", "body", o.ReportFrequency); err != nil {
+	if err := validate.Required("createReportSubscriptionRequest"+"."+"reportFrequency", "body", o.ReportFrequency); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CreateSubscriptionBody) validateReportInterval(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReportInterval) { // not required
+		return nil
+	}
+
+	if err := validate.Pattern("createReportSubscriptionRequest"+"."+"reportInterval", "body", o.ReportInterval, `^PT((([1-9]|1[0-9]|2[0-3])H(([1-9]|[1-4][0-9]|5[0-9])M)?)|((([1-9]|1[0-9]|2[0-3])H)?([1-9]|[1-4][0-9]|5[0-9])M))$`); err != nil {
 		return err
 	}
 
@@ -423,7 +534,7 @@ func (o *CreateSubscriptionBody) validateReportFrequency(formats strfmt.Registry
 
 func (o *CreateSubscriptionBody) validateReportMimeType(formats strfmt.Registry) error {
 
-	if err := validate.Required("requestBody"+"."+"reportMimeType", "body", o.ReportMimeType); err != nil {
+	if err := validate.Required("createReportSubscriptionRequest"+"."+"reportMimeType", "body", o.ReportMimeType); err != nil {
 		return err
 	}
 
@@ -432,19 +543,19 @@ func (o *CreateSubscriptionBody) validateReportMimeType(formats strfmt.Registry)
 
 func (o *CreateSubscriptionBody) validateReportName(formats strfmt.Registry) error {
 
-	if err := validate.Required("requestBody"+"."+"reportName", "body", o.ReportName); err != nil {
+	if err := validate.Required("createReportSubscriptionRequest"+"."+"reportName", "body", o.ReportName); err != nil {
 		return err
 	}
 
-	if err := validate.MinLength("requestBody"+"."+"reportName", "body", string(*o.ReportName), 1); err != nil {
+	if err := validate.MinLength("createReportSubscriptionRequest"+"."+"reportName", "body", *o.ReportName, 1); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("requestBody"+"."+"reportName", "body", string(*o.ReportName), 128); err != nil {
+	if err := validate.MaxLength("createReportSubscriptionRequest"+"."+"reportName", "body", *o.ReportName, 128); err != nil {
 		return err
 	}
 
-	if err := validate.Pattern("requestBody"+"."+"reportName", "body", string(*o.ReportName), `[a-zA-Z0-9-_ ]+`); err != nil {
+	if err := validate.Pattern("createReportSubscriptionRequest"+"."+"reportName", "body", *o.ReportName, `[a-zA-Z0-9-_ ]+`); err != nil {
 		return err
 	}
 
@@ -452,7 +563,6 @@ func (o *CreateSubscriptionBody) validateReportName(formats strfmt.Registry) err
 }
 
 func (o *CreateSubscriptionBody) validateReportPreferences(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReportPreferences) { // not required
 		return nil
 	}
@@ -460,7 +570,9 @@ func (o *CreateSubscriptionBody) validateReportPreferences(formats strfmt.Regist
 	if o.ReportPreferences != nil {
 		if err := o.ReportPreferences.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("requestBody" + "." + "reportPreferences")
+				return ve.ValidateName("createReportSubscriptionRequest" + "." + "reportPreferences")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("createReportSubscriptionRequest" + "." + "reportPreferences")
 			}
 			return err
 		}
@@ -470,16 +582,15 @@ func (o *CreateSubscriptionBody) validateReportPreferences(formats strfmt.Regist
 }
 
 func (o *CreateSubscriptionBody) validateStartDay(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.StartDay) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("requestBody"+"."+"startDay", "body", int64(o.StartDay), 1, false); err != nil {
+	if err := validate.MinimumInt("createReportSubscriptionRequest"+"."+"startDay", "body", o.StartDay, 1, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("requestBody"+"."+"startDay", "body", int64(o.StartDay), 31, false); err != nil {
+	if err := validate.MaximumInt("createReportSubscriptionRequest"+"."+"startDay", "body", o.StartDay, 31, false); err != nil {
 		return err
 	}
 
@@ -488,7 +599,7 @@ func (o *CreateSubscriptionBody) validateStartDay(formats strfmt.Registry) error
 
 func (o *CreateSubscriptionBody) validateStartTime(formats strfmt.Registry) error {
 
-	if err := validate.Required("requestBody"+"."+"startTime", "body", o.StartTime); err != nil {
+	if err := validate.Required("createReportSubscriptionRequest"+"."+"startTime", "body", o.StartTime); err != nil {
 		return err
 	}
 
@@ -497,8 +608,38 @@ func (o *CreateSubscriptionBody) validateStartTime(formats strfmt.Registry) erro
 
 func (o *CreateSubscriptionBody) validateTimezone(formats strfmt.Registry) error {
 
-	if err := validate.Required("requestBody"+"."+"timezone", "body", o.Timezone); err != nil {
+	if err := validate.Required("createReportSubscriptionRequest"+"."+"timezone", "body", o.Timezone); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this create subscription body based on the context it is used
+func (o *CreateSubscriptionBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateReportPreferences(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CreateSubscriptionBody) contextValidateReportPreferences(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ReportPreferences != nil {
+		if err := o.ReportPreferences.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("createReportSubscriptionRequest" + "." + "reportPreferences")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("createReportSubscriptionRequest" + "." + "reportPreferences")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -544,6 +685,11 @@ func (o *CreateSubscriptionParamsBodyReportPreferences) Validate(formats strfmt.
 	return nil
 }
 
+// ContextValidate validates this create subscription params body report preferences based on context it is used
+func (o *CreateSubscriptionParamsBodyReportPreferences) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *CreateSubscriptionParamsBodyReportPreferences) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -555,44 +701,6 @@ func (o *CreateSubscriptionParamsBodyReportPreferences) MarshalBinary() ([]byte,
 // UnmarshalBinary interface implementation
 func (o *CreateSubscriptionParamsBodyReportPreferences) UnmarshalBinary(b []byte) error {
 	var res CreateSubscriptionParamsBodyReportPreferences
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*FieldsItems0 Provide validation failed input field details
-swagger:model FieldsItems0
-*/
-type FieldsItems0 struct {
-
-	// Localized Key Name
-	LocalizationKey string `json:"localizationKey,omitempty"`
-
-	// Error description about validation failed field
-	Message string `json:"message,omitempty"`
-
-	// Path of the failed property
-	Path string `json:"path,omitempty"`
-}
-
-// Validate validates this fields items0
-func (o *FieldsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FieldsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FieldsItems0) UnmarshalBinary(b []byte) error {
-	var res FieldsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

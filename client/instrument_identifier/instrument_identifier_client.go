@@ -25,69 +25,38 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateInstrumentIdentifier(params *CreateInstrumentIdentifierParams) (*CreateInstrumentIdentifierOK, *CreateInstrumentIdentifierCreated, error)
+	DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierParams, opts ...ClientOption) (*DeleteInstrumentIdentifierNoContent, error)
 
-	DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierParams) (*DeleteInstrumentIdentifierNoContent, error)
+	GetInstrumentIdentifier(params *GetInstrumentIdentifierParams, opts ...ClientOption) (*GetInstrumentIdentifierOK, error)
 
-	GetAllPaymentInstruments(params *GetAllPaymentInstrumentsParams) (*GetAllPaymentInstrumentsOK, error)
+	GetInstrumentIdentifierPaymentInstrumentsList(params *GetInstrumentIdentifierPaymentInstrumentsListParams, opts ...ClientOption) (*GetInstrumentIdentifierPaymentInstrumentsListOK, error)
 
-	GetInstrumentIdentifier(params *GetInstrumentIdentifierParams) (*GetInstrumentIdentifierOK, error)
+	PatchInstrumentIdentifier(params *PatchInstrumentIdentifierParams, opts ...ClientOption) (*PatchInstrumentIdentifierOK, error)
 
-	UpdateInstrumentIdentifier(params *UpdateInstrumentIdentifierParams) (*UpdateInstrumentIdentifierOK, error)
+	PostInstrumentIdentifier(params *PostInstrumentIdentifierParams, opts ...ClientOption) (*PostInstrumentIdentifierOK, *PostInstrumentIdentifierCreated, error)
+
+	PostInstrumentIdentifierEnrollment(params *PostInstrumentIdentifierEnrollmentParams, opts ...ClientOption) (*PostInstrumentIdentifierEnrollmentAccepted, *PostInstrumentIdentifierEnrollmentNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  CreateInstrumentIdentifier creates an instrument identifier
-*/
-func (a *Client) CreateInstrumentIdentifier(params *CreateInstrumentIdentifierParams) (*CreateInstrumentIdentifierOK, *CreateInstrumentIdentifierCreated, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewCreateInstrumentIdentifierParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "createInstrumentIdentifier",
-		Method:             "POST",
-		PathPattern:        "/tms/v1/instrumentidentifiers",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
-		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &CreateInstrumentIdentifierReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, nil, err
-	}
-	switch value := result.(type) {
-	case *CreateInstrumentIdentifierOK:
-		return value, nil, nil
-	case *CreateInstrumentIdentifierCreated:
-		return nil, value, nil
-	}
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for instrument_identifier: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
   DeleteInstrumentIdentifier deletes an instrument identifier
 */
-func (a *Client) DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierParams) (*DeleteInstrumentIdentifierNoContent, error) {
+func (a *Client) DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierParams, opts ...ClientOption) (*DeleteInstrumentIdentifierNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteInstrumentIdentifierParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "deleteInstrumentIdentifier",
 		Method:             "DELETE",
-		PathPattern:        "/tms/v1/instrumentidentifiers/{tokenId}",
+		PathPattern:        "/tms/v1/instrumentidentifiers/{instrumentIdentifierTokenId}",
 		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
@@ -95,7 +64,12 @@ func (a *Client) DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierPa
 		Reader:             &DeleteInstrumentIdentifierReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -110,52 +84,17 @@ func (a *Client) DeleteInstrumentIdentifier(params *DeleteInstrumentIdentifierPa
 }
 
 /*
-  GetAllPaymentInstruments retrieves all payment instruments
-*/
-func (a *Client) GetAllPaymentInstruments(params *GetAllPaymentInstrumentsParams) (*GetAllPaymentInstrumentsOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetAllPaymentInstrumentsParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "getAllPaymentInstruments",
-		Method:             "GET",
-		PathPattern:        "/tms/v1/instrumentidentifiers/{tokenId}/paymentinstruments",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
-		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &GetAllPaymentInstrumentsReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*GetAllPaymentInstrumentsOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getAllPaymentInstruments: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
   GetInstrumentIdentifier retrieves an instrument identifier
 */
-func (a *Client) GetInstrumentIdentifier(params *GetInstrumentIdentifierParams) (*GetInstrumentIdentifierOK, error) {
+func (a *Client) GetInstrumentIdentifier(params *GetInstrumentIdentifierParams, opts ...ClientOption) (*GetInstrumentIdentifierOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetInstrumentIdentifierParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getInstrumentIdentifier",
 		Method:             "GET",
-		PathPattern:        "/tms/v1/instrumentidentifiers/{tokenId}",
+		PathPattern:        "/tms/v1/instrumentidentifiers/{instrumentIdentifierTokenId}",
 		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
@@ -163,7 +102,12 @@ func (a *Client) GetInstrumentIdentifier(params *GetInstrumentIdentifierParams) 
 		Reader:             &GetInstrumentIdentifierReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -178,36 +122,156 @@ func (a *Client) GetInstrumentIdentifier(params *GetInstrumentIdentifierParams) 
 }
 
 /*
-  UpdateInstrumentIdentifier updates a instrument identifier
+  GetInstrumentIdentifierPaymentInstrumentsList lists payment instruments for an instrument identifier
 */
-func (a *Client) UpdateInstrumentIdentifier(params *UpdateInstrumentIdentifierParams) (*UpdateInstrumentIdentifierOK, error) {
+func (a *Client) GetInstrumentIdentifierPaymentInstrumentsList(params *GetInstrumentIdentifierPaymentInstrumentsListParams, opts ...ClientOption) (*GetInstrumentIdentifierPaymentInstrumentsListOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateInstrumentIdentifierParams()
+		params = NewGetInstrumentIdentifierPaymentInstrumentsListParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "updateInstrumentIdentifier",
-		Method:             "PATCH",
-		PathPattern:        "/tms/v1/instrumentidentifiers/{tokenId}",
+	op := &runtime.ClientOperation{
+		ID:                 "getInstrumentIdentifierPaymentInstrumentsList",
+		Method:             "GET",
+		PathPattern:        "/tms/v1/instrumentidentifiers/{instrumentIdentifierTokenId}/paymentinstruments",
 		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateInstrumentIdentifierReader{formats: a.formats},
+		Reader:             &GetInstrumentIdentifierPaymentInstrumentsListReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateInstrumentIdentifierOK)
+	success, ok := result.(*GetInstrumentIdentifierPaymentInstrumentsListOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for updateInstrumentIdentifier: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for getInstrumentIdentifierPaymentInstrumentsList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  PatchInstrumentIdentifier updates an instrument identifier
+*/
+func (a *Client) PatchInstrumentIdentifier(params *PatchInstrumentIdentifierParams, opts ...ClientOption) (*PatchInstrumentIdentifierOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPatchInstrumentIdentifierParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "patchInstrumentIdentifier",
+		Method:             "PATCH",
+		PathPattern:        "/tms/v1/instrumentidentifiers/{instrumentIdentifierTokenId}",
+		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PatchInstrumentIdentifierReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*PatchInstrumentIdentifierOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for patchInstrumentIdentifier: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  PostInstrumentIdentifier creates an instrument identifier
+*/
+func (a *Client) PostInstrumentIdentifier(params *PostInstrumentIdentifierParams, opts ...ClientOption) (*PostInstrumentIdentifierOK, *PostInstrumentIdentifierCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPostInstrumentIdentifierParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "postInstrumentIdentifier",
+		Method:             "POST",
+		PathPattern:        "/tms/v1/instrumentidentifiers",
+		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PostInstrumentIdentifierReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, nil, err
+	}
+	switch value := result.(type) {
+	case *PostInstrumentIdentifierOK:
+		return value, nil, nil
+	case *PostInstrumentIdentifierCreated:
+		return nil, value, nil
+	}
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for instrument_identifier: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  PostInstrumentIdentifierEnrollment enrolls an instrument identifier for network tokenization
+*/
+func (a *Client) PostInstrumentIdentifierEnrollment(params *PostInstrumentIdentifierEnrollmentParams, opts ...ClientOption) (*PostInstrumentIdentifierEnrollmentAccepted, *PostInstrumentIdentifierEnrollmentNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPostInstrumentIdentifierEnrollmentParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "postInstrumentIdentifierEnrollment",
+		Method:             "POST",
+		PathPattern:        "/tms/v1/instrumentidentifiers/{instrumentIdentifierTokenId}/enrollment",
+		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PostInstrumentIdentifierEnrollmentReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, nil, err
+	}
+	switch value := result.(type) {
+	case *PostInstrumentIdentifierEnrollmentAccepted:
+		return value, nil, nil
+	case *PostInstrumentIdentifierEnrollmentNoContent:
+		return nil, value, nil
+	}
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for instrument_identifier: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

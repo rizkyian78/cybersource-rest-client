@@ -16,84 +16,105 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetNetFundingDetailsParams creates a new GetNetFundingDetailsParams object
-// with the default values initialized.
+// NewGetNetFundingDetailsParams creates a new GetNetFundingDetailsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetNetFundingDetailsParams() *GetNetFundingDetailsParams {
-	var ()
 	return &GetNetFundingDetailsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetNetFundingDetailsParamsWithTimeout creates a new GetNetFundingDetailsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetNetFundingDetailsParamsWithTimeout(timeout time.Duration) *GetNetFundingDetailsParams {
-	var ()
 	return &GetNetFundingDetailsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetNetFundingDetailsParamsWithContext creates a new GetNetFundingDetailsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetNetFundingDetailsParamsWithContext(ctx context.Context) *GetNetFundingDetailsParams {
-	var ()
 	return &GetNetFundingDetailsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetNetFundingDetailsParamsWithHTTPClient creates a new GetNetFundingDetailsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetNetFundingDetailsParamsWithHTTPClient(client *http.Client) *GetNetFundingDetailsParams {
-	var ()
 	return &GetNetFundingDetailsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetNetFundingDetailsParams contains all the parameters to send to the API endpoint
-for the get net funding details operation typically these are written to a http.Request
+/* GetNetFundingDetailsParams contains all the parameters to send to the API endpoint
+   for the get net funding details operation.
+
+   Typically these are written to a http.Request.
 */
 type GetNetFundingDetailsParams struct {
 
-	/*EndTime
-	  Valid report End Time in **ISO 8601 format**
+	/* EndTime.
+
+	     Valid report End Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	EndTime strfmt.DateTime
-	/*GroupName
-	  Valid CyberSource Group Name.
 
+	/* GroupName.
+
+	   Valid CyberSource Group Name.
 	*/
 	GroupName *string
-	/*OrganizationID
-	  Valid Cybersource Organization Id
 
+	/* OrganizationID.
+
+	   Valid Organization Id
 	*/
 	OrganizationID *string
-	/*StartTime
-	  Valid report Start Time in **ISO 8601 format**
+
+	/* StartTime.
+
+	     Valid report Start Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	StartTime strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get net funding details params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetNetFundingDetailsParams) WithDefaults() *GetNetFundingDetailsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get net funding details params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetNetFundingDetailsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get net funding details params
@@ -185,6 +206,7 @@ func (o *GetNetFundingDetailsParams) WriteToRequest(r runtime.ClientRequest, reg
 	qrEndTime := o.EndTime
 	qEndTime := qrEndTime.String()
 	if qEndTime != "" {
+
 		if err := r.SetQueryParam("endTime", qEndTime); err != nil {
 			return err
 		}
@@ -194,38 +216,41 @@ func (o *GetNetFundingDetailsParams) WriteToRequest(r runtime.ClientRequest, reg
 
 		// query param groupName
 		var qrGroupName string
+
 		if o.GroupName != nil {
 			qrGroupName = *o.GroupName
 		}
 		qGroupName := qrGroupName
 		if qGroupName != "" {
+
 			if err := r.SetQueryParam("groupName", qGroupName); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.OrganizationID != nil {
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// query param startTime
 	qrStartTime := o.StartTime
 	qStartTime := qrStartTime.String()
 	if qStartTime != "" {
+
 		if err := r.SetQueryParam("startTime", qStartTime); err != nil {
 			return err
 		}

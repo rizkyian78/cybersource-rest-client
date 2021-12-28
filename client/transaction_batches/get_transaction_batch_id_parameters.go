@@ -16,59 +16,73 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetTransactionBatchIDParams creates a new GetTransactionBatchIDParams object
-// with the default values initialized.
+// NewGetTransactionBatchIDParams creates a new GetTransactionBatchIDParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetTransactionBatchIDParams() *GetTransactionBatchIDParams {
-	var ()
 	return &GetTransactionBatchIDParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetTransactionBatchIDParamsWithTimeout creates a new GetTransactionBatchIDParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetTransactionBatchIDParamsWithTimeout(timeout time.Duration) *GetTransactionBatchIDParams {
-	var ()
 	return &GetTransactionBatchIDParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetTransactionBatchIDParamsWithContext creates a new GetTransactionBatchIDParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetTransactionBatchIDParamsWithContext(ctx context.Context) *GetTransactionBatchIDParams {
-	var ()
 	return &GetTransactionBatchIDParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetTransactionBatchIDParamsWithHTTPClient creates a new GetTransactionBatchIDParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetTransactionBatchIDParamsWithHTTPClient(client *http.Client) *GetTransactionBatchIDParams {
-	var ()
 	return &GetTransactionBatchIDParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetTransactionBatchIDParams contains all the parameters to send to the API endpoint
-for the get transaction batch Id operation typically these are written to a http.Request
+/* GetTransactionBatchIDParams contains all the parameters to send to the API endpoint
+   for the get transaction batch Id operation.
+
+   Typically these are written to a http.Request.
 */
 type GetTransactionBatchIDParams struct {
 
-	/*ID
-	  The batch id assigned for the template.
+	/* ID.
 
+	   The batch id assigned for the template.
 	*/
 	ID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get transaction batch Id params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTransactionBatchIDParams) WithDefaults() *GetTransactionBatchIDParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get transaction batch Id params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTransactionBatchIDParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get transaction batch Id params

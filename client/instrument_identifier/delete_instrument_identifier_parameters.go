@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewDeleteInstrumentIdentifierParams creates a new DeleteInstrumentIdentifierParams object
-// with the default values initialized.
+// NewDeleteInstrumentIdentifierParams creates a new DeleteInstrumentIdentifierParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDeleteInstrumentIdentifierParams() *DeleteInstrumentIdentifierParams {
-	var ()
 	return &DeleteInstrumentIdentifierParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDeleteInstrumentIdentifierParamsWithTimeout creates a new DeleteInstrumentIdentifierParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDeleteInstrumentIdentifierParamsWithTimeout(timeout time.Duration) *DeleteInstrumentIdentifierParams {
-	var ()
 	return &DeleteInstrumentIdentifierParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDeleteInstrumentIdentifierParamsWithContext creates a new DeleteInstrumentIdentifierParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDeleteInstrumentIdentifierParamsWithContext(ctx context.Context) *DeleteInstrumentIdentifierParams {
-	var ()
 	return &DeleteInstrumentIdentifierParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDeleteInstrumentIdentifierParamsWithHTTPClient creates a new DeleteInstrumentIdentifierParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDeleteInstrumentIdentifierParamsWithHTTPClient(client *http.Client) *DeleteInstrumentIdentifierParams {
-	var ()
 	return &DeleteInstrumentIdentifierParams{
 		HTTPClient: client,
 	}
 }
 
-/*DeleteInstrumentIdentifierParams contains all the parameters to send to the API endpoint
-for the delete instrument identifier operation typically these are written to a http.Request
+/* DeleteInstrumentIdentifierParams contains all the parameters to send to the API endpoint
+   for the delete instrument identifier operation.
+
+   Typically these are written to a http.Request.
 */
 type DeleteInstrumentIdentifierParams struct {
 
-	/*ProfileID
-	  The id of a profile containing user specific TMS configuration.
+	/* InstrumentIdentifierTokenID.
 
+	   The TokenId of a Instrument Identifier.
 	*/
-	ProfileID string
-	/*TokenID
-	  The TokenId of an Instrument Identifier.
+	InstrumentIdentifierTokenID string
 
+	/* ProfileID.
+
+	   The id of a profile containing user specific TMS configuration.
 	*/
-	TokenID string
+	ProfileID *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the delete instrument identifier params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteInstrumentIdentifierParams) WithDefaults() *DeleteInstrumentIdentifierParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the delete instrument identifier params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DeleteInstrumentIdentifierParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the delete instrument identifier params
@@ -109,26 +124,26 @@ func (o *DeleteInstrumentIdentifierParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithInstrumentIdentifierTokenID adds the instrumentIdentifierTokenID to the delete instrument identifier params
+func (o *DeleteInstrumentIdentifierParams) WithInstrumentIdentifierTokenID(instrumentIdentifierTokenID string) *DeleteInstrumentIdentifierParams {
+	o.SetInstrumentIdentifierTokenID(instrumentIdentifierTokenID)
+	return o
+}
+
+// SetInstrumentIdentifierTokenID adds the instrumentIdentifierTokenId to the delete instrument identifier params
+func (o *DeleteInstrumentIdentifierParams) SetInstrumentIdentifierTokenID(instrumentIdentifierTokenID string) {
+	o.InstrumentIdentifierTokenID = instrumentIdentifierTokenID
+}
+
 // WithProfileID adds the profileID to the delete instrument identifier params
-func (o *DeleteInstrumentIdentifierParams) WithProfileID(profileID string) *DeleteInstrumentIdentifierParams {
+func (o *DeleteInstrumentIdentifierParams) WithProfileID(profileID *string) *DeleteInstrumentIdentifierParams {
 	o.SetProfileID(profileID)
 	return o
 }
 
 // SetProfileID adds the profileId to the delete instrument identifier params
-func (o *DeleteInstrumentIdentifierParams) SetProfileID(profileID string) {
+func (o *DeleteInstrumentIdentifierParams) SetProfileID(profileID *string) {
 	o.ProfileID = profileID
-}
-
-// WithTokenID adds the tokenID to the delete instrument identifier params
-func (o *DeleteInstrumentIdentifierParams) WithTokenID(tokenID string) *DeleteInstrumentIdentifierParams {
-	o.SetTokenID(tokenID)
-	return o
-}
-
-// SetTokenID adds the tokenId to the delete instrument identifier params
-func (o *DeleteInstrumentIdentifierParams) SetTokenID(tokenID string) {
-	o.TokenID = tokenID
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -139,14 +154,17 @@ func (o *DeleteInstrumentIdentifierParams) WriteToRequest(r runtime.ClientReques
 	}
 	var res []error
 
-	// header param profile-id
-	if err := r.SetHeaderParam("profile-id", o.ProfileID); err != nil {
+	// path param instrumentIdentifierTokenId
+	if err := r.SetPathParam("instrumentIdentifierTokenId", o.InstrumentIdentifierTokenID); err != nil {
 		return err
 	}
 
-	// path param tokenId
-	if err := r.SetPathParam("tokenId", o.TokenID); err != nil {
-		return err
+	if o.ProfileID != nil {
+
+		// header param profile-id
+		if err := r.SetHeaderParam("profile-id", *o.ProfileID); err != nil {
+			return err
+		}
 	}
 
 	if len(res) > 0 {

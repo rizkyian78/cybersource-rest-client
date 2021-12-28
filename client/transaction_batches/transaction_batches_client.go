@@ -25,43 +25,48 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetTransactionBatchDetails(params *GetTransactionBatchDetailsParams) (*GetTransactionBatchDetailsOK, error)
+	GetTransactionBatchDetails(params *GetTransactionBatchDetailsParams, opts ...ClientOption) (*GetTransactionBatchDetailsOK, error)
 
-	GetTransactionBatchID(params *GetTransactionBatchIDParams) (*GetTransactionBatchIDOK, error)
+	GetTransactionBatchID(params *GetTransactionBatchIDParams, opts ...ClientOption) (*GetTransactionBatchIDOK, error)
 
-	GetTransactionBatches(params *GetTransactionBatchesParams) (*GetTransactionBatchesOK, error)
+	GetTransactionBatches(params *GetTransactionBatchesParams, opts ...ClientOption) (*GetTransactionBatchesOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  GetTransactionBatchDetails gets transaction details for a given batch id
+  GetTransactionBatchDetails gets transaction details for a given batch Id
 
-  Provides real-time detailed status information about the transactions
-that you previously uploaded in the Business Center or processed with
-the Offline Transaction File Submission service.
+  Provides real-time detailed status information about the transactions that you previously uploaded in the Business Center or processed with the Offline Transaction File Submission service.
 
 */
-func (a *Client) GetTransactionBatchDetails(params *GetTransactionBatchDetailsParams) (*GetTransactionBatchDetailsOK, error) {
+func (a *Client) GetTransactionBatchDetails(params *GetTransactionBatchDetailsParams, opts ...ClientOption) (*GetTransactionBatchDetailsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTransactionBatchDetailsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTransactionBatchDetails",
 		Method:             "GET",
 		PathPattern:        "/pts/v1/transaction-batch-details/{id}",
-		ProducesMediaTypes: []string{"application/xml", "text/csv"},
+		ProducesMediaTypes: []string{"application/xml", "text/csv", "text/vnd.cybersource.map-csv"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &GetTransactionBatchDetailsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -80,13 +85,12 @@ func (a *Client) GetTransactionBatchDetails(params *GetTransactionBatchDetailsPa
 
   Provide the search range
 */
-func (a *Client) GetTransactionBatchID(params *GetTransactionBatchIDParams) (*GetTransactionBatchIDOK, error) {
+func (a *Client) GetTransactionBatchID(params *GetTransactionBatchIDParams, opts ...ClientOption) (*GetTransactionBatchIDOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTransactionBatchIDParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTransactionBatchId",
 		Method:             "GET",
 		PathPattern:        "/pts/v1/transaction-batches/{id}",
@@ -97,7 +101,12 @@ func (a *Client) GetTransactionBatchID(params *GetTransactionBatchIDParams) (*Ge
 		Reader:             &GetTransactionBatchIDReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -116,13 +125,12 @@ func (a *Client) GetTransactionBatchID(params *GetTransactionBatchIDParams) (*Ge
 
   Provide the search range
 */
-func (a *Client) GetTransactionBatches(params *GetTransactionBatchesParams) (*GetTransactionBatchesOK, error) {
+func (a *Client) GetTransactionBatches(params *GetTransactionBatchesParams, opts ...ClientOption) (*GetTransactionBatchesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTransactionBatchesParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTransactionBatches",
 		Method:             "GET",
 		PathPattern:        "/pts/v1/transaction-batches",
@@ -133,7 +141,12 @@ func (a *Client) GetTransactionBatches(params *GetTransactionBatchesParams) (*Ge
 		Reader:             &GetTransactionBatchesReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

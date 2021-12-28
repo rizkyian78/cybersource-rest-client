@@ -16,77 +16,95 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetTransactionBatchDetailsParams creates a new GetTransactionBatchDetailsParams object
-// with the default values initialized.
+// NewGetTransactionBatchDetailsParams creates a new GetTransactionBatchDetailsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetTransactionBatchDetailsParams() *GetTransactionBatchDetailsParams {
-	var ()
 	return &GetTransactionBatchDetailsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetTransactionBatchDetailsParamsWithTimeout creates a new GetTransactionBatchDetailsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetTransactionBatchDetailsParamsWithTimeout(timeout time.Duration) *GetTransactionBatchDetailsParams {
-	var ()
 	return &GetTransactionBatchDetailsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetTransactionBatchDetailsParamsWithContext creates a new GetTransactionBatchDetailsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetTransactionBatchDetailsParamsWithContext(ctx context.Context) *GetTransactionBatchDetailsParams {
-	var ()
 	return &GetTransactionBatchDetailsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetTransactionBatchDetailsParamsWithHTTPClient creates a new GetTransactionBatchDetailsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetTransactionBatchDetailsParamsWithHTTPClient(client *http.Client) *GetTransactionBatchDetailsParams {
-	var ()
 	return &GetTransactionBatchDetailsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetTransactionBatchDetailsParams contains all the parameters to send to the API endpoint
-for the get transaction batch details operation typically these are written to a http.Request
+/* GetTransactionBatchDetailsParams contains all the parameters to send to the API endpoint
+   for the get transaction batch details operation.
+
+   Typically these are written to a http.Request.
 */
 type GetTransactionBatchDetailsParams struct {
 
-	/*ID
-	  The batch id assigned for the template.
+	/* ID.
 
+	   The batch id assigned for the template.
 	*/
 	ID string
-	/*Status
-	  Allows you to filter by rejected response.
+
+	/* Status.
+
+	     Allows you to filter by rejected response.
 
 	Valid values:
 	- Rejected
 
-
 	*/
 	Status *string
-	/*UploadDate
-	  Date in which the original batch file was uploaded. Date must be in ISO-8601 format.
+
+	/* UploadDate.
+
+	     Date in which the original batch file was uploaded. Date must be in ISO-8601 format.
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 	**Example date format:**
 	 - yyyy-MM-dd
 
 
+	     Format: date
 	*/
 	UploadDate *strfmt.Date
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get transaction batch details params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTransactionBatchDetailsParams) WithDefaults() *GetTransactionBatchDetailsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get transaction batch details params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTransactionBatchDetailsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get transaction batch details params
@@ -172,32 +190,34 @@ func (o *GetTransactionBatchDetailsParams) WriteToRequest(r runtime.ClientReques
 
 		// query param status
 		var qrStatus string
+
 		if o.Status != nil {
 			qrStatus = *o.Status
 		}
 		qStatus := qrStatus
 		if qStatus != "" {
+
 			if err := r.SetQueryParam("status", qStatus); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.UploadDate != nil {
 
 		// query param uploadDate
 		var qrUploadDate strfmt.Date
+
 		if o.UploadDate != nil {
 			qrUploadDate = *o.UploadDate
 		}
 		qUploadDate := qrUploadDate.String()
 		if qUploadDate != "" {
+
 			if err := r.SetQueryParam("uploadDate", qUploadDate); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

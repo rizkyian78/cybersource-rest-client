@@ -16,61 +16,76 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewVoidRefundParams creates a new VoidRefundParams object
-// with the default values initialized.
+// NewVoidRefundParams creates a new VoidRefundParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewVoidRefundParams() *VoidRefundParams {
-	var ()
 	return &VoidRefundParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewVoidRefundParamsWithTimeout creates a new VoidRefundParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewVoidRefundParamsWithTimeout(timeout time.Duration) *VoidRefundParams {
-	var ()
 	return &VoidRefundParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewVoidRefundParamsWithContext creates a new VoidRefundParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewVoidRefundParamsWithContext(ctx context.Context) *VoidRefundParams {
-	var ()
 	return &VoidRefundParams{
-
 		Context: ctx,
 	}
 }
 
 // NewVoidRefundParamsWithHTTPClient creates a new VoidRefundParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewVoidRefundParamsWithHTTPClient(client *http.Client) *VoidRefundParams {
-	var ()
 	return &VoidRefundParams{
 		HTTPClient: client,
 	}
 }
 
-/*VoidRefundParams contains all the parameters to send to the API endpoint
-for the void refund operation typically these are written to a http.Request
+/* VoidRefundParams contains all the parameters to send to the API endpoint
+   for the void refund operation.
+
+   Typically these are written to a http.Request.
 */
 type VoidRefundParams struct {
 
-	/*ID
-	  The refund ID returned from a previous refund request.
+	/* ID.
 
+	   The refund ID returned from a previous refund request.
 	*/
 	ID string
-	/*VoidRefundRequest*/
+
+	// VoidRefundRequest.
 	VoidRefundRequest VoidRefundBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the void refund params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *VoidRefundParams) WithDefaults() *VoidRefundParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the void refund params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *VoidRefundParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the void refund params
@@ -140,7 +155,6 @@ func (o *VoidRefundParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
-
 	if err := r.SetBodyParam(o.VoidRefundRequest); err != nil {
 		return err
 	}

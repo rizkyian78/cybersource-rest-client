@@ -25,11 +25,16 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CheckPayerAuthEnrollment(params *CheckPayerAuthEnrollmentParams) (*CheckPayerAuthEnrollmentCreated, error)
+	CheckPayerAuthEnrollment(params *CheckPayerAuthEnrollmentParams, opts ...ClientOption) (*CheckPayerAuthEnrollmentCreated, error)
 
-	ValidateAuthenticationResults(params *ValidateAuthenticationResultsParams) (*ValidateAuthenticationResultsCreated, error)
+	PayerAuthSetup(params *PayerAuthSetupParams, opts ...ClientOption) (*PayerAuthSetupCreated, error)
+
+	ValidateAuthenticationResults(params *ValidateAuthenticationResultsParams, opts ...ClientOption) (*ValidateAuthenticationResultsCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -39,13 +44,12 @@ type ClientService interface {
 
   This call verifies that the card is enrolled in a card authentication program.
 */
-func (a *Client) CheckPayerAuthEnrollment(params *CheckPayerAuthEnrollmentParams) (*CheckPayerAuthEnrollmentCreated, error) {
+func (a *Client) CheckPayerAuthEnrollment(params *CheckPayerAuthEnrollmentParams, opts ...ClientOption) (*CheckPayerAuthEnrollmentCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCheckPayerAuthEnrollmentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "checkPayerAuthEnrollment",
 		Method:             "POST",
 		PathPattern:        "/risk/v1/authentications",
@@ -56,7 +60,12 @@ func (a *Client) CheckPayerAuthEnrollment(params *CheckPayerAuthEnrollmentParams
 		Reader:             &CheckPayerAuthEnrollmentReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -71,30 +80,73 @@ func (a *Client) CheckPayerAuthEnrollment(params *CheckPayerAuthEnrollmentParams
 }
 
 /*
+  PayerAuthSetup setups payer auth
+
+  A new service for Merchants to get reference_id for Digital Wallets to use in place of BIN number in Cardinal. Set up file while authenticating with Cardinal. This service should be called by Merchant when payment instrument chosen or changes. This service has to be called before enrollment check.
+*/
+func (a *Client) PayerAuthSetup(params *PayerAuthSetupParams, opts ...ClientOption) (*PayerAuthSetupCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPayerAuthSetupParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "payerAuthSetup",
+		Method:             "POST",
+		PathPattern:        "/risk/v1/authentication-setups",
+		ProducesMediaTypes: []string{"application/hal+json;charset=utf-8"},
+		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PayerAuthSetupReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*PayerAuthSetupCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for payerAuthSetup: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   ValidateAuthenticationResults validates authentication results
 
-  This call retrieves and validates the authentication results from issuer
-and allows the merchant to proceed with processing the payment.
+  This call retrieves and validates the authentication results from issuer and allows the merchant to proceed with processing the payment.
 
 */
-func (a *Client) ValidateAuthenticationResults(params *ValidateAuthenticationResultsParams) (*ValidateAuthenticationResultsCreated, error) {
+func (a *Client) ValidateAuthenticationResults(params *ValidateAuthenticationResultsParams, opts ...ClientOption) (*ValidateAuthenticationResultsCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewValidateAuthenticationResultsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "validateAuthenticationResults",
 		Method:             "POST",
 		PathPattern:        "/risk/v1/authentication-results",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ProducesMediaTypes: []string{"application/hal+json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &ValidateAuthenticationResultsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

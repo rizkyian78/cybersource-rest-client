@@ -6,6 +6,7 @@ package reports
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *SearchReportsReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewSearchReportsOK() *SearchReportsOK {
 	return &SearchReportsOK{}
 }
 
-/*SearchReportsOK handles this case with default header values.
+/* SearchReportsOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -65,7 +65,6 @@ type SearchReportsOK struct {
 func (o *SearchReportsOK) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/reports][%d] searchReportsOK  %+v", 200, o.Payload)
 }
-
 func (o *SearchReportsOK) GetPayload() *SearchReportsOKBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewSearchReportsBadRequest() *SearchReportsBadRequest {
 	return &SearchReportsBadRequest{}
 }
 
-/*SearchReportsBadRequest handles this case with default header values.
+/* SearchReportsBadRequest describes a response with status code 400, with default header values.
 
 Invalid Request
 */
@@ -98,7 +97,6 @@ type SearchReportsBadRequest struct {
 func (o *SearchReportsBadRequest) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/reports][%d] searchReportsBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *SearchReportsBadRequest) GetPayload() *SearchReportsBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewSearchReportsNotFound() *SearchReportsNotFound {
 	return &SearchReportsNotFound{}
 }
 
-/*SearchReportsNotFound handles this case with default header values.
+/* SearchReportsNotFound describes a response with status code 404, with default header values.
 
 No Reports Found
 */
@@ -136,197 +134,6 @@ func (o *SearchReportsNotFound) readResponse(response runtime.ClientResponse, co
 	return nil
 }
 
-/*ReportSearchResultsItems0 Report Search Result Bean
-swagger:model ReportSearchResultsItems0
-*/
-type ReportSearchResultsItems0 struct {
-
-	// Id for selected group.
-	GroupID string `json:"groupId,omitempty"`
-
-	// CyberSource Merchant Id
-	OrganizationID string `json:"organizationId,omitempty"`
-
-	// Specifies the time of the report in queued  in ISO 8601 format
-	// Format: date-time
-	QueuedTime strfmt.DateTime `json:"queuedTime,omitempty"`
-
-	// Specifies the time of the report completed the generation  in ISO 8601 format
-	// Format: date-time
-	ReportCompletedTime strfmt.DateTime `json:"reportCompletedTime,omitempty"`
-
-	// Unique Report Identifier of each report type
-	ReportDefinitionID string `json:"reportDefinitionId,omitempty"`
-
-	// Specifies the report end time in ISO 8601 format
-	// Format: date-time
-	ReportEndTime strfmt.DateTime `json:"reportEndTime,omitempty"`
-
-	// Frequency of the report to get generated
-	//
-	// Valid values:
-	// - DAILY
-	// - WEEKLY
-	// - MONTHLY
-	// - ADHOC
-	//
-	ReportFrequency string `json:"reportFrequency,omitempty"`
-
-	// Specifies the time of the report started to generate  in ISO 8601 format
-	// Format: date-time
-	ReportGeneratingTime strfmt.DateTime `json:"reportGeneratingTime,omitempty"`
-
-	// Unique identifier generated for every reports
-	ReportID string `json:"reportId,omitempty"`
-
-	// Format of the report to get generated
-	//
-	// Valid values:
-	// - application/xml
-	// - text/csv
-	//
-	ReportMimeType string `json:"reportMimeType,omitempty"`
-
-	// Name of the report specified by merchant while creating the report
-	ReportName string `json:"reportName,omitempty"`
-
-	// Specifies the report start time in ISO 8601 format
-	// Format: date-time
-	ReportStartTime strfmt.DateTime `json:"reportStartTime,omitempty"`
-
-	// Status of the report
-	//
-	// Valid values:
-	// - COMPLETED
-	// - PENDING
-	// - QUEUED
-	// - RUNNING
-	// - ERROR
-	// - NO_DATA
-	//
-	Status string `json:"status,omitempty"`
-
-	// Specifies whether the subscription created is either Custom, Standard or Classic
-	//
-	SubscriptionType string `json:"subscriptionType,omitempty"`
-
-	// Time Zone
-	Timezone string `json:"timezone,omitempty"`
-}
-
-// Validate validates this report search results items0
-func (o *ReportSearchResultsItems0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateQueuedTime(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateReportCompletedTime(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateReportEndTime(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateReportGeneratingTime(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateReportStartTime(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *ReportSearchResultsItems0) validateQueuedTime(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.QueuedTime) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("queuedTime", "body", "date-time", o.QueuedTime.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ReportSearchResultsItems0) validateReportCompletedTime(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.ReportCompletedTime) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("reportCompletedTime", "body", "date-time", o.ReportCompletedTime.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ReportSearchResultsItems0) validateReportEndTime(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.ReportEndTime) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("reportEndTime", "body", "date-time", o.ReportEndTime.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ReportSearchResultsItems0) validateReportGeneratingTime(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.ReportGeneratingTime) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("reportGeneratingTime", "body", "date-time", o.ReportGeneratingTime.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ReportSearchResultsItems0) validateReportStartTime(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.ReportStartTime) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("reportStartTime", "body", "date-time", o.ReportStartTime.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *ReportSearchResultsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *ReportSearchResultsItems0) UnmarshalBinary(b []byte) error {
-	var res ReportSearchResultsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
 /*SearchReportsBadRequestBody reportingV3ReportsGet400Response
 //
 // HTTP status code for client application
@@ -337,20 +144,23 @@ type SearchReportsBadRequestBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*SearchReportsBadRequestBodyDetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
+	// Example: One or more fields contains invalid data
 	// Required: true
 	Message *string `json:"message"`
 
 	// Documented reason code
 	//
+	// Example: INVALID_DATA
 	// Required: true
 	Reason *string `json:"reason"`
 
 	// Time of request in UTC.
 	//
+	// Example: 2016-08-11T22:47:57Z
 	// Required: true
 	// Format: date-time
 	SubmitTimeUtc *strfmt.DateTime `json:"submitTimeUtc"`
@@ -397,6 +207,8 @@ func (o *SearchReportsBadRequestBody) validateDetails(formats strfmt.Registry) e
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("searchReportsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("searchReportsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -438,6 +250,40 @@ func (o *SearchReportsBadRequestBody) validateSubmitTimeUtc(formats strfmt.Regis
 	return nil
 }
 
+// ContextValidate validate this search reports bad request body based on the context it is used
+func (o *SearchReportsBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SearchReportsBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("searchReportsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("searchReportsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *SearchReportsBadRequestBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -456,13 +302,56 @@ func (o *SearchReportsBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*SearchReportsBadRequestBodyDetailsItems0 Provides failed validation input field detail
+//
+swagger:model SearchReportsBadRequestBodyDetailsItems0
+*/
+type SearchReportsBadRequestBodyDetailsItems0 struct {
+
+	// Field in request that caused an error
+	//
+	Field string `json:"field,omitempty"`
+
+	// Documented reason code
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this search reports bad request body details items0
+func (o *SearchReportsBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this search reports bad request body details items0 based on context it is used
+func (o *SearchReportsBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *SearchReportsBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *SearchReportsBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res SearchReportsBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*SearchReportsOKBody reportingV3ReportsGet200Response
 swagger:model SearchReportsOKBody
 */
 type SearchReportsOKBody struct {
 
 	// report search results
-	ReportSearchResults []*ReportSearchResultsItems0 `json:"reportSearchResults"`
+	ReportSearchResults []*SearchReportsOKBodyReportSearchResultsItems0 `json:"reportSearchResults"`
 }
 
 // Validate validates this search reports o k body
@@ -480,7 +369,6 @@ func (o *SearchReportsOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *SearchReportsOKBody) validateReportSearchResults(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReportSearchResults) { // not required
 		return nil
 	}
@@ -494,6 +382,42 @@ func (o *SearchReportsOKBody) validateReportSearchResults(formats strfmt.Registr
 			if err := o.ReportSearchResults[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("searchReportsOK" + "." + "reportSearchResults" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("searchReportsOK" + "." + "reportSearchResults" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this search reports o k body based on the context it is used
+func (o *SearchReportsOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateReportSearchResults(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SearchReportsOKBody) contextValidateReportSearchResults(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.ReportSearchResults); i++ {
+
+		if o.ReportSearchResults[i] != nil {
+			if err := o.ReportSearchResults[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("searchReportsOK" + "." + "reportSearchResults" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("searchReportsOK" + "." + "reportSearchResults" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -515,6 +439,391 @@ func (o *SearchReportsOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *SearchReportsOKBody) UnmarshalBinary(b []byte) error {
 	var res SearchReportsOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*SearchReportsOKBodyReportSearchResultsItems0 Report Search Result Bean
+swagger:model SearchReportsOKBodyReportSearchResultsItems0
+*/
+type SearchReportsOKBodyReportSearchResultsItems0 struct {
+
+	// link
+	Link *SearchReportsOKBodyReportSearchResultsItems0Link `json:"_link,omitempty"`
+
+	// Id for selected group.
+	// Example: 12345
+	GroupID string `json:"groupId,omitempty"`
+
+	// CyberSource Merchant Id
+	// Example: Test_MerchantId
+	OrganizationID string `json:"organizationId,omitempty"`
+
+	// Specifies the time of the report in queued  in ISO 8601 format
+	// Example: 2017-10-03T10:00:00+05:00
+	// Format: date-time
+	QueuedTime strfmt.DateTime `json:"queuedTime,omitempty"`
+
+	// Specifies the time of the report completed the generation  in ISO 8601 format
+	// Example: 2017-10-03T10:10:00+05:00
+	// Format: date-time
+	ReportCompletedTime strfmt.DateTime `json:"reportCompletedTime,omitempty"`
+
+	// Unique Report Identifier of each report type
+	// Example: 210
+	ReportDefinitionID string `json:"reportDefinitionId,omitempty"`
+
+	// Specifies the report end time in ISO 8601 format
+	// Example: 2017-10-02T10:00:00+05:00
+	// Format: date-time
+	ReportEndTime strfmt.DateTime `json:"reportEndTime,omitempty"`
+
+	// Frequency of the report to get generated
+	// Valid Values:
+	// - DAILY
+	// - WEEKLY
+	// - MONTHLY
+	// - ADHOC
+	//
+	// Example: DAILY
+	ReportFrequency string `json:"reportFrequency,omitempty"`
+
+	// Specifies the time of the report started to generate  in ISO 8601 format
+	// Example: 2017-10-03T10:00:00+05:00
+	// Format: date-time
+	ReportGeneratingTime strfmt.DateTime `json:"reportGeneratingTime,omitempty"`
+
+	// Unique identifier generated for every reports
+	// Example: 6d9cb5b6-0e97-2d03-e053-7cb8d30af52e
+	ReportID string `json:"reportId,omitempty"`
+
+	// Format of the report to get generated
+	// Valid Values:
+	// - application/xml
+	// - text/csv
+	//
+	// Example: application/xml
+	ReportMimeType string `json:"reportMimeType,omitempty"`
+
+	// Name of the report specified by merchant while creating the report
+	// Example: MyTransactionRequestDetailReport
+	ReportName string `json:"reportName,omitempty"`
+
+	// Specifies the report start time in ISO 8601 format
+	// Example: 2017-10-01T10:00:00+05:00
+	// Format: date-time
+	ReportStartTime strfmt.DateTime `json:"reportStartTime,omitempty"`
+
+	// Status of the report
+	// Valid Values:
+	// - COMPLETED
+	// - PENDING
+	// - QUEUED
+	// - RUNNING
+	// - ERROR
+	// - NO_DATA
+	//
+	Status string `json:"status,omitempty"`
+
+	// Specifies whether the subscription created is either Custom, Standard or Classic
+	//
+	// Example: CUSTOM
+	SubscriptionType string `json:"subscriptionType,omitempty"`
+
+	// Time Zone
+	// Example: America/Chicago
+	Timezone string `json:"timezone,omitempty"`
+}
+
+// Validate validates this search reports o k body report search results items0
+func (o *SearchReportsOKBodyReportSearchResultsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateLink(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateQueuedTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReportCompletedTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReportEndTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReportGeneratingTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateReportStartTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0) validateLink(formats strfmt.Registry) error {
+	if swag.IsZero(o.Link) { // not required
+		return nil
+	}
+
+	if o.Link != nil {
+		if err := o.Link.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("_link")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("_link")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0) validateQueuedTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.QueuedTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("queuedTime", "body", "date-time", o.QueuedTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0) validateReportCompletedTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReportCompletedTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("reportCompletedTime", "body", "date-time", o.ReportCompletedTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0) validateReportEndTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReportEndTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("reportEndTime", "body", "date-time", o.ReportEndTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0) validateReportGeneratingTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReportGeneratingTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("reportGeneratingTime", "body", "date-time", o.ReportGeneratingTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0) validateReportStartTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReportStartTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("reportStartTime", "body", "date-time", o.ReportStartTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this search reports o k body report search results items0 based on the context it is used
+func (o *SearchReportsOKBodyReportSearchResultsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLink(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0) contextValidateLink(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Link != nil {
+		if err := o.Link.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("_link")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("_link")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *SearchReportsOKBodyReportSearchResultsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *SearchReportsOKBodyReportSearchResultsItems0) UnmarshalBinary(b []byte) error {
+	var res SearchReportsOKBodyReportSearchResultsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*SearchReportsOKBodyReportSearchResultsItems0Link search reports o k body report search results items0 link
+swagger:model SearchReportsOKBodyReportSearchResultsItems0Link
+*/
+type SearchReportsOKBodyReportSearchResultsItems0Link struct {
+
+	// report download
+	ReportDownload *SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload `json:"reportDownload,omitempty"`
+}
+
+// Validate validates this search reports o k body report search results items0 link
+func (o *SearchReportsOKBodyReportSearchResultsItems0Link) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateReportDownload(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0Link) validateReportDownload(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReportDownload) { // not required
+		return nil
+	}
+
+	if o.ReportDownload != nil {
+		if err := o.ReportDownload.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("_link" + "." + "reportDownload")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("_link" + "." + "reportDownload")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this search reports o k body report search results items0 link based on the context it is used
+func (o *SearchReportsOKBodyReportSearchResultsItems0Link) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateReportDownload(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *SearchReportsOKBodyReportSearchResultsItems0Link) contextValidateReportDownload(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ReportDownload != nil {
+		if err := o.ReportDownload.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("_link" + "." + "reportDownload")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("_link" + "." + "reportDownload")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *SearchReportsOKBodyReportSearchResultsItems0Link) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *SearchReportsOKBodyReportSearchResultsItems0Link) UnmarshalBinary(b []byte) error {
+	var res SearchReportsOKBodyReportSearchResultsItems0Link
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload search reports o k body report search results items0 link report download
+swagger:model SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload
+*/
+type SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload struct {
+
+	// href
+	// Example: /reporting/v3/report-downloads?reportDate=2017-10-02\u0026reportName=MyTransactionRequestDetailReport\u0026reportTime=10:00:00+05:00
+	Href string `json:"href,omitempty"`
+
+	// method
+	// Example: GET
+	Method string `json:"method,omitempty"`
+}
+
+// Validate validates this search reports o k body report search results items0 link report download
+func (o *SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this search reports o k body report search results items0 link report download based on context it is used
+func (o *SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload) UnmarshalBinary(b []byte) error {
+	var res SearchReportsOKBodyReportSearchResultsItems0LinkReportDownload
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

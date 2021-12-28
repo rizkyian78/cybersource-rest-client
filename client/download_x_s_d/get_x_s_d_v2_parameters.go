@@ -16,59 +16,73 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetXSDV2Params creates a new GetXSDV2Params object
-// with the default values initialized.
+// NewGetXSDV2Params creates a new GetXSDV2Params object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetXSDV2Params() *GetXSDV2Params {
-	var ()
 	return &GetXSDV2Params{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetXSDV2ParamsWithTimeout creates a new GetXSDV2Params object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetXSDV2ParamsWithTimeout(timeout time.Duration) *GetXSDV2Params {
-	var ()
 	return &GetXSDV2Params{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetXSDV2ParamsWithContext creates a new GetXSDV2Params object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetXSDV2ParamsWithContext(ctx context.Context) *GetXSDV2Params {
-	var ()
 	return &GetXSDV2Params{
-
 		Context: ctx,
 	}
 }
 
 // NewGetXSDV2ParamsWithHTTPClient creates a new GetXSDV2Params object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetXSDV2ParamsWithHTTPClient(client *http.Client) *GetXSDV2Params {
-	var ()
 	return &GetXSDV2Params{
 		HTTPClient: client,
 	}
 }
 
-/*GetXSDV2Params contains all the parameters to send to the API endpoint
-for the get x s d v2 operation typically these are written to a http.Request
+/* GetXSDV2Params contains all the parameters to send to the API endpoint
+   for the get x s d v2 operation.
+
+   Typically these are written to a http.Request.
 */
 type GetXSDV2Params struct {
 
-	/*ReportDefinitionNameVersion
-	  Name and version of XSD file to download. Some XSDs only have one version. In that case version name is not needed. Some example values are DecisionManagerDetailReport, DecisionManagerTypes
+	/* ReportDefinitionNameVersion.
 
+	   Name and version of XSD file to download. Some XSDs only have one version. In that case version name is not needed. Some example values are DecisionManagerDetailReport, DecisionManagerTypes
 	*/
 	ReportDefinitionNameVersion string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get x s d v2 params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetXSDV2Params) WithDefaults() *GetXSDV2Params {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get x s d v2 params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetXSDV2Params) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get x s d v2 params

@@ -25,11 +25,14 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetResourceInfoByReportDefinition(params *GetResourceInfoByReportDefinitionParams) (*GetResourceInfoByReportDefinitionOK, error)
+	GetResourceInfoByReportDefinition(params *GetResourceInfoByReportDefinitionParams, opts ...ClientOption) (*GetResourceInfoByReportDefinitionOK, error)
 
-	GetResourceV2Info(params *GetResourceV2InfoParams) (*GetResourceV2InfoOK, error)
+	GetResourceV2Info(params *GetResourceV2InfoParams, opts ...ClientOption) (*GetResourceV2InfoOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -37,18 +40,15 @@ type ClientService interface {
 /*
   GetResourceInfoByReportDefinition gets report definition
 
-  View the attributes of an individual report type.
-For a list of values for reportDefinitionName, see the
-[Reporting Developer Guide](https://www.cybersource.com/developers/documentation/reporting_and_reconciliation/)
+  View the attributes of an individual report type. For a list of values for reportDefinitionName, see the [Reporting Developer Guide](https://www.cybersource.com/developers/documentation/reporting_and_reconciliation/)
 
 */
-func (a *Client) GetResourceInfoByReportDefinition(params *GetResourceInfoByReportDefinitionParams) (*GetResourceInfoByReportDefinitionOK, error) {
+func (a *Client) GetResourceInfoByReportDefinition(params *GetResourceInfoByReportDefinitionParams, opts ...ClientOption) (*GetResourceInfoByReportDefinitionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetResourceInfoByReportDefinitionParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getResourceInfoByReportDefinition",
 		Method:             "GET",
 		PathPattern:        "/reporting/v3/report-definitions/{reportDefinitionName}",
@@ -59,7 +59,12 @@ func (a *Client) GetResourceInfoByReportDefinition(params *GetResourceInfoByRepo
 		Reader:             &GetResourceInfoByReportDefinitionReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -79,13 +84,12 @@ func (a *Client) GetResourceInfoByReportDefinition(params *GetResourceInfoByRepo
   View a list of supported reports and their attributes before subscribing to them.
 
 */
-func (a *Client) GetResourceV2Info(params *GetResourceV2InfoParams) (*GetResourceV2InfoOK, error) {
+func (a *Client) GetResourceV2Info(params *GetResourceV2InfoParams, opts ...ClientOption) (*GetResourceV2InfoOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetResourceV2InfoParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getResourceV2Info",
 		Method:             "GET",
 		PathPattern:        "/reporting/v3/report-definitions",
@@ -96,7 +100,12 @@ func (a *Client) GetResourceV2Info(params *GetResourceV2InfoParams) (*GetResourc
 		Reader:             &GetResourceV2InfoReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

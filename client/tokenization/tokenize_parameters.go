@@ -16,56 +16,70 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewTokenizeParams creates a new TokenizeParams object
-// with the default values initialized.
+// NewTokenizeParams creates a new TokenizeParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewTokenizeParams() *TokenizeParams {
-	var ()
 	return &TokenizeParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewTokenizeParamsWithTimeout creates a new TokenizeParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewTokenizeParamsWithTimeout(timeout time.Duration) *TokenizeParams {
-	var ()
 	return &TokenizeParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewTokenizeParamsWithContext creates a new TokenizeParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewTokenizeParamsWithContext(ctx context.Context) *TokenizeParams {
-	var ()
 	return &TokenizeParams{
-
 		Context: ctx,
 	}
 }
 
 // NewTokenizeParamsWithHTTPClient creates a new TokenizeParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewTokenizeParamsWithHTTPClient(client *http.Client) *TokenizeParams {
-	var ()
 	return &TokenizeParams{
 		HTTPClient: client,
 	}
 }
 
-/*TokenizeParams contains all the parameters to send to the API endpoint
-for the tokenize operation typically these are written to a http.Request
+/* TokenizeParams contains all the parameters to send to the API endpoint
+   for the tokenize operation.
+
+   Typically these are written to a http.Request.
 */
 type TokenizeParams struct {
 
-	/*TokenizeRequest*/
+	// TokenizeRequest.
 	TokenizeRequest TokenizeBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the tokenize params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *TokenizeParams) WithDefaults() *TokenizeParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the tokenize params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *TokenizeParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the tokenize params
@@ -119,7 +133,6 @@ func (o *TokenizeParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.TokenizeRequest); err != nil {
 		return err
 	}

@@ -16,56 +16,70 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewValidateAuthenticationResultsParams creates a new ValidateAuthenticationResultsParams object
-// with the default values initialized.
+// NewValidateAuthenticationResultsParams creates a new ValidateAuthenticationResultsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewValidateAuthenticationResultsParams() *ValidateAuthenticationResultsParams {
-	var ()
 	return &ValidateAuthenticationResultsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewValidateAuthenticationResultsParamsWithTimeout creates a new ValidateAuthenticationResultsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewValidateAuthenticationResultsParamsWithTimeout(timeout time.Duration) *ValidateAuthenticationResultsParams {
-	var ()
 	return &ValidateAuthenticationResultsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewValidateAuthenticationResultsParamsWithContext creates a new ValidateAuthenticationResultsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewValidateAuthenticationResultsParamsWithContext(ctx context.Context) *ValidateAuthenticationResultsParams {
-	var ()
 	return &ValidateAuthenticationResultsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewValidateAuthenticationResultsParamsWithHTTPClient creates a new ValidateAuthenticationResultsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewValidateAuthenticationResultsParamsWithHTTPClient(client *http.Client) *ValidateAuthenticationResultsParams {
-	var ()
 	return &ValidateAuthenticationResultsParams{
 		HTTPClient: client,
 	}
 }
 
-/*ValidateAuthenticationResultsParams contains all the parameters to send to the API endpoint
-for the validate authentication results operation typically these are written to a http.Request
+/* ValidateAuthenticationResultsParams contains all the parameters to send to the API endpoint
+   for the validate authentication results operation.
+
+   Typically these are written to a http.Request.
 */
 type ValidateAuthenticationResultsParams struct {
 
-	/*ValidateRequest*/
+	// ValidateRequest.
 	ValidateRequest ValidateAuthenticationResultsBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the validate authentication results params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ValidateAuthenticationResultsParams) WithDefaults() *ValidateAuthenticationResultsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the validate authentication results params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ValidateAuthenticationResultsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the validate authentication results params
@@ -119,7 +133,6 @@ func (o *ValidateAuthenticationResultsParams) WriteToRequest(r runtime.ClientReq
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.ValidateRequest); err != nil {
 		return err
 	}

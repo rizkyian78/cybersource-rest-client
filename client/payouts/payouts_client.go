@@ -25,9 +25,12 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	OctCreatePayment(params *OctCreatePaymentParams) (*OctCreatePaymentCreated, error)
+	OctCreatePayment(params *OctCreatePaymentParams, opts ...ClientOption) (*OctCreatePaymentCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -35,28 +38,31 @@ type ClientService interface {
 /*
   OctCreatePayment processes a payout
 
-  Send funds from a selected funding source to a designated credit/debit card account or a prepaid card using
-an Original Credit Transaction (OCT).
+  Send funds from a selected funding source to a designated credit/debit card account or a prepaid card using an Original Credit Transaction (OCT).
 
 */
-func (a *Client) OctCreatePayment(params *OctCreatePaymentParams) (*OctCreatePaymentCreated, error) {
+func (a *Client) OctCreatePayment(params *OctCreatePaymentParams, opts ...ClientOption) (*OctCreatePaymentCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewOctCreatePaymentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "octCreatePayment",
 		Method:             "POST",
 		PathPattern:        "/pts/v2/payouts",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ProducesMediaTypes: []string{"application/hal+json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &OctCreatePaymentReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

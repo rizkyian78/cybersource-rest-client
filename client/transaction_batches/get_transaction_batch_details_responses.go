@@ -6,6 +6,7 @@ package transaction_batches
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -60,9 +61,8 @@ func (o *GetTransactionBatchDetailsReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -71,7 +71,7 @@ func NewGetTransactionBatchDetailsOK() *GetTransactionBatchDetailsOK {
 	return &GetTransactionBatchDetailsOK{}
 }
 
-/*GetTransactionBatchDetailsOK handles this case with default header values.
+/* GetTransactionBatchDetailsOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -92,7 +92,7 @@ func NewGetTransactionBatchDetailsBadRequest() *GetTransactionBatchDetailsBadReq
 	return &GetTransactionBatchDetailsBadRequest{}
 }
 
-/*GetTransactionBatchDetailsBadRequest handles this case with default header values.
+/* GetTransactionBatchDetailsBadRequest describes a response with status code 400, with default header values.
 
 Bad Request
 */
@@ -103,7 +103,6 @@ type GetTransactionBatchDetailsBadRequest struct {
 func (o *GetTransactionBatchDetailsBadRequest) Error() string {
 	return fmt.Sprintf("[GET /pts/v1/transaction-batch-details/{id}][%d] getTransactionBatchDetailsBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *GetTransactionBatchDetailsBadRequest) GetPayload() *GetTransactionBatchDetailsBadRequestBody {
 	return o.Payload
 }
@@ -125,7 +124,7 @@ func NewGetTransactionBatchDetailsUnauthorized() *GetTransactionBatchDetailsUnau
 	return &GetTransactionBatchDetailsUnauthorized{}
 }
 
-/*GetTransactionBatchDetailsUnauthorized handles this case with default header values.
+/* GetTransactionBatchDetailsUnauthorized describes a response with status code 401, with default header values.
 
 Not Authorized
 */
@@ -136,7 +135,6 @@ type GetTransactionBatchDetailsUnauthorized struct {
 func (o *GetTransactionBatchDetailsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /pts/v1/transaction-batch-details/{id}][%d] getTransactionBatchDetailsUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetTransactionBatchDetailsUnauthorized) GetPayload() *GetTransactionBatchDetailsUnauthorizedBody {
 	return o.Payload
 }
@@ -158,7 +156,7 @@ func NewGetTransactionBatchDetailsForbidden() *GetTransactionBatchDetailsForbidd
 	return &GetTransactionBatchDetailsForbidden{}
 }
 
-/*GetTransactionBatchDetailsForbidden handles this case with default header values.
+/* GetTransactionBatchDetailsForbidden describes a response with status code 403, with default header values.
 
 No Authenticated
 */
@@ -169,7 +167,6 @@ type GetTransactionBatchDetailsForbidden struct {
 func (o *GetTransactionBatchDetailsForbidden) Error() string {
 	return fmt.Sprintf("[GET /pts/v1/transaction-batch-details/{id}][%d] getTransactionBatchDetailsForbidden  %+v", 403, o.Payload)
 }
-
 func (o *GetTransactionBatchDetailsForbidden) GetPayload() *GetTransactionBatchDetailsForbiddenBody {
 	return o.Payload
 }
@@ -191,7 +188,7 @@ func NewGetTransactionBatchDetailsNotFound() *GetTransactionBatchDetailsNotFound
 	return &GetTransactionBatchDetailsNotFound{}
 }
 
-/*GetTransactionBatchDetailsNotFound handles this case with default header values.
+/* GetTransactionBatchDetailsNotFound describes a response with status code 404, with default header values.
 
 No Reports Found
 */
@@ -202,7 +199,6 @@ type GetTransactionBatchDetailsNotFound struct {
 func (o *GetTransactionBatchDetailsNotFound) Error() string {
 	return fmt.Sprintf("[GET /pts/v1/transaction-batch-details/{id}][%d] getTransactionBatchDetailsNotFound  %+v", 404, o.Payload)
 }
-
 func (o *GetTransactionBatchDetailsNotFound) GetPayload() *GetTransactionBatchDetailsNotFoundBody {
 	return o.Payload
 }
@@ -224,7 +220,7 @@ func NewGetTransactionBatchDetailsBadGateway() *GetTransactionBatchDetailsBadGat
 	return &GetTransactionBatchDetailsBadGateway{}
 }
 
-/*GetTransactionBatchDetailsBadGateway handles this case with default header values.
+/* GetTransactionBatchDetailsBadGateway describes a response with status code 502, with default header values.
 
 Bad Gateway
 */
@@ -235,7 +231,6 @@ type GetTransactionBatchDetailsBadGateway struct {
 func (o *GetTransactionBatchDetailsBadGateway) Error() string {
 	return fmt.Sprintf("[GET /pts/v1/transaction-batch-details/{id}][%d] getTransactionBatchDetailsBadGateway  %+v", 502, o.Payload)
 }
-
 func (o *GetTransactionBatchDetailsBadGateway) GetPayload() *GetTransactionBatchDetailsBadGatewayBody {
 	return o.Payload
 }
@@ -261,8 +256,10 @@ type GetTransactionBatchDetailsBadGatewayBody struct {
 	ErrorInformation *GetTransactionBatchDetailsBadGatewayBodyErrorInformation `json:"errorInformation,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -282,7 +279,6 @@ func (o *GetTransactionBatchDetailsBadGatewayBody) Validate(formats strfmt.Regis
 }
 
 func (o *GetTransactionBatchDetailsBadGatewayBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -291,6 +287,38 @@ func (o *GetTransactionBatchDetailsBadGatewayBody) validateErrorInformation(form
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getTransactionBatchDetailsBadGateway" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsBadGateway" + "." + "errorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details bad gateway body based on the context it is used
+func (o *GetTransactionBatchDetailsBadGatewayBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsBadGatewayBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getTransactionBatchDetailsBadGateway" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsBadGateway" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -334,6 +362,11 @@ func (o *GetTransactionBatchDetailsBadGatewayBodyErrorInformation) Validate(form
 	return nil
 }
 
+// ContextValidate validates this get transaction batch details bad gateway body error information based on context it is used
+func (o *GetTransactionBatchDetailsBadGatewayBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetTransactionBatchDetailsBadGatewayBodyErrorInformation) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -361,8 +394,10 @@ type GetTransactionBatchDetailsBadRequestBody struct {
 	ErrorInformation *GetTransactionBatchDetailsBadRequestBodyErrorInformation `json:"errorInformation,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -382,7 +417,6 @@ func (o *GetTransactionBatchDetailsBadRequestBody) Validate(formats strfmt.Regis
 }
 
 func (o *GetTransactionBatchDetailsBadRequestBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -391,6 +425,38 @@ func (o *GetTransactionBatchDetailsBadRequestBody) validateErrorInformation(form
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details bad request body based on the context it is used
+func (o *GetTransactionBatchDetailsBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsBadRequestBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -447,7 +513,6 @@ func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformation) Validate(form
 }
 
 func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformation) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -461,6 +526,42 @@ func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformation) validateDetai
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details bad request body error information based on the context it is used
+func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformation) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsBadRequest" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -508,6 +609,11 @@ func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformationDetailsItems0) 
 	return nil
 }
 
+// ContextValidate validates this get transaction batch details bad request body error information details items0 based on context it is used
+func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformationDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetTransactionBatchDetailsBadRequestBodyErrorInformationDetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -535,8 +641,10 @@ type GetTransactionBatchDetailsForbiddenBody struct {
 	ErrorInformation *GetTransactionBatchDetailsForbiddenBodyErrorInformation `json:"errorInformation,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -556,7 +664,6 @@ func (o *GetTransactionBatchDetailsForbiddenBody) Validate(formats strfmt.Regist
 }
 
 func (o *GetTransactionBatchDetailsForbiddenBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -565,6 +672,38 @@ func (o *GetTransactionBatchDetailsForbiddenBody) validateErrorInformation(forma
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details forbidden body based on the context it is used
+func (o *GetTransactionBatchDetailsForbiddenBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsForbiddenBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -621,7 +760,6 @@ func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformation) Validate(forma
 }
 
 func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformation) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -635,6 +773,42 @@ func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformation) validateDetail
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details forbidden body error information based on the context it is used
+func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformation) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsForbidden" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -682,6 +856,11 @@ func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformationDetailsItems0) V
 	return nil
 }
 
+// ContextValidate validates this get transaction batch details forbidden body error information details items0 based on context it is used
+func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformationDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetTransactionBatchDetailsForbiddenBodyErrorInformationDetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -709,8 +888,10 @@ type GetTransactionBatchDetailsNotFoundBody struct {
 	ErrorInformation *GetTransactionBatchDetailsNotFoundBodyErrorInformation `json:"errorInformation,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -730,7 +911,6 @@ func (o *GetTransactionBatchDetailsNotFoundBody) Validate(formats strfmt.Registr
 }
 
 func (o *GetTransactionBatchDetailsNotFoundBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -739,6 +919,38 @@ func (o *GetTransactionBatchDetailsNotFoundBody) validateErrorInformation(format
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details not found body based on the context it is used
+func (o *GetTransactionBatchDetailsNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsNotFoundBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -795,7 +1007,6 @@ func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformation) Validate(format
 }
 
 func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformation) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -809,6 +1020,42 @@ func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformation) validateDetails
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details not found body error information based on the context it is used
+func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformation) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsNotFound" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -856,6 +1103,11 @@ func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformationDetailsItems0) Va
 	return nil
 }
 
+// ContextValidate validates this get transaction batch details not found body error information details items0 based on context it is used
+func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformationDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetTransactionBatchDetailsNotFoundBodyErrorInformationDetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -883,8 +1135,10 @@ type GetTransactionBatchDetailsUnauthorizedBody struct {
 	ErrorInformation *GetTransactionBatchDetailsUnauthorizedBodyErrorInformation `json:"errorInformation,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -904,7 +1158,6 @@ func (o *GetTransactionBatchDetailsUnauthorizedBody) Validate(formats strfmt.Reg
 }
 
 func (o *GetTransactionBatchDetailsUnauthorizedBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -913,6 +1166,38 @@ func (o *GetTransactionBatchDetailsUnauthorizedBody) validateErrorInformation(fo
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details unauthorized body based on the context it is used
+func (o *GetTransactionBatchDetailsUnauthorizedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsUnauthorizedBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -969,7 +1254,6 @@ func (o *GetTransactionBatchDetailsUnauthorizedBodyErrorInformation) Validate(fo
 }
 
 func (o *GetTransactionBatchDetailsUnauthorizedBodyErrorInformation) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -983,6 +1267,42 @@ func (o *GetTransactionBatchDetailsUnauthorizedBodyErrorInformation) validateDet
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get transaction batch details unauthorized body error information based on the context it is used
+func (o *GetTransactionBatchDetailsUnauthorizedBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetTransactionBatchDetailsUnauthorizedBodyErrorInformation) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getTransactionBatchDetailsUnauthorized" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -1027,6 +1347,11 @@ type GetTransactionBatchDetailsUnauthorizedBodyErrorInformationDetailsItems0 str
 
 // Validate validates this get transaction batch details unauthorized body error information details items0
 func (o *GetTransactionBatchDetailsUnauthorizedBodyErrorInformationDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get transaction batch details unauthorized body error information details items0 based on context it is used
+func (o *GetTransactionBatchDetailsUnauthorizedBodyErrorInformationDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

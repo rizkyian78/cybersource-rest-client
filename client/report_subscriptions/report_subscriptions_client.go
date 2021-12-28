@@ -25,17 +25,64 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateSubscription(params *CreateSubscriptionParams) (*CreateSubscriptionOK, error)
+	CreateStandardOrClassicSubscription(params *CreateStandardOrClassicSubscriptionParams, opts ...ClientOption) (*CreateStandardOrClassicSubscriptionOK, *CreateStandardOrClassicSubscriptionCreated, error)
 
-	DeleteSubscription(params *DeleteSubscriptionParams) (*DeleteSubscriptionOK, error)
+	CreateSubscription(params *CreateSubscriptionParams, opts ...ClientOption) (*CreateSubscriptionOK, error)
 
-	GetAllSubscriptions(params *GetAllSubscriptionsParams) (*GetAllSubscriptionsOK, error)
+	DeleteSubscription(params *DeleteSubscriptionParams, opts ...ClientOption) (*DeleteSubscriptionOK, error)
 
-	GetSubscription(params *GetSubscriptionParams) (*GetSubscriptionOK, error)
+	GetAllSubscriptions(params *GetAllSubscriptionsParams, opts ...ClientOption) (*GetAllSubscriptionsOK, error)
+
+	GetSubscription(params *GetSubscriptionParams, opts ...ClientOption) (*GetSubscriptionOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateStandardOrClassicSubscription creates a standard or classic subscription
+
+  Create or update an already existing classic or standard subscription.
+
+*/
+func (a *Client) CreateStandardOrClassicSubscription(params *CreateStandardOrClassicSubscriptionParams, opts ...ClientOption) (*CreateStandardOrClassicSubscriptionOK, *CreateStandardOrClassicSubscriptionCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateStandardOrClassicSubscriptionParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "createStandardOrClassicSubscription",
+		Method:             "PUT",
+		PathPattern:        "/reporting/v3/predefined-report-subscriptions",
+		ProducesMediaTypes: []string{"application/hal+json"},
+		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &CreateStandardOrClassicSubscriptionReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, nil, err
+	}
+	switch value := result.(type) {
+	case *CreateStandardOrClassicSubscriptionOK:
+		return value, nil, nil
+	case *CreateStandardOrClassicSubscriptionCreated:
+		return nil, value, nil
+	}
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for report_subscriptions: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -44,13 +91,12 @@ type ClientService interface {
   Create a report subscription for your organization. The report name must be unique.
 
 */
-func (a *Client) CreateSubscription(params *CreateSubscriptionParams) (*CreateSubscriptionOK, error) {
+func (a *Client) CreateSubscription(params *CreateSubscriptionParams, opts ...ClientOption) (*CreateSubscriptionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateSubscriptionParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "createSubscription",
 		Method:             "PUT",
 		PathPattern:        "/reporting/v3/report-subscriptions",
@@ -61,7 +107,12 @@ func (a *Client) CreateSubscription(params *CreateSubscriptionParams) (*CreateSu
 		Reader:             &CreateSubscriptionReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -78,18 +129,15 @@ func (a *Client) CreateSubscription(params *CreateSubscriptionParams) (*CreateSu
 /*
   DeleteSubscription deletes subscription of a report name by organization
 
-  Delete a report subscription for your
-organization. You must know the unique name of the report
-you want to delete.
+  Delete a report subscription for your organization. You must know the unique name of the report you want to delete.
 
 */
-func (a *Client) DeleteSubscription(params *DeleteSubscriptionParams) (*DeleteSubscriptionOK, error) {
+func (a *Client) DeleteSubscription(params *DeleteSubscriptionParams, opts ...ClientOption) (*DeleteSubscriptionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteSubscriptionParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "deleteSubscription",
 		Method:             "DELETE",
 		PathPattern:        "/reporting/v3/report-subscriptions/{reportName}",
@@ -100,7 +148,12 @@ func (a *Client) DeleteSubscription(params *DeleteSubscriptionParams) (*DeleteSu
 		Reader:             &DeleteSubscriptionReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -120,13 +173,12 @@ func (a *Client) DeleteSubscription(params *DeleteSubscriptionParams) (*DeleteSu
   View a summary of all report subscriptions.
 
 */
-func (a *Client) GetAllSubscriptions(params *GetAllSubscriptionsParams) (*GetAllSubscriptionsOK, error) {
+func (a *Client) GetAllSubscriptions(params *GetAllSubscriptionsParams, opts ...ClientOption) (*GetAllSubscriptionsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetAllSubscriptionsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getAllSubscriptions",
 		Method:             "GET",
 		PathPattern:        "/reporting/v3/report-subscriptions",
@@ -137,7 +189,12 @@ func (a *Client) GetAllSubscriptions(params *GetAllSubscriptionsParams) (*GetAll
 		Reader:             &GetAllSubscriptionsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -154,18 +211,15 @@ func (a *Client) GetAllSubscriptions(params *GetAllSubscriptionsParams) (*GetAll
 /*
   GetSubscription gets subscription for report name
 
-  View the details of a report subscription, such as
-the report format or report frequency, using the report’s
-unique name.
+  View the details of a report subscription, such as the report format or report frequency, using the report’s unique name.
 
 */
-func (a *Client) GetSubscription(params *GetSubscriptionParams) (*GetSubscriptionOK, error) {
+func (a *Client) GetSubscription(params *GetSubscriptionParams, opts ...ClientOption) (*GetSubscriptionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetSubscriptionParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getSubscription",
 		Method:             "GET",
 		PathPattern:        "/reporting/v3/report-subscriptions/{reportName}",
@@ -176,7 +230,12 @@ func (a *Client) GetSubscription(params *GetSubscriptionParams) (*GetSubscriptio
 		Reader:             &GetSubscriptionReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

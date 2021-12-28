@@ -6,6 +6,7 @@ package secure_file_share
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -55,9 +56,8 @@ func (o *GetFileDetailReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -66,7 +66,7 @@ func NewGetFileDetailOK() *GetFileDetailOK {
 	return &GetFileDetailOK{}
 }
 
-/*GetFileDetailOK handles this case with default header values.
+/* GetFileDetailOK describes a response with status code 200, with default header values.
 
 Ok
 */
@@ -77,7 +77,6 @@ type GetFileDetailOK struct {
 func (o *GetFileDetailOK) Error() string {
 	return fmt.Sprintf("[GET /sfs/v1/file-details][%d] getFileDetailOK  %+v", 200, o.Payload)
 }
-
 func (o *GetFileDetailOK) GetPayload() *GetFileDetailOKBody {
 	return o.Payload
 }
@@ -99,7 +98,7 @@ func NewGetFileDetailBadRequest() *GetFileDetailBadRequest {
 	return &GetFileDetailBadRequest{}
 }
 
-/*GetFileDetailBadRequest handles this case with default header values.
+/* GetFileDetailBadRequest describes a response with status code 400, with default header values.
 
 Invalid request
 */
@@ -110,7 +109,6 @@ type GetFileDetailBadRequest struct {
 func (o *GetFileDetailBadRequest) Error() string {
 	return fmt.Sprintf("[GET /sfs/v1/file-details][%d] getFileDetailBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *GetFileDetailBadRequest) GetPayload() *GetFileDetailBadRequestBody {
 	return o.Payload
 }
@@ -132,7 +130,7 @@ func NewGetFileDetailUnauthorized() *GetFileDetailUnauthorized {
 	return &GetFileDetailUnauthorized{}
 }
 
-/*GetFileDetailUnauthorized handles this case with default header values.
+/* GetFileDetailUnauthorized describes a response with status code 401, with default header values.
 
 Ok
 */
@@ -143,7 +141,6 @@ type GetFileDetailUnauthorized struct {
 func (o *GetFileDetailUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /sfs/v1/file-details][%d] getFileDetailUnauthorized  %+v", 401, o.Payload)
 }
-
 func (o *GetFileDetailUnauthorized) GetPayload() *GetFileDetailUnauthorizedBody {
 	return o.Payload
 }
@@ -165,7 +162,7 @@ func NewGetFileDetailNotFound() *GetFileDetailNotFound {
 	return &GetFileDetailNotFound{}
 }
 
-/*GetFileDetailNotFound handles this case with default header values.
+/* GetFileDetailNotFound describes a response with status code 404, with default header values.
 
 Files Info not found
 */
@@ -176,7 +173,6 @@ type GetFileDetailNotFound struct {
 func (o *GetFileDetailNotFound) Error() string {
 	return fmt.Sprintf("[GET /sfs/v1/file-details][%d] getFileDetailNotFound  %+v", 404, o.Payload)
 }
-
 func (o *GetFileDetailNotFound) GetPayload() *GetFileDetailNotFoundBody {
 	return o.Payload
 }
@@ -198,7 +194,7 @@ func NewGetFileDetailInternalServerError() *GetFileDetailInternalServerError {
 	return &GetFileDetailInternalServerError{}
 }
 
-/*GetFileDetailInternalServerError handles this case with default header values.
+/* GetFileDetailInternalServerError describes a response with status code 500, with default header values.
 
 Internal Server Error
 */
@@ -209,7 +205,6 @@ type GetFileDetailInternalServerError struct {
 func (o *GetFileDetailInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /sfs/v1/file-details][%d] getFileDetailInternalServerError  %+v", 500, o.Payload)
 }
-
 func (o *GetFileDetailInternalServerError) GetPayload() *GetFileDetailInternalServerErrorBody {
 	return o.Payload
 }
@@ -223,122 +218,6 @@ func (o *GetFileDetailInternalServerError) readResponse(response runtime.ClientR
 		return err
 	}
 
-	return nil
-}
-
-/*FileDetailsItems0 file details items0
-swagger:model FileDetailsItems0
-*/
-type FileDetailsItems0 struct {
-
-	// Date and time for the file in PST
-	// Format: date-time
-	CreatedTime strfmt.DateTime `json:"createdTime,omitempty"`
-
-	// Date and time for the file in PST
-	// Format: date
-	Date strfmt.Date `json:"date,omitempty"`
-
-	// Unique identifier of a file
-	FileID string `json:"fileId,omitempty"`
-
-	// Date and time for the file in PST
-	// Format: date-time
-	LastModifiedTime strfmt.DateTime `json:"lastModifiedTime,omitempty"`
-
-	// 'File extension'
-	//
-	// Valid values:
-	// - 'application/xml'
-	// - 'text/csv'
-	// - 'application/pdf'
-	// - 'application/octet-stream'
-	//
-	MimeType string `json:"mimeType,omitempty"`
-
-	// Name of the file
-	Name string `json:"name,omitempty"`
-
-	// Size of the file in bytes
-	Size int64 `json:"size,omitempty"`
-}
-
-// Validate validates this file details items0
-func (o *FileDetailsItems0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateCreatedTime(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateLastModifiedTime(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *FileDetailsItems0) validateCreatedTime(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.CreatedTime) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("createdTime", "body", "date-time", o.CreatedTime.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FileDetailsItems0) validateDate(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Date) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("date", "body", "date", o.Date.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FileDetailsItems0) validateLastModifiedTime(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.LastModifiedTime) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("lastModifiedTime", "body", "date-time", o.LastModifiedTime.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *FileDetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *FileDetailsItems0) UnmarshalBinary(b []byte) error {
-	var res FileDetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }
 
@@ -360,7 +239,7 @@ type GetFileDetailBadRequestBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*FieldsItems0 `json:"fields"`
+	Fields []*GetFileDetailBadRequestBodyFieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -402,7 +281,6 @@ func (o *GetFileDetailBadRequestBody) validateCode(formats strfmt.Registry) erro
 }
 
 func (o *GetFileDetailBadRequestBody) validateFields(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Fields) { // not required
 		return nil
 	}
@@ -416,6 +294,8 @@ func (o *GetFileDetailBadRequestBody) validateFields(formats strfmt.Registry) er
 			if err := o.Fields[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getFileDetailBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -435,6 +315,40 @@ func (o *GetFileDetailBadRequestBody) validateMessage(formats strfmt.Registry) e
 	return nil
 }
 
+// ContextValidate validate this get file detail bad request body based on the context it is used
+func (o *GetFileDetailBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFields(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileDetailBadRequestBody) contextValidateFields(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Fields); i++ {
+
+		if o.Fields[i] != nil {
+			if err := o.Fields[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getFileDetailBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailBadRequest" + "." + "fields" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetFileDetailBadRequestBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -446,6 +360,49 @@ func (o *GetFileDetailBadRequestBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *GetFileDetailBadRequestBody) UnmarshalBinary(b []byte) error {
 	var res GetFileDetailBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetFileDetailBadRequestBodyFieldsItems0 Provide validation failed input field details
+swagger:model GetFileDetailBadRequestBodyFieldsItems0
+*/
+type GetFileDetailBadRequestBodyFieldsItems0 struct {
+
+	// Localized Key Name
+	LocalizationKey string `json:"localizationKey,omitempty"`
+
+	// Error description about validation failed field
+	Message string `json:"message,omitempty"`
+
+	// Path of the failed property
+	Path string `json:"path,omitempty"`
+}
+
+// Validate validates this get file detail bad request body fields items0
+func (o *GetFileDetailBadRequestBodyFieldsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get file detail bad request body fields items0 based on context it is used
+func (o *GetFileDetailBadRequestBodyFieldsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetFileDetailBadRequestBodyFieldsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetFileDetailBadRequestBodyFieldsItems0) UnmarshalBinary(b []byte) error {
+	var res GetFileDetailBadRequestBodyFieldsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -471,7 +428,7 @@ type GetFileDetailInternalServerErrorBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*FieldsItems0 `json:"fields"`
+	Fields []*GetFileDetailInternalServerErrorBodyFieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -513,7 +470,6 @@ func (o *GetFileDetailInternalServerErrorBody) validateCode(formats strfmt.Regis
 }
 
 func (o *GetFileDetailInternalServerErrorBody) validateFields(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Fields) { // not required
 		return nil
 	}
@@ -527,6 +483,8 @@ func (o *GetFileDetailInternalServerErrorBody) validateFields(formats strfmt.Reg
 			if err := o.Fields[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getFileDetailInternalServerError" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailInternalServerError" + "." + "fields" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -546,6 +504,40 @@ func (o *GetFileDetailInternalServerErrorBody) validateMessage(formats strfmt.Re
 	return nil
 }
 
+// ContextValidate validate this get file detail internal server error body based on the context it is used
+func (o *GetFileDetailInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFields(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileDetailInternalServerErrorBody) contextValidateFields(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Fields); i++ {
+
+		if o.Fields[i] != nil {
+			if err := o.Fields[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getFileDetailInternalServerError" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailInternalServerError" + "." + "fields" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetFileDetailInternalServerErrorBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -557,6 +549,49 @@ func (o *GetFileDetailInternalServerErrorBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *GetFileDetailInternalServerErrorBody) UnmarshalBinary(b []byte) error {
 	var res GetFileDetailInternalServerErrorBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetFileDetailInternalServerErrorBodyFieldsItems0 Provide validation failed input field details
+swagger:model GetFileDetailInternalServerErrorBodyFieldsItems0
+*/
+type GetFileDetailInternalServerErrorBodyFieldsItems0 struct {
+
+	// Localized Key Name
+	LocalizationKey string `json:"localizationKey,omitempty"`
+
+	// Error description about validation failed field
+	Message string `json:"message,omitempty"`
+
+	// Path of the failed property
+	Path string `json:"path,omitempty"`
+}
+
+// Validate validates this get file detail internal server error body fields items0
+func (o *GetFileDetailInternalServerErrorBodyFieldsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get file detail internal server error body fields items0 based on context it is used
+func (o *GetFileDetailInternalServerErrorBodyFieldsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetFileDetailInternalServerErrorBodyFieldsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetFileDetailInternalServerErrorBodyFieldsItems0) UnmarshalBinary(b []byte) error {
+	var res GetFileDetailInternalServerErrorBodyFieldsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -582,7 +617,7 @@ type GetFileDetailNotFoundBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*FieldsItems0 `json:"fields"`
+	Fields []*GetFileDetailNotFoundBodyFieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -624,7 +659,6 @@ func (o *GetFileDetailNotFoundBody) validateCode(formats strfmt.Registry) error 
 }
 
 func (o *GetFileDetailNotFoundBody) validateFields(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Fields) { // not required
 		return nil
 	}
@@ -638,6 +672,8 @@ func (o *GetFileDetailNotFoundBody) validateFields(formats strfmt.Registry) erro
 			if err := o.Fields[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getFileDetailNotFound" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailNotFound" + "." + "fields" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -652,6 +688,40 @@ func (o *GetFileDetailNotFoundBody) validateMessage(formats strfmt.Registry) err
 
 	if err := validate.Required("getFileDetailNotFound"+"."+"message", "body", o.Message); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get file detail not found body based on the context it is used
+func (o *GetFileDetailNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFields(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileDetailNotFoundBody) contextValidateFields(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Fields); i++ {
+
+		if o.Fields[i] != nil {
+			if err := o.Fields[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getFileDetailNotFound" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailNotFound" + "." + "fields" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -675,6 +745,49 @@ func (o *GetFileDetailNotFoundBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*GetFileDetailNotFoundBodyFieldsItems0 Provide validation failed input field details
+swagger:model GetFileDetailNotFoundBodyFieldsItems0
+*/
+type GetFileDetailNotFoundBodyFieldsItems0 struct {
+
+	// Localized Key Name
+	LocalizationKey string `json:"localizationKey,omitempty"`
+
+	// Error description about validation failed field
+	Message string `json:"message,omitempty"`
+
+	// Path of the failed property
+	Path string `json:"path,omitempty"`
+}
+
+// Validate validates this get file detail not found body fields items0
+func (o *GetFileDetailNotFoundBodyFieldsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get file detail not found body fields items0 based on context it is used
+func (o *GetFileDetailNotFoundBodyFieldsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetFileDetailNotFoundBodyFieldsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetFileDetailNotFoundBodyFieldsItems0) UnmarshalBinary(b []byte) error {
+	var res GetFileDetailNotFoundBodyFieldsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*GetFileDetailOKBody V1FileDetailsGet200Response
 swagger:model GetFileDetailOKBody
 */
@@ -684,7 +797,7 @@ type GetFileDetailOKBody struct {
 	Links *GetFileDetailOKBodyLinks `json:"_links,omitempty"`
 
 	// file details
-	FileDetails []*FileDetailsItems0 `json:"fileDetails"`
+	FileDetails []*GetFileDetailOKBodyFileDetailsItems0 `json:"fileDetails"`
 }
 
 // Validate validates this get file detail o k body
@@ -706,7 +819,6 @@ func (o *GetFileDetailOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *GetFileDetailOKBody) validateLinks(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Links) { // not required
 		return nil
 	}
@@ -715,6 +827,8 @@ func (o *GetFileDetailOKBody) validateLinks(formats strfmt.Registry) error {
 		if err := o.Links.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getFileDetailOK" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getFileDetailOK" + "." + "_links")
 			}
 			return err
 		}
@@ -724,7 +838,6 @@ func (o *GetFileDetailOKBody) validateLinks(formats strfmt.Registry) error {
 }
 
 func (o *GetFileDetailOKBody) validateFileDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FileDetails) { // not required
 		return nil
 	}
@@ -738,6 +851,62 @@ func (o *GetFileDetailOKBody) validateFileDetails(formats strfmt.Registry) error
 			if err := o.FileDetails[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getFileDetailOK" + "." + "fileDetails" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailOK" + "." + "fileDetails" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get file detail o k body based on the context it is used
+func (o *GetFileDetailOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateFileDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileDetailOKBody) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Links != nil {
+		if err := o.Links.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getFileDetailOK" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getFileDetailOK" + "." + "_links")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *GetFileDetailOKBody) contextValidateFileDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.FileDetails); i++ {
+
+		if o.FileDetails[i] != nil {
+			if err := o.FileDetails[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getFileDetailOK" + "." + "fileDetails" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailOK" + "." + "fileDetails" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -759,6 +928,131 @@ func (o *GetFileDetailOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *GetFileDetailOKBody) UnmarshalBinary(b []byte) error {
 	var res GetFileDetailOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetFileDetailOKBodyFileDetailsItems0 get file detail o k body file details items0
+swagger:model GetFileDetailOKBodyFileDetailsItems0
+*/
+type GetFileDetailOKBodyFileDetailsItems0 struct {
+
+	// Date and time for the file in PST
+	// Example: 2017-10-01T00:00:00+05:00
+	// Format: date-time
+	CreatedTime strfmt.DateTime `json:"createdTime,omitempty"`
+
+	// Date and time for the file in PST
+	// Example: 2017-10-05
+	// Format: date
+	Date strfmt.Date `json:"date,omitempty"`
+
+	// Unique identifier of a file
+	// Example: AC855F9F42C90361EC78202F47CDE98D70BEAA6FB00FB56AE83EE9A9DAEE077B
+	FileID string `json:"fileId,omitempty"`
+
+	// Date and time for the file in PST
+	// Example: 2017-10-01T00:00:00+05:00
+	// Format: date-time
+	LastModifiedTime strfmt.DateTime `json:"lastModifiedTime,omitempty"`
+
+	// 'File extension'
+	//
+	// Valid values:
+	// - 'application/xml'
+	// - 'text/csv'
+	// - 'application/pdf'
+	// - 'application/octet-stream'
+	//
+	// Example: application/xml
+	MimeType string `json:"mimeType,omitempty"`
+
+	// Name of the file
+	// Example: MyTransactionDetailreport.xml
+	Name string `json:"name,omitempty"`
+
+	// Size of the file in bytes
+	// Example: 2245397
+	Size float64 `json:"size,omitempty"`
+}
+
+// Validate validates this get file detail o k body file details items0
+func (o *GetFileDetailOKBodyFileDetailsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateCreatedTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateLastModifiedTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileDetailOKBodyFileDetailsItems0) validateCreatedTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.CreatedTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("createdTime", "body", "date-time", o.CreatedTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *GetFileDetailOKBodyFileDetailsItems0) validateDate(formats strfmt.Registry) error {
+	if swag.IsZero(o.Date) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("date", "body", "date", o.Date.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *GetFileDetailOKBodyFileDetailsItems0) validateLastModifiedTime(formats strfmt.Registry) error {
+	if swag.IsZero(o.LastModifiedTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("lastModifiedTime", "body", "date-time", o.LastModifiedTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this get file detail o k body file details items0 based on context it is used
+func (o *GetFileDetailOKBodyFileDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetFileDetailOKBodyFileDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetFileDetailOKBodyFileDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res GetFileDetailOKBodyFileDetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -797,7 +1091,6 @@ func (o *GetFileDetailOKBodyLinks) Validate(formats strfmt.Registry) error {
 }
 
 func (o *GetFileDetailOKBodyLinks) validateFiles(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Files) { // not required
 		return nil
 	}
@@ -811,6 +1104,8 @@ func (o *GetFileDetailOKBodyLinks) validateFiles(formats strfmt.Registry) error 
 			if err := o.Files[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getFileDetailOK" + "." + "_links" + "." + "files" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailOK" + "." + "_links" + "." + "files" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -822,7 +1117,6 @@ func (o *GetFileDetailOKBodyLinks) validateFiles(formats strfmt.Registry) error 
 }
 
 func (o *GetFileDetailOKBodyLinks) validateSelf(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Self) { // not required
 		return nil
 	}
@@ -831,6 +1125,62 @@ func (o *GetFileDetailOKBodyLinks) validateSelf(formats strfmt.Registry) error {
 		if err := o.Self.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getFileDetailOK" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getFileDetailOK" + "." + "_links" + "." + "self")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get file detail o k body links based on the context it is used
+func (o *GetFileDetailOKBodyLinks) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFiles(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateSelf(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileDetailOKBodyLinks) contextValidateFiles(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Files); i++ {
+
+		if o.Files[i] != nil {
+			if err := o.Files[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getFileDetailOK" + "." + "_links" + "." + "files" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailOK" + "." + "_links" + "." + "files" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *GetFileDetailOKBodyLinks) contextValidateSelf(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Self != nil {
+		if err := o.Self.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getFileDetailOK" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("getFileDetailOK" + "." + "_links" + "." + "self")
 			}
 			return err
 		}
@@ -863,17 +1213,25 @@ swagger:model GetFileDetailOKBodyLinksFilesItems0
 type GetFileDetailOKBodyLinksFilesItems0 struct {
 
 	// Unique identifier for each file
+	// Example: AC855F9F42C90361EC78202F47CDE98D70BEAA6FB00FB56AE83EE9A9DAEE077B
 	FileID string `json:"fileId,omitempty"`
 
 	// href
+	// Example: /sfs/v1/files/AC855F9F42C90361EC78202F47CDE98D70BEAA6FB00FB56AE83EE9A9DAEE077B
 	Href string `json:"href,omitempty"`
 
 	// method
+	// Example: GET
 	Method string `json:"method,omitempty"`
 }
 
 // Validate validates this get file detail o k body links files items0
 func (o *GetFileDetailOKBodyLinksFilesItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get file detail o k body links files items0 based on context it is used
+func (o *GetFileDetailOKBodyLinksFilesItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -901,14 +1259,21 @@ swagger:model GetFileDetailOKBodyLinksSelf
 type GetFileDetailOKBodyLinksSelf struct {
 
 	// href
+	// Example: /sfs/v1/file-details?startDate=2018-01-01\u0026endDate=2018-01-02
 	Href string `json:"href,omitempty"`
 
 	// method
+	// Example: GET
 	Method string `json:"method,omitempty"`
 }
 
 // Validate validates this get file detail o k body links self
 func (o *GetFileDetailOKBodyLinksSelf) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get file detail o k body links self based on context it is used
+func (o *GetFileDetailOKBodyLinksSelf) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -948,7 +1313,7 @@ type GetFileDetailUnauthorizedBody struct {
 	Detail string `json:"detail,omitempty"`
 
 	// Error fields List
-	Fields []*FieldsItems0 `json:"fields"`
+	Fields []*GetFileDetailUnauthorizedBodyFieldsItems0 `json:"fields"`
 
 	// Localization Key Name
 	LocalizationKey string `json:"localizationKey,omitempty"`
@@ -990,7 +1355,6 @@ func (o *GetFileDetailUnauthorizedBody) validateCode(formats strfmt.Registry) er
 }
 
 func (o *GetFileDetailUnauthorizedBody) validateFields(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Fields) { // not required
 		return nil
 	}
@@ -1004,6 +1368,8 @@ func (o *GetFileDetailUnauthorizedBody) validateFields(formats strfmt.Registry) 
 			if err := o.Fields[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getFileDetailUnauthorized" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailUnauthorized" + "." + "fields" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -1023,6 +1389,40 @@ func (o *GetFileDetailUnauthorizedBody) validateMessage(formats strfmt.Registry)
 	return nil
 }
 
+// ContextValidate validate this get file detail unauthorized body based on the context it is used
+func (o *GetFileDetailUnauthorizedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateFields(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetFileDetailUnauthorizedBody) contextValidateFields(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Fields); i++ {
+
+		if o.Fields[i] != nil {
+			if err := o.Fields[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getFileDetailUnauthorized" + "." + "fields" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getFileDetailUnauthorized" + "." + "fields" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetFileDetailUnauthorizedBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -1034,6 +1434,49 @@ func (o *GetFileDetailUnauthorizedBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *GetFileDetailUnauthorizedBody) UnmarshalBinary(b []byte) error {
 	var res GetFileDetailUnauthorizedBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetFileDetailUnauthorizedBodyFieldsItems0 Provide validation failed input field details
+swagger:model GetFileDetailUnauthorizedBodyFieldsItems0
+*/
+type GetFileDetailUnauthorizedBodyFieldsItems0 struct {
+
+	// Localized Key Name
+	LocalizationKey string `json:"localizationKey,omitempty"`
+
+	// Error description about validation failed field
+	Message string `json:"message,omitempty"`
+
+	// Path of the failed property
+	Path string `json:"path,omitempty"`
+}
+
+// Validate validates this get file detail unauthorized body fields items0
+func (o *GetFileDetailUnauthorizedBodyFieldsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get file detail unauthorized body fields items0 based on context it is used
+func (o *GetFileDetailUnauthorizedBodyFieldsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetFileDetailUnauthorizedBodyFieldsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetFileDetailUnauthorizedBodyFieldsItems0) UnmarshalBinary(b []byte) error {
+	var res GetFileDetailUnauthorizedBodyFieldsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

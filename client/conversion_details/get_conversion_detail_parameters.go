@@ -16,79 +16,99 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetConversionDetailParams creates a new GetConversionDetailParams object
-// with the default values initialized.
+// NewGetConversionDetailParams creates a new GetConversionDetailParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetConversionDetailParams() *GetConversionDetailParams {
-	var ()
 	return &GetConversionDetailParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetConversionDetailParamsWithTimeout creates a new GetConversionDetailParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetConversionDetailParamsWithTimeout(timeout time.Duration) *GetConversionDetailParams {
-	var ()
 	return &GetConversionDetailParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetConversionDetailParamsWithContext creates a new GetConversionDetailParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetConversionDetailParamsWithContext(ctx context.Context) *GetConversionDetailParams {
-	var ()
 	return &GetConversionDetailParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetConversionDetailParamsWithHTTPClient creates a new GetConversionDetailParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetConversionDetailParamsWithHTTPClient(client *http.Client) *GetConversionDetailParams {
-	var ()
 	return &GetConversionDetailParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetConversionDetailParams contains all the parameters to send to the API endpoint
-for the get conversion detail operation typically these are written to a http.Request
+/* GetConversionDetailParams contains all the parameters to send to the API endpoint
+   for the get conversion detail operation.
+
+   Typically these are written to a http.Request.
 */
 type GetConversionDetailParams struct {
 
-	/*EndTime
-	  Valid report End Time in **ISO 8601 format**
+	/* EndTime.
+
+	     Valid report End Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	EndTime strfmt.DateTime
-	/*OrganizationID
-	  Valid Cybersource Organization Id
 
+	/* OrganizationID.
+
+	   Valid Organization Id
 	*/
 	OrganizationID *string
-	/*StartTime
-	  Valid report Start Time in **ISO 8601 format**
+
+	/* StartTime.
+
+	     Valid report Start Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	StartTime strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get conversion detail params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetConversionDetailParams) WithDefaults() *GetConversionDetailParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get conversion detail params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetConversionDetailParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get conversion detail params
@@ -169,6 +189,7 @@ func (o *GetConversionDetailParams) WriteToRequest(r runtime.ClientRequest, reg 
 	qrEndTime := o.EndTime
 	qEndTime := qrEndTime.String()
 	if qEndTime != "" {
+
 		if err := r.SetQueryParam("endTime", qEndTime); err != nil {
 			return err
 		}
@@ -178,22 +199,24 @@ func (o *GetConversionDetailParams) WriteToRequest(r runtime.ClientRequest, reg 
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// query param startTime
 	qrStartTime := o.StartTime
 	qStartTime := qrStartTime.String()
 	if qStartTime != "" {
+
 		if err := r.SetQueryParam("startTime", qStartTime); err != nil {
 			return err
 		}

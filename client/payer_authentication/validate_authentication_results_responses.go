@@ -6,6 +6,7 @@ package payer_authentication
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *ValidateAuthenticationResultsReader) ReadResponse(response runtime.Clie
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewValidateAuthenticationResultsCreated() *ValidateAuthenticationResultsCre
 	return &ValidateAuthenticationResultsCreated{}
 }
 
-/*ValidateAuthenticationResultsCreated handles this case with default header values.
+/* ValidateAuthenticationResultsCreated describes a response with status code 201, with default header values.
 
 Successful response
 */
@@ -65,7 +65,6 @@ type ValidateAuthenticationResultsCreated struct {
 func (o *ValidateAuthenticationResultsCreated) Error() string {
 	return fmt.Sprintf("[POST /risk/v1/authentication-results][%d] validateAuthenticationResultsCreated  %+v", 201, o.Payload)
 }
-
 func (o *ValidateAuthenticationResultsCreated) GetPayload() *ValidateAuthenticationResultsCreatedBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewValidateAuthenticationResultsBadRequest() *ValidateAuthenticationResults
 	return &ValidateAuthenticationResultsBadRequest{}
 }
 
-/*ValidateAuthenticationResultsBadRequest handles this case with default header values.
+/* ValidateAuthenticationResultsBadRequest describes a response with status code 400, with default header values.
 
 Invalid request.
 */
@@ -98,7 +97,6 @@ type ValidateAuthenticationResultsBadRequest struct {
 func (o *ValidateAuthenticationResultsBadRequest) Error() string {
 	return fmt.Sprintf("[POST /risk/v1/authentication-results][%d] validateAuthenticationResultsBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *ValidateAuthenticationResultsBadRequest) GetPayload() *ValidateAuthenticationResultsBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewValidateAuthenticationResultsBadGateway() *ValidateAuthenticationResults
 	return &ValidateAuthenticationResultsBadGateway{}
 }
 
-/*ValidateAuthenticationResultsBadGateway handles this case with default header values.
+/* ValidateAuthenticationResultsBadGateway describes a response with status code 502, with default header values.
 
 Unexpected system error or system timeout.
 */
@@ -131,7 +129,6 @@ type ValidateAuthenticationResultsBadGateway struct {
 func (o *ValidateAuthenticationResultsBadGateway) Error() string {
 	return fmt.Sprintf("[POST /risk/v1/authentication-results][%d] validateAuthenticationResultsBadGateway  %+v", 502, o.Payload)
 }
-
 func (o *ValidateAuthenticationResultsBadGateway) GetPayload() *ValidateAuthenticationResultsBadGatewayBody {
 	return o.Payload
 }
@@ -173,16 +170,21 @@ type ValidateAuthenticationResultsBadGatewayBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
 	// The `T` separates the date and the time. The `Z` indicates UTC.
 	//
-	// Returned by authorization service.
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
 
 // Validate validates this validate authentication results bad gateway body
 func (o *ValidateAuthenticationResultsBadGatewayBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this validate authentication results bad gateway body based on context it is used
+func (o *ValidateAuthenticationResultsBadGatewayBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -210,7 +212,7 @@ swagger:model ValidateAuthenticationResultsBadRequestBody
 type ValidateAuthenticationResultsBadRequestBody struct {
 
 	// details
-	Details []*DetailsItems0 `json:"details"`
+	Details []*ValidateAuthenticationResultsBadRequestBodyDetailsItems0 `json:"details"`
 
 	// The message describing the reason of the status. Value is:
 	// - Encountered a Payer Authentication problem. Payer could not be authenticated.
@@ -231,10 +233,10 @@ type ValidateAuthenticationResultsBadRequestBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
 	// The `T` separates the date and the time. The `Z` indicates UTC.
 	//
-	// Returned by authorization service.
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -254,7 +256,6 @@ func (o *ValidateAuthenticationResultsBadRequestBody) Validate(formats strfmt.Re
 }
 
 func (o *ValidateAuthenticationResultsBadRequestBody) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -268,6 +269,42 @@ func (o *ValidateAuthenticationResultsBadRequestBody) validateDetails(formats st
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("validateAuthenticationResultsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("validateAuthenticationResultsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results bad request body based on the context it is used
+func (o *ValidateAuthenticationResultsBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("validateAuthenticationResultsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("validateAuthenticationResultsBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -289,6 +326,51 @@ func (o *ValidateAuthenticationResultsBadRequestBody) MarshalBinary() ([]byte, e
 // UnmarshalBinary interface implementation
 func (o *ValidateAuthenticationResultsBadRequestBody) UnmarshalBinary(b []byte) error {
 	var res ValidateAuthenticationResultsBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*ValidateAuthenticationResultsBadRequestBodyDetailsItems0 validate authentication results bad request body details items0
+swagger:model ValidateAuthenticationResultsBadRequestBodyDetailsItems0
+*/
+type ValidateAuthenticationResultsBadRequestBodyDetailsItems0 struct {
+
+	// This is the flattened JSON object field name/path that is either missing or invalid.
+	Field string `json:"field,omitempty"`
+
+	// Possible reasons for the error.
+	//
+	// Possible values:
+	//  - MISSING_FIELD
+	//  - INVALID_DATA
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this validate authentication results bad request body details items0
+func (o *ValidateAuthenticationResultsBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this validate authentication results bad request body details items0 based on context it is used
+func (o *ValidateAuthenticationResultsBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res ValidateAuthenticationResultsBadRequestBodyDetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -348,7 +430,6 @@ func (o *ValidateAuthenticationResultsBody) Validate(formats strfmt.Registry) er
 }
 
 func (o *ValidateAuthenticationResultsBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -357,6 +438,8 @@ func (o *ValidateAuthenticationResultsBody) validateClientReferenceInformation(f
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -366,7 +449,6 @@ func (o *ValidateAuthenticationResultsBody) validateClientReferenceInformation(f
 }
 
 func (o *ValidateAuthenticationResultsBody) validateConsumerAuthenticationInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ConsumerAuthenticationInformation) { // not required
 		return nil
 	}
@@ -375,6 +457,8 @@ func (o *ValidateAuthenticationResultsBody) validateConsumerAuthenticationInform
 		if err := o.ConsumerAuthenticationInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "consumerAuthenticationInformation")
 			}
 			return err
 		}
@@ -384,7 +468,6 @@ func (o *ValidateAuthenticationResultsBody) validateConsumerAuthenticationInform
 }
 
 func (o *ValidateAuthenticationResultsBody) validateOrderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrderInformation) { // not required
 		return nil
 	}
@@ -393,6 +476,8 @@ func (o *ValidateAuthenticationResultsBody) validateOrderInformation(formats str
 		if err := o.OrderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "orderInformation")
 			}
 			return err
 		}
@@ -402,7 +487,6 @@ func (o *ValidateAuthenticationResultsBody) validateOrderInformation(formats str
 }
 
 func (o *ValidateAuthenticationResultsBody) validatePaymentInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentInformation) { // not required
 		return nil
 	}
@@ -411,6 +495,8 @@ func (o *ValidateAuthenticationResultsBody) validatePaymentInformation(formats s
 		if err := o.PaymentInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation")
 			}
 			return err
 		}
@@ -420,7 +506,6 @@ func (o *ValidateAuthenticationResultsBody) validatePaymentInformation(formats s
 }
 
 func (o *ValidateAuthenticationResultsBody) validateProcessingInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProcessingInformation) { // not required
 		return nil
 	}
@@ -429,6 +514,118 @@ func (o *ValidateAuthenticationResultsBody) validateProcessingInformation(format
 		if err := o.ProcessingInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "processingInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results body based on the context it is used
+func (o *ValidateAuthenticationResultsBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateConsumerAuthenticationInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePaymentInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessingInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsBody) contextValidateConsumerAuthenticationInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ConsumerAuthenticationInformation != nil {
+		if err := o.ConsumerAuthenticationInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "consumerAuthenticationInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsBody) contextValidateOrderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrderInformation != nil {
+		if err := o.OrderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsBody) contextValidatePaymentInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PaymentInformation != nil {
+		if err := o.PaymentInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsBody) contextValidateProcessingInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessingInformation != nil {
+		if err := o.ProcessingInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "processingInformation")
 			}
 			return err
 		}
@@ -472,8 +669,8 @@ type ValidateAuthenticationResultsCreatedBody struct {
 	// error information
 	ErrorInformation *ValidateAuthenticationResultsCreatedBodyErrorInformation `json:"errorInformation,omitempty"`
 
-	// An unique identification number assigned by CyberSource to identify the submitted request. It is also appended to the endpoint of the resource.
-	//
+	// An unique identification number generated by Cybersource to identify the submitted request. Returned by all services.
+	// It is also appended to the endpoint of the resource.
 	// On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
 	//
 	// Max Length: 26
@@ -493,14 +690,14 @@ type ValidateAuthenticationResultsCreatedBody struct {
 	//
 	Status string `json:"status,omitempty"`
 
-	// Time that the transaction was submitted in local time.
+	// Time that the transaction was submitted in local time. Generated by Cybersource.
 	SubmitTimeLocal string `json:"submitTimeLocal,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
 	// The `T` separates the date and the time. The `Z` indicates UTC.
 	//
-	// Returned by authorization service.
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -536,7 +733,6 @@ func (o *ValidateAuthenticationResultsCreatedBody) Validate(formats strfmt.Regis
 }
 
 func (o *ValidateAuthenticationResultsCreatedBody) validateLinks(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Links) { // not required
 		return nil
 	}
@@ -545,6 +741,8 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateLinks(formats strfmt.
 		if err := o.Links.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "_links")
 			}
 			return err
 		}
@@ -554,7 +752,6 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateLinks(formats strfmt.
 }
 
 func (o *ValidateAuthenticationResultsCreatedBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -563,6 +760,8 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateClientReferenceInform
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -572,7 +771,6 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateClientReferenceInform
 }
 
 func (o *ValidateAuthenticationResultsCreatedBody) validateConsumerAuthenticationInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ConsumerAuthenticationInformation) { // not required
 		return nil
 	}
@@ -581,6 +779,8 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateConsumerAuthenticatio
 		if err := o.ConsumerAuthenticationInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "consumerAuthenticationInformation")
 			}
 			return err
 		}
@@ -590,7 +790,6 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateConsumerAuthenticatio
 }
 
 func (o *ValidateAuthenticationResultsCreatedBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -599,6 +798,8 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateErrorInformation(form
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -608,13 +809,102 @@ func (o *ValidateAuthenticationResultsCreatedBody) validateErrorInformation(form
 }
 
 func (o *ValidateAuthenticationResultsCreatedBody) validateID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"id", "body", string(o.ID), 26); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"id", "body", o.ID, 26); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results created body based on the context it is used
+func (o *ValidateAuthenticationResultsCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateConsumerAuthenticationInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBody) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Links != nil {
+		if err := o.Links.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "_links")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBody) contextValidateConsumerAuthenticationInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ConsumerAuthenticationInformation != nil {
+		if err := o.ConsumerAuthenticationInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "consumerAuthenticationInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -647,14 +937,28 @@ type ValidateAuthenticationResultsCreatedBodyClientReferenceInformation struct {
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
 	// #### Used by
-	// **Authorization**\
+	// **Authorization**
 	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
 	//
 	// Max Length: 50
 	Code string `json:"code,omitempty"`
+
+	// Brief description of the order or any comment you wish to add to the order.
+	//
+	// Max Length: 255
+	Comments string `json:"comments,omitempty"`
+
+	// partner
+	Partner *ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner `json:"partner,omitempty"`
 }
 
 // Validate validates this validate authentication results created body client reference information
@@ -665,6 +969,14 @@ func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) Val
 		res = append(res, err)
 	}
 
+	if err := o.validateComments(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePartner(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -672,13 +984,73 @@ func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) Val
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) validateComments(formats strfmt.Registry) error {
+	if swag.IsZero(o.Comments) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"clientReferenceInformation"+"."+"comments", "body", o.Comments, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) validatePartner(formats strfmt.Registry) error {
+	if swag.IsZero(o.Partner) { // not required
+		return nil
+	}
+
+	if o.Partner != nil {
+		if err := o.Partner.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results created body client reference information based on the context it is used
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePartner(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) contextValidatePartner(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Partner != nil {
+		if err := o.Partner.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -695,6 +1067,96 @@ func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) Mar
 // UnmarshalBinary interface implementation
 func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformation) UnmarshalBinary(b []byte) error {
 	var res ValidateAuthenticationResultsCreatedBodyClientReferenceInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner validate authentication results created body client reference information partner
+swagger:model ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner
+*/
+type ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner struct {
+
+	// Identifier for the developer that helped integrate a partner solution to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solutions built by that developer.
+	// CyberSource assigns the ID to the developer.
+	//
+	// **Note** When you see a developer ID of 999 in reports, the developer ID that was submitted is incorrect.
+	//
+	// Max Length: 8
+	DeveloperID string `json:"developerId,omitempty"`
+
+	// Identifier for the partner that is integrated to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solution. CyberSource assigns the ID to the partner.
+	//
+	// **Note** When you see a solutionId of 999 in reports, the solutionId that was submitted is incorrect.
+	//
+	// Max Length: 8
+	SolutionID string `json:"solutionId,omitempty"`
+}
+
+// Validate validates this validate authentication results created body client reference information partner
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateDeveloperID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSolutionID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner) validateDeveloperID(formats strfmt.Registry) error {
+	if swag.IsZero(o.DeveloperID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", o.DeveloperID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner) validateSolutionID(formats strfmt.Registry) error {
+	if swag.IsZero(o.SolutionID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", o.SolutionID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this validate authentication results created body client reference information partner based on context it is used
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner) UnmarshalBinary(b []byte) error {
+	var res ValidateAuthenticationResultsCreatedBodyClientReferenceInformationPartner
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -753,9 +1215,8 @@ type ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation s
 	// Max Length: 1
 	CavvAlgorithm string `json:"cavvAlgorithm,omitempty"`
 
-	// The directory server error code indicating a problem with this transaction.
+	// The directory server error code indicating a problem with this transaction. Note - Max Length of this field is typically 3 characters.
 	//
-	// Max Length: 3
 	DirectoryServerErrorCode string `json:"directoryServerErrorCode,omitempty"`
 
 	// Directory server text and additional detail about the error for this transaction.
@@ -874,8 +1335,7 @@ type ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation s
 	// - `1`: Authentication data not collected because customer authentication was not completed.
 	// - `2`: Authentication data collected because customer completed authentication.
 	//
-	// Max Length: 1
-	UcafCollectionIndicator float64 `json:"ucafCollectionIndicator,omitempty"`
+	UcafCollectionIndicator string `json:"ucafCollectionIndicator,omitempty"`
 
 	// Enables the communication of trusted beneficiary/whitelist status between the ACS, the DS and the 3DS Requestor.
 	//
@@ -918,10 +1378,6 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 		res = append(res, err)
 	}
 
-	if err := o.validateDirectoryServerErrorCode(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateDirectoryServerErrorDescription(formats); err != nil {
 		res = append(res, err)
 	}
@@ -942,10 +1398,6 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 		res = append(res, err)
 	}
 
-	if err := o.validateUcafCollectionIndicator(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateWhiteListStatus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -961,12 +1413,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateAcsTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcsTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"acsTransactionId", "body", string(o.AcsTransactionID), 36); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"acsTransactionId", "body", o.AcsTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -974,12 +1425,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateCavv(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Cavv) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"cavv", "body", string(o.Cavv), 255); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"cavv", "body", o.Cavv, 255); err != nil {
 		return err
 	}
 
@@ -987,25 +1437,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateCavvAlgorithm(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CavvAlgorithm) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"cavvAlgorithm", "body", string(o.CavvAlgorithm), 1); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateDirectoryServerErrorCode(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.DirectoryServerErrorCode) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerErrorCode", "body", string(o.DirectoryServerErrorCode), 3); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"cavvAlgorithm", "body", o.CavvAlgorithm, 1); err != nil {
 		return err
 	}
 
@@ -1013,12 +1449,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateDirectoryServerErrorDescription(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DirectoryServerErrorDescription) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerErrorDescription", "body", string(o.DirectoryServerErrorDescription), 4096); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerErrorDescription", "body", o.DirectoryServerErrorDescription, 4096); err != nil {
 		return err
 	}
 
@@ -1026,12 +1461,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateDirectoryServerTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DirectoryServerTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerTransactionId", "body", string(o.DirectoryServerTransactionID), 36); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerTransactionId", "body", o.DirectoryServerTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -1039,12 +1473,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateInteractionCounter(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.InteractionCounter) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"interactionCounter", "body", string(o.InteractionCounter), 2); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"interactionCounter", "body", o.InteractionCounter, 2); err != nil {
 		return err
 	}
 
@@ -1052,12 +1485,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateSdkTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SdkTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"sdkTransactionId", "body", string(o.SdkTransactionID), 36); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"sdkTransactionId", "body", o.SdkTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -1065,25 +1497,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateThreeDSServerTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ThreeDSServerTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"threeDSServerTransactionId", "body", string(o.ThreeDSServerTransactionID), 36); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateUcafCollectionIndicator(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.UcafCollectionIndicator) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"ucafCollectionIndicator", "body", fmt.Sprintf("%f", o.UcafCollectionIndicator), 1); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"threeDSServerTransactionId", "body", o.ThreeDSServerTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -1091,12 +1509,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateWhiteListStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.WhiteListStatus) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatus", "body", string(o.WhiteListStatus), 1); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatus", "body", o.WhiteListStatus, 1); err != nil {
 		return err
 	}
 
@@ -1104,15 +1521,19 @@ func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformati
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) validateWhiteListStatusSource(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.WhiteListStatusSource) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatusSource", "body", string(o.WhiteListStatusSource), 2); err != nil {
+	if err := validate.MaxLength("validateAuthenticationResultsCreated"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatusSource", "body", o.WhiteListStatusSource, 2); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this validate authentication results created body consumer authentication information based on context it is used
+func (o *ValidateAuthenticationResultsCreatedBodyConsumerAuthenticationInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1147,7 +1568,8 @@ type ValidateAuthenticationResultsCreatedBodyErrorInformation struct {
 
 	// The reason of the status. Possible values are:
 	// - `INVALID_MERCHANT_CONFIGURATION`
-	// - `PENDING_AUTHENTICATION`
+	// - `CONSUMER_AUTHENTICATION_REQUIRED`
+	// - `CONSUMER_AUTHENTICATION_FAILED`
 	// - `AUTHENTICATION_FAILED`
 	//
 	Reason string `json:"reason,omitempty"`
@@ -1168,7 +1590,6 @@ func (o *ValidateAuthenticationResultsCreatedBodyErrorInformation) Validate(form
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyErrorInformation) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -1182,6 +1603,42 @@ func (o *ValidateAuthenticationResultsCreatedBodyErrorInformation) validateDetai
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results created body error information based on the context it is used
+func (o *ValidateAuthenticationResultsCreatedBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBodyErrorInformation) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -1232,6 +1689,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyErrorInformationDetailsItems0) 
 	return nil
 }
 
+// ContextValidate validates this validate authentication results created body error information details items0 based on context it is used
+func (o *ValidateAuthenticationResultsCreatedBodyErrorInformationDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *ValidateAuthenticationResultsCreatedBodyErrorInformationDetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -1274,7 +1736,6 @@ func (o *ValidateAuthenticationResultsCreatedBodyLinks) Validate(formats strfmt.
 }
 
 func (o *ValidateAuthenticationResultsCreatedBodyLinks) validateSelf(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Self) { // not required
 		return nil
 	}
@@ -1283,6 +1744,38 @@ func (o *ValidateAuthenticationResultsCreatedBodyLinks) validateSelf(formats str
 		if err := o.Self.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "_links" + "." + "self")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results created body links based on the context it is used
+func (o *ValidateAuthenticationResultsCreatedBodyLinks) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateSelf(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsCreatedBodyLinks) contextValidateSelf(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Self != nil {
+		if err := o.Self.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateAuthenticationResultsCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateAuthenticationResultsCreated" + "." + "_links" + "." + "self")
 			}
 			return err
 		}
@@ -1326,6 +1819,11 @@ func (o *ValidateAuthenticationResultsCreatedBodyLinksSelf) Validate(formats str
 	return nil
 }
 
+// ContextValidate validates this validate authentication results created body links self based on context it is used
+func (o *ValidateAuthenticationResultsCreatedBodyLinksSelf) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *ValidateAuthenticationResultsCreatedBodyLinksSelf) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -1353,8 +1851,14 @@ type ValidateAuthenticationResultsParamsBodyClientReferenceInformation struct {
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
 	// #### Used by
-	// **Authorization**\
+	// **Authorization**
 	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -1362,6 +1866,19 @@ type ValidateAuthenticationResultsParamsBodyClientReferenceInformation struct {
 	// Required: true
 	// Max Length: 50
 	Code *string `json:"code"`
+
+	// Brief description of the order or any comment you wish to add to the order.
+	//
+	// Max Length: 255
+	Comments string `json:"comments,omitempty"`
+
+	// partner
+	Partner *ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner `json:"partner,omitempty"`
+
+	// Used to resume a transaction that was paused for an order modification rule to allow for payer authentication to complete. To resume and continue with the authorization/decision service flow, call the services and include the request id from the prior decision call.
+	//
+	// Max Length: 26
+	PausedRequestID string `json:"pausedRequestId,omitempty"`
 }
 
 // Validate validates this validate authentication results params body client reference information
@@ -1369,6 +1886,18 @@ func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) Vali
 	var res []error
 
 	if err := o.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateComments(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePartner(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePausedRequestID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -1384,8 +1913,81 @@ func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) vali
 		return err
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"clientReferenceInformation"+"."+"code", "body", string(*o.Code), 50); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"clientReferenceInformation"+"."+"code", "body", *o.Code, 50); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) validateComments(formats strfmt.Registry) error {
+	if swag.IsZero(o.Comments) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("validateRequest"+"."+"clientReferenceInformation"+"."+"comments", "body", o.Comments, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) validatePartner(formats strfmt.Registry) error {
+	if swag.IsZero(o.Partner) { // not required
+		return nil
+	}
+
+	if o.Partner != nil {
+		if err := o.Partner.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) validatePausedRequestID(formats strfmt.Registry) error {
+	if swag.IsZero(o.PausedRequestID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("validateRequest"+"."+"clientReferenceInformation"+"."+"pausedRequestId", "body", o.PausedRequestID, 26); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results params body client reference information based on the context it is used
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePartner(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) contextValidatePartner(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Partner != nil {
+		if err := o.Partner.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -1402,6 +2004,96 @@ func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) Mars
 // UnmarshalBinary interface implementation
 func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformation) UnmarshalBinary(b []byte) error {
 	var res ValidateAuthenticationResultsParamsBodyClientReferenceInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner validate authentication results params body client reference information partner
+swagger:model ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner
+*/
+type ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner struct {
+
+	// Identifier for the developer that helped integrate a partner solution to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solutions built by that developer.
+	// CyberSource assigns the ID to the developer.
+	//
+	// **Note** When you see a developer ID of 999 in reports, the developer ID that was submitted is incorrect.
+	//
+	// Max Length: 8
+	DeveloperID string `json:"developerId,omitempty"`
+
+	// Identifier for the partner that is integrated to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solution. CyberSource assigns the ID to the partner.
+	//
+	// **Note** When you see a solutionId of 999 in reports, the solutionId that was submitted is incorrect.
+	//
+	// Max Length: 8
+	SolutionID string `json:"solutionId,omitempty"`
+}
+
+// Validate validates this validate authentication results params body client reference information partner
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateDeveloperID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSolutionID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner) validateDeveloperID(formats strfmt.Registry) error {
+	if swag.IsZero(o.DeveloperID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("validateRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", o.DeveloperID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner) validateSolutionID(formats strfmt.Registry) error {
+	if swag.IsZero(o.SolutionID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("validateRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", o.SolutionID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this validate authentication results params body client reference information partner based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner) UnmarshalBinary(b []byte) error {
+	var res ValidateAuthenticationResultsParamsBodyClientReferenceInformationPartner
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -1446,6 +2138,10 @@ type ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation st
 	// Max Length: 2
 	EffectiveAuthenticationType string `json:"effectiveAuthenticationType,omitempty"`
 
+	// JWT returned by the 3D Secure provider when the authentication is complete. Required for Hybrid integration if you use the Cybersource-generated access token. Note: Max. length of this field is 2048 characters.
+	//
+	ResponseAccessToken string `json:"responseAccessToken,omitempty"`
+
 	// Payer authentication result (PARes) message returned by the card-issuing bank.
 	// If you need to show proof of enrollment checking, you may need to
 	// decrypt and parse the string for the information required by the payment card company.
@@ -1453,8 +2149,7 @@ type ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation st
 	// Important The value is in base64. You must remove all carriage returns and line feeds before
 	// adding the PARes to the request.
 	//
-	// Required: true
-	SignedPares *string `json:"signedPares"`
+	SignedPares string `json:"signedPares,omitempty"`
 
 	// Provides additional information as to why the PAResStatus has a specific value.
 	//
@@ -1489,10 +2184,6 @@ func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformatio
 		res = append(res, err)
 	}
 
-	if err := o.validateSignedPares(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateSignedParesStatusReason(formats); err != nil {
 		res = append(res, err)
 	}
@@ -1508,12 +2199,11 @@ func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformatio
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation) validateAuthenticationTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthenticationTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationTransactionId", "body", string(o.AuthenticationTransactionID), 20); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationTransactionId", "body", o.AuthenticationTransactionID, 20); err != nil {
 		return err
 	}
 
@@ -1521,12 +2211,11 @@ func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformatio
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation) validateAuthenticationType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthenticationType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationType", "body", string(o.AuthenticationType), 2); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationType", "body", o.AuthenticationType, 2); err != nil {
 		return err
 	}
 
@@ -1534,21 +2223,11 @@ func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformatio
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation) validateEffectiveAuthenticationType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.EffectiveAuthenticationType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"effectiveAuthenticationType", "body", string(o.EffectiveAuthenticationType), 2); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation) validateSignedPares(formats strfmt.Registry) error {
-
-	if err := validate.Required("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"signedPares", "body", o.SignedPares); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"effectiveAuthenticationType", "body", o.EffectiveAuthenticationType, 2); err != nil {
 		return err
 	}
 
@@ -1556,12 +2235,11 @@ func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformatio
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation) validateSignedParesStatusReason(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SignedParesStatusReason) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"signedParesStatusReason", "body", string(o.SignedParesStatusReason), 2); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"signedParesStatusReason", "body", o.SignedParesStatusReason, 2); err != nil {
 		return err
 	}
 
@@ -1569,15 +2247,19 @@ func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformatio
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation) validateWhiteListStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.WhiteListStatus) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatus", "body", string(o.WhiteListStatus), 1); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatus", "body", o.WhiteListStatus, 1); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this validate authentication results params body consumer authentication information based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyConsumerAuthenticationInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1630,7 +2312,6 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) Validate(forma
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) validateAmountDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountDetails) { // not required
 		return nil
 	}
@@ -1639,6 +2320,8 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) validateAmount
 		if err := o.AmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "orderInformation" + "." + "amountDetails")
 			}
 			return err
 		}
@@ -1648,7 +2331,6 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) validateAmount
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) validateLineItems(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LineItems) { // not required
 		return nil
 	}
@@ -1662,6 +2344,62 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) validateLineIt
 			if err := o.LineItems[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("validateRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("validateRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results params body order information based on the context it is used
+func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLineItems(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) contextValidateAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AmountDetails != nil {
+		if err := o.AmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "orderInformation" + "." + "amountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyOrderInformation) contextValidateLineItems(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.LineItems); i++ {
+
+		if o.LineItems[i] != nil {
+			if err := o.LineItems[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("validateRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("validateRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -1704,15 +2442,29 @@ type ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails struct
 	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
 	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
 	// #### GPX
 	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
+	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
 	// Your local currency.
 	//
-	// Required: true
 	// Max Length: 3
-	Currency *string `json:"currency"`
+	Currency string `json:"currency,omitempty"`
 
 	// Grand total for the order. This value cannot be negative. You can include a decimal point (.), but no other special characters.
 	// CyberSource truncates the amount to the correct number of decimal places.
@@ -1729,6 +2481,15 @@ type ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails struct
 	// #### Card Present
 	// Required to include either this field or `orderInformation.lineItems[].unitPrice` for the order.
 	//
+	// #### Invoicing
+	// Required for creating a new invoice.
+	//
+	// #### PIN Debit
+	// Amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount.
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
 	// #### GPX
 	// This field is optional for reversing an authorization or credit; however, for all other processors, these fields are required.
 	//
@@ -1741,12 +2502,8 @@ type ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails struct
 	// #### DCC for First Data
 	// Not used.
 	//
-	// #### Invoicing
-	// Required for creating a new invoice.
-	//
-	// Required: true
 	// Max Length: 19
-	TotalAmount *string `json:"totalAmount"`
+	TotalAmount string `json:"totalAmount,omitempty"`
 }
 
 // Validate validates this validate authentication results params body order information amount details
@@ -1768,12 +2525,11 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails) V
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails) validateCurrency(formats strfmt.Registry) error {
-
-	if err := validate.Required("validateRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", o.Currency); err != nil {
-		return err
+	if swag.IsZero(o.Currency) { // not required
+		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", string(*o.Currency), 3); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
@@ -1781,15 +2537,19 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails) v
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails) validateTotalAmount(formats strfmt.Registry) error {
+	if swag.IsZero(o.TotalAmount) { // not required
+		return nil
+	}
 
-	if err := validate.Required("validateRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", o.TotalAmount); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", o.TotalAmount, 19); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", string(*o.TotalAmount), 19); err != nil {
-		return err
-	}
+	return nil
+}
 
+// ContextValidate validates this validate authentication results params body order information amount details based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyOrderInformationAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1822,6 +2582,9 @@ type ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0 stru
 	// this field is required when `orderInformation.lineItems[].productCode` is not `default` or one of the other values
 	// related to shipping and/or handling.
 	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	//
 	// Maximum: 9.99999999e+08
 	// Minimum: 1
 	Quantity int64 `json:"quantity,omitempty"`
@@ -1837,6 +2600,16 @@ type ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0 stru
 	//  2. The total amount authorized will be 32.40, not 30.00 with 2.40 of tax included.
 	//
 	// Optional field.
+	//
+	// #### Airlines processing
+	// Tax portion of the order amount. This value cannot exceed 99999999999999 (fourteen 9s).
+	// Format: English characters only.
+	// Optional request field for a line item.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	//
+	// Note if you send this field in your tax request, the value in the field will override the tax engine
 	//
 	// Max Length: 15
 	TaxAmount string `json:"taxAmount,omitempty"`
@@ -1855,6 +2628,9 @@ type ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0 stru
 	// #### FDMS South
 	// If you accept IDR or CLP currencies, see the entry for FDMS South in the [Merchant Descriptors Using the SCMP API Guide.]
 	// (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)
+	//
+	// #### Tax Calculation
+	// Required field for U.S., Canadian, international and value added taxes.
 	//
 	// #### Zero Amount Authorizations
 	// If your processor supports zero amount authorizations, you can set this field to 0 for the
@@ -1892,16 +2668,15 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0)
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0) validateQuantity(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Quantity) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("quantity", "body", int64(o.Quantity), 1, false); err != nil {
+	if err := validate.MinimumInt("quantity", "body", o.Quantity, 1, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("quantity", "body", int64(o.Quantity), 9.99999999e+08, false); err != nil {
+	if err := validate.MaximumInt("quantity", "body", o.Quantity, 9.99999999e+08, false); err != nil {
 		return err
 	}
 
@@ -1909,12 +2684,11 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0)
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0) validateTaxAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxAmount", "body", string(o.TaxAmount), 15); err != nil {
+	if err := validate.MaxLength("taxAmount", "body", o.TaxAmount, 15); err != nil {
 		return err
 	}
 
@@ -1927,10 +2701,15 @@ func (o *ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0)
 		return err
 	}
 
-	if err := validate.MaxLength("unitPrice", "body", string(*o.UnitPrice), 15); err != nil {
+	if err := validate.MaxLength("unitPrice", "body", *o.UnitPrice, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this validate authentication results params body order information line items items0 based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyOrderInformationLineItemsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1960,6 +2739,9 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformation struct {
 	// card
 	Card *ValidateAuthenticationResultsParamsBodyPaymentInformationCard `json:"card,omitempty"`
 
+	// customer
+	Customer *ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer `json:"customer,omitempty"`
+
 	// fluid data
 	FluidData *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData `json:"fluidData,omitempty"`
 
@@ -1972,6 +2754,10 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) Validate(for
 	var res []error
 
 	if err := o.validateCard(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCustomer(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -1990,7 +2776,6 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) Validate(for
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateCard(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Card) { // not required
 		return nil
 	}
@@ -1999,6 +2784,27 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateCard
 		if err := o.Card.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateCustomer(formats strfmt.Registry) error {
+	if swag.IsZero(o.Customer) { // not required
+		return nil
+	}
+
+	if o.Customer != nil {
+		if err := o.Customer.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "customer")
 			}
 			return err
 		}
@@ -2008,7 +2814,6 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateCard
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateFluidData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FluidData) { // not required
 		return nil
 	}
@@ -2017,6 +2822,8 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateFlui
 		if err := o.FluidData.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "fluidData")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "fluidData")
 			}
 			return err
 		}
@@ -2026,7 +2833,6 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateFlui
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateTokenizedCard(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TokenizedCard) { // not required
 		return nil
 	}
@@ -2035,6 +2841,98 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) validateToke
 		if err := o.TokenizedCard.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this validate authentication results params body payment information based on the context it is used
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateCustomer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateFluidData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTokenizedCard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) contextValidateCard(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Card != nil {
+		if err := o.Card.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) contextValidateCustomer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Customer != nil {
+		if err := o.Customer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "customer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) contextValidateFluidData(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.FluidData != nil {
+		if err := o.FluidData.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "fluidData")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "fluidData")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformation) contextValidateTokenizedCard(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.TokenizedCard != nil {
+		if err := o.TokenizedCard.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("validateRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
 			}
 			return err
 		}
@@ -2089,15 +2987,13 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationCard struct {
 	// #### FDMS Nashville
 	// Required field.
 	//
-	// #### GPX
-	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
-	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
-	// whether a field is required for the transaction you are requesting.
-	//
 	// #### All other processors
 	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
 	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
 	// whether a field is required for the transaction you are requesting.
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// Max Length: 2
 	ExpirationMonth string `json:"expirationMonth,omitempty"`
@@ -2118,15 +3014,13 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationCard struct {
 	// #### FDC Nashville Global and FDMS South
 	// You can send in 2 digits or 4 digits. If you send in 2 digits, they must be the last 2 digits of the year.
 	//
-	// #### GPX
-	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
-	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
-	// whether a field is required for the transaction you are requesting.
-	//
 	// #### All other processors
 	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
 	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
 	// whether a field is required for the transaction you are requesting.
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// Max Length: 4
 	ExpirationYear string `json:"expirationYear,omitempty"`
@@ -2169,7 +3063,7 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationCard struct {
 	// - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types.
 	// - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types.
 	// - `034`: Dankort[^1]
-	// - `036`: Cartes Bancaires[^1]
+	// - `036`: Cartes Bancaires[^1,4]
 	// - `037`: Carta Si[^1]
 	// - `039`: Encoded account number[^1]
 	// - `040`: UATP[^1]
@@ -2182,6 +3076,7 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationCard struct {
 	// [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit.
 	// [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5.
 	// [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.
+	// [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.
 	//
 	// #### Used by
 	// **Authorization**
@@ -2202,6 +3097,9 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationCard struct {
 	// - OmniPay Direct
 	// - SIX
 	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
+	//
 	// #### GPX
 	// This field only supports transactions from the following card types:
 	// - Visa
@@ -2212,8 +3110,7 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationCard struct {
 	// - JCB
 	// - Union Pay International
 	//
-	// Required: true
-	Type *string `json:"type"`
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this validate authentication results params body payment information card
@@ -2236,10 +3133,6 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) Validate
 		res = append(res, err)
 	}
 
-	if err := o.validateType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -2247,12 +3140,11 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) Validate
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validateBin(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Bin) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"bin", "body", string(o.Bin), 6); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"bin", "body", o.Bin, 6); err != nil {
 		return err
 	}
 
@@ -2260,12 +3152,11 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validate
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validateExpirationMonth(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExpirationMonth) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationMonth", "body", string(o.ExpirationMonth), 2); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationMonth", "body", o.ExpirationMonth, 2); err != nil {
 		return err
 	}
 
@@ -2273,12 +3164,11 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validate
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validateExpirationYear(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExpirationYear) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationYear", "body", string(o.ExpirationYear), 4); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationYear", "body", o.ExpirationYear, 4); err != nil {
 		return err
 	}
 
@@ -2286,24 +3176,19 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validate
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validateNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Number) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"number", "body", string(o.Number), 20); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"number", "body", o.Number, 20); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) validateType(formats strfmt.Registry) error {
-
-	if err := validate.Required("validateRequest"+"."+"paymentInformation"+"."+"card"+"."+"type", "body", o.Type); err != nil {
-		return err
-	}
-
+// ContextValidate validates this validate authentication results params body payment information card based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2325,31 +3210,108 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCard) Unmarsha
 	return nil
 }
 
+/*ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer validate authentication results params body payment information customer
+swagger:model ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer
+*/
+type ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer struct {
+
+	// Unique identifier for the customer's card and billing information.
+	//
+	// When you use Payment Tokenization or Recurring Billing and you include this value in
+	// your request, many of the fields that are normally required for an authorization or credit
+	// become optional.
+	//
+	// **NOTE** When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually the Cybersource payment token for a customer. This token stores information such as the consumer’s card number so it can be applied towards bill payments, recurring payments, or one-time payments. By using this token in a payment API request, the merchant doesn't need to pass in data such as the card number or expiration date in the request itself.
+	//
+	// For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	CustomerID string `json:"customerId,omitempty"`
+
+	// Unique identifier for the Customer token used in the transaction.
+	// When you include this value in your request, many of the fields that are normally required for an authorization or credit
+	// become optional.
+	//
+	// Max Length: 32
+	// Min Length: 1
+	ID string `json:"id,omitempty"`
+}
+
+// Validate validates this validate authentication results params body payment information customer
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer) validateID(formats strfmt.Registry) error {
+	if swag.IsZero(o.ID) { // not required
+		return nil
+	}
+
+	if err := validate.MinLength("validateRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 32); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this validate authentication results params body payment information customer based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer) UnmarshalBinary(b []byte) error {
+	var res ValidateAuthenticationResultsParamsBodyPaymentInformationCustomer
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData validate authentication results params body payment information fluid data
 swagger:model ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData
 */
 type ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData struct {
 
-	// The identifier for a payment solution, which is sending the encrypted payment data for decryption.
-	// Valid values:
-	// - Samsung Pay: `RklEPUNPTU1PTi5TQU1TVU5HLklOQVBQLlBBWU1FTlQ=`
+	// The identifier for a payment solution, which is sending the encrypted payment data for decryption. Valid values:
+	// Samsung Pay: RklEPUNPTU1PTi5TQU1TVU5HLklOQVBQLlBBWU1FTlQ=
+	// Note: For other payment solutions, the value may be specific to the terminal or device initiatinf the payment. For example, the descriptor for a Bluefin payment encryption would be a device-generated descriptor.
+	// Used by Authorization and Standalone Credits. Required for authorizations and standalone credits.
 	//
-	// **Note**: For other payment solutions, the value may be specific to the customer's mobile device. For example,
-	// the descriptor for a Bluefin payment encryption would be a device-generated descriptor.
-	//
-	// #### Used by
-	// **Authorization and Standalone Credits**
-	// Required for authorizations and standalone credits that use Bluefin PCI P2PE.
-	//
-	// #### Card Present processing
-	// Format of the encrypted payment data. The value for Bluefin PCI P2PE is `Ymx1ZWZpbg==`.
+	// Card Present processing:
+	// Format of the encrypted payment data.
+	// The value for Bluefin PCI P2PE is `Ymx1ZWZpbg==`. paymentInformation.fluidData.encoding must be `Base64`.
+	// The value for Cybersource P2PE decryption depends on the encoding method used and identified in encoding field.
+	// If paymentInformation.fluidData.encoding is `Base64`, the value is: `RklEPUVNVi5QQVlNRU5ULkFQSQ==`
+	// If paymentInformation.fluidData.encoding is `HEX`, the value is: `4649443D454D562E5041594D454E542E41504`
 	//
 	// Max Length: 128
 	Descriptor string `json:"descriptor,omitempty"`
 
 	// Encoding method used to encrypt the payment data.
-	//
-	// Valid value: Base64
+	// Valid values: `Base64`, `HEX`
+	// If no value is provided, `Base64` is taken as the default value. And the `Base64` descriptor is used for paymentInformation.fluidData.encoding
 	//
 	// Max Length: 6
 	Encoding string `json:"encoding,omitempty"`
@@ -2358,18 +3320,13 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData struct {
 	//
 	KeySerialNumber string `json:"keySerialNumber,omitempty"`
 
-	// Represents the encrypted payment data BLOB. The entry for this field is dependent on the payment solution a merchant uses.
+	// Represents the encrypted payment data BLOB. The entry for this field is dependent on the payment solution used by the merchant.
+	// Used by Authorization and Standalone Credits. Required for authorizations and standalone credits that use a Cybersource suppored Point-to-Point encryption method.
+	// Card Present processing
+	// This field represents the encrypted payment data generated by the payment terminal/device.
 	//
-	// #### Used by
-	// **Authorization and Standalone Credits**
-	// Required for authorizations and standalone credits that use Bluefin PCI P2PE.
-	//
-	// #### Card Present processing
-	// This field represents the encrypted Bluefin PCI P2PE payment data. Obtain the encrypted payment data from a Bluefin-supported device.
-	//
-	// Required: true
 	// Max Length: 3072
-	Value *string `json:"value"`
+	Value string `json:"value,omitempty"`
 }
 
 // Validate validates this validate authentication results params body payment information fluid data
@@ -2395,12 +3352,11 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData) Val
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData) validateDescriptor(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Descriptor) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"descriptor", "body", string(o.Descriptor), 128); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"descriptor", "body", o.Descriptor, 128); err != nil {
 		return err
 	}
 
@@ -2408,12 +3364,11 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData) val
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData) validateEncoding(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Encoding) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"encoding", "body", string(o.Encoding), 6); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"encoding", "body", o.Encoding, 6); err != nil {
 		return err
 	}
 
@@ -2421,15 +3376,19 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData) val
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData) validateValue(formats strfmt.Registry) error {
+	if swag.IsZero(o.Value) { // not required
+		return nil
+	}
 
-	if err := validate.Required("validateRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"value", "body", o.Value); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"value", "body", o.Value, 3072); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"value", "body", string(*o.Value), 3072); err != nil {
-		return err
-	}
+	return nil
+}
 
+// ContextValidate validates this validate authentication results params body payment information fluid data based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationFluidData) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2534,7 +3493,7 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard stru
 	// - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types.
 	// - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types.
 	// - `034`: Dankort[^1]
-	// - `036`: Cartes Bancaires[^1]
+	// - `036`: Cartes Bancaires[^1,4]
 	// - `037`: Carta Si[^1]
 	// - `039`: Encoded account number[^1]
 	// - `040`: UATP[^1]
@@ -2547,6 +3506,7 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard stru
 	// [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit.
 	// [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5.
 	// [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.
+	// [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.
 	//
 	// #### Used by
 	// **Authorization**
@@ -2567,6 +3527,9 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard stru
 	// - OmniPay Direct
 	// - SIX
 	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
+	//
 	// #### GPX
 	// This field only supports transactions from the following card types:
 	// - Visa
@@ -2577,8 +3540,7 @@ type ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard stru
 	// - JCB
 	// - Union Pay International
 	//
-	// Required: true
-	Type *string `json:"type"`
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this validate authentication results params body payment information tokenized card
@@ -2597,10 +3559,6 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard)
 		res = append(res, err)
 	}
 
-	if err := o.validateType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -2608,12 +3566,11 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard)
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard) validateExpirationMonth(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExpirationMonth) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationMonth", "body", string(o.ExpirationMonth), 2); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationMonth", "body", o.ExpirationMonth, 2); err != nil {
 		return err
 	}
 
@@ -2621,12 +3578,11 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard)
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard) validateExpirationYear(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExpirationYear) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationYear", "body", string(o.ExpirationYear), 4); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationYear", "body", o.ExpirationYear, 4); err != nil {
 		return err
 	}
 
@@ -2634,24 +3590,19 @@ func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard)
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard) validateNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Number) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"number", "body", string(o.Number), 20); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"number", "body", o.Number, 20); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard) validateType(formats strfmt.Registry) error {
-
-	if err := validate.Required("validateRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"type", "body", o.Type); err != nil {
-		return err
-	}
-
+// ContextValidate validates this validate authentication results params body payment information tokenized card based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyPaymentInformationTokenizedCard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2688,14 +3639,16 @@ type ValidateAuthenticationResultsParamsBodyProcessingInformation struct {
 	//  - `007`: Chase Pay.
 	//  - `008`: Samsung Pay.
 	//  - `012`: Google Pay.
+	//  - `013`: Cybersource P2PE Decryption
+	//  - `014`: Mastercard credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.
+	//  - `015`: Visa credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.
+	//  - `027`: Click to Pay.
 	//
 	// Max Length: 12
 	PaymentSolution string `json:"paymentSolution,omitempty"`
 
 	// Identifier for the **Visa Checkout** order. Visa Checkout provides a unique order ID for every transaction in
 	// the Visa Checkout **callID** field.
-	//
-	// For details, see the `vc_order_id` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)
 	//
 	// Max Length: 48
 	VisaCheckoutID string `json:"visaCheckoutId,omitempty"`
@@ -2720,12 +3673,11 @@ func (o *ValidateAuthenticationResultsParamsBodyProcessingInformation) Validate(
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyProcessingInformation) validatePaymentSolution(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentSolution) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"processingInformation"+"."+"paymentSolution", "body", string(o.PaymentSolution), 12); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"processingInformation"+"."+"paymentSolution", "body", o.PaymentSolution, 12); err != nil {
 		return err
 	}
 
@@ -2733,15 +3685,19 @@ func (o *ValidateAuthenticationResultsParamsBodyProcessingInformation) validateP
 }
 
 func (o *ValidateAuthenticationResultsParamsBodyProcessingInformation) validateVisaCheckoutID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VisaCheckoutID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("validateRequest"+"."+"processingInformation"+"."+"visaCheckoutId", "body", string(o.VisaCheckoutID), 48); err != nil {
+	if err := validate.MaxLength("validateRequest"+"."+"processingInformation"+"."+"visaCheckoutId", "body", o.VisaCheckoutID, 48); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this validate authentication results params body processing information based on context it is used
+func (o *ValidateAuthenticationResultsParamsBodyProcessingInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

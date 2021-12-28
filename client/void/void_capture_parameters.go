@@ -16,61 +16,76 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewVoidCaptureParams creates a new VoidCaptureParams object
-// with the default values initialized.
+// NewVoidCaptureParams creates a new VoidCaptureParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewVoidCaptureParams() *VoidCaptureParams {
-	var ()
 	return &VoidCaptureParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewVoidCaptureParamsWithTimeout creates a new VoidCaptureParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewVoidCaptureParamsWithTimeout(timeout time.Duration) *VoidCaptureParams {
-	var ()
 	return &VoidCaptureParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewVoidCaptureParamsWithContext creates a new VoidCaptureParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewVoidCaptureParamsWithContext(ctx context.Context) *VoidCaptureParams {
-	var ()
 	return &VoidCaptureParams{
-
 		Context: ctx,
 	}
 }
 
 // NewVoidCaptureParamsWithHTTPClient creates a new VoidCaptureParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewVoidCaptureParamsWithHTTPClient(client *http.Client) *VoidCaptureParams {
-	var ()
 	return &VoidCaptureParams{
 		HTTPClient: client,
 	}
 }
 
-/*VoidCaptureParams contains all the parameters to send to the API endpoint
-for the void capture operation typically these are written to a http.Request
+/* VoidCaptureParams contains all the parameters to send to the API endpoint
+   for the void capture operation.
+
+   Typically these are written to a http.Request.
 */
 type VoidCaptureParams struct {
 
-	/*ID
-	  The capture ID returned from a previous capture request.
+	/* ID.
 
+	   The capture ID returned from a previous capture request.
 	*/
 	ID string
-	/*VoidCaptureRequest*/
+
+	// VoidCaptureRequest.
 	VoidCaptureRequest VoidCaptureBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the void capture params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *VoidCaptureParams) WithDefaults() *VoidCaptureParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the void capture params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *VoidCaptureParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the void capture params
@@ -140,7 +155,6 @@ func (o *VoidCaptureParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.R
 	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
-
 	if err := r.SetBodyParam(o.VoidCaptureRequest); err != nil {
 		return err
 	}
