@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetReportByReportIDParams creates a new GetReportByReportIDParams object
-// with the default values initialized.
+// NewGetReportByReportIDParams creates a new GetReportByReportIDParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetReportByReportIDParams() *GetReportByReportIDParams {
-	var ()
 	return &GetReportByReportIDParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetReportByReportIDParamsWithTimeout creates a new GetReportByReportIDParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetReportByReportIDParamsWithTimeout(timeout time.Duration) *GetReportByReportIDParams {
-	var ()
 	return &GetReportByReportIDParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetReportByReportIDParamsWithContext creates a new GetReportByReportIDParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetReportByReportIDParamsWithContext(ctx context.Context) *GetReportByReportIDParams {
-	var ()
 	return &GetReportByReportIDParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetReportByReportIDParamsWithHTTPClient creates a new GetReportByReportIDParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetReportByReportIDParamsWithHTTPClient(client *http.Client) *GetReportByReportIDParams {
-	var ()
 	return &GetReportByReportIDParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetReportByReportIDParams contains all the parameters to send to the API endpoint
-for the get report by report Id operation typically these are written to a http.Request
+/* GetReportByReportIDParams contains all the parameters to send to the API endpoint
+   for the get report by report Id operation.
+
+   Typically these are written to a http.Request.
 */
 type GetReportByReportIDParams struct {
 
-	/*OrganizationID
-	  Valid Cybersource Organization Id
+	/* OrganizationID.
 
+	   Valid Organization Id
 	*/
 	OrganizationID *string
-	/*ReportID
-	  Valid Report Id
 
+	/* ReportID.
+
+	   Valid Report Id
 	*/
 	ReportID string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get report by report Id params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetReportByReportIDParams) WithDefaults() *GetReportByReportIDParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get report by report Id params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetReportByReportIDParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get report by report Id params
@@ -143,16 +158,17 @@ func (o *GetReportByReportIDParams) WriteToRequest(r runtime.ClientRequest, reg 
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param reportId

@@ -25,9 +25,12 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetNotificationOfChangeReport(params *GetNotificationOfChangeReportParams) (*GetNotificationOfChangeReportOK, error)
+	GetNotificationOfChangeReport(params *GetNotificationOfChangeReportParams, opts ...ClientOption) (*GetNotificationOfChangeReportOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -35,29 +38,31 @@ type ClientService interface {
 /*
   GetNotificationOfChangeReport gets notification of changes
 
-  Download the Notification of Change report. This
-report shows eCheck-related fields updated as a result of a
-response to an eCheck settlement transaction.
+  Download the Notification of Change report. This report shows eCheck-related fields updated as a result of a response to an eCheck settlement transaction.
 
 */
-func (a *Client) GetNotificationOfChangeReport(params *GetNotificationOfChangeReportParams) (*GetNotificationOfChangeReportOK, error) {
+func (a *Client) GetNotificationOfChangeReport(params *GetNotificationOfChangeReportParams, opts ...ClientOption) (*GetNotificationOfChangeReportOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetNotificationOfChangeReportParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getNotificationOfChangeReport",
 		Method:             "GET",
 		PathPattern:        "/reporting/v3/notification-of-changes",
-		ProducesMediaTypes: []string{"application/hal+json"},
+		ProducesMediaTypes: []string{"application/hal+json", "application/xml", "text/csv"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &GetNotificationOfChangeReportReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

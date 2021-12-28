@@ -17,99 +17,110 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewSearchReportsParams creates a new SearchReportsParams object
-// with the default values initialized.
+// NewSearchReportsParams creates a new SearchReportsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewSearchReportsParams() *SearchReportsParams {
-	var ()
 	return &SearchReportsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewSearchReportsParamsWithTimeout creates a new SearchReportsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewSearchReportsParamsWithTimeout(timeout time.Duration) *SearchReportsParams {
-	var ()
 	return &SearchReportsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewSearchReportsParamsWithContext creates a new SearchReportsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewSearchReportsParamsWithContext(ctx context.Context) *SearchReportsParams {
-	var ()
 	return &SearchReportsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewSearchReportsParamsWithHTTPClient creates a new SearchReportsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewSearchReportsParamsWithHTTPClient(client *http.Client) *SearchReportsParams {
-	var ()
 	return &SearchReportsParams{
 		HTTPClient: client,
 	}
 }
 
-/*SearchReportsParams contains all the parameters to send to the API endpoint
-for the search reports operation typically these are written to a http.Request
+/* SearchReportsParams contains all the parameters to send to the API endpoint
+   for the search reports operation.
+
+   Typically these are written to a http.Request.
 */
 type SearchReportsParams struct {
 
-	/*EndTime
-	  Valid report End Time in **ISO 8601 format**
+	/* EndTime.
+
+	     Valid report End Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	EndTime strfmt.DateTime
-	/*OrganizationID
-	  Valid Cybersource Organization Id
 
+	/* OrganizationID.
+
+	   Valid Organization Id
 	*/
 	OrganizationID *string
-	/*ReportDefinitionID
-	  Valid Report Definition Id
 
+	/* ReportDefinitionID.
+
+	   Valid Report Definition Id
+
+	   Format: int32
 	*/
 	ReportDefinitionID *int32
-	/*ReportFrequency
-	  Valid Report Frequency
+
+	/* ReportFrequency.
+
+	     Valid Report Frequency
 
 	Valid values:
 	- DAILY
 	- WEEKLY
 	- MONTHLY
+	- USER_DEFINED
 	- ADHOC
-
 
 	*/
 	ReportFrequency *string
-	/*ReportMimeType
-	  Valid Report Format
+
+	/* ReportMimeType.
+
+	     Valid Report Format
 
 	Valid values:
 	- application/xml
 	- text/csv
 
-
 	*/
 	ReportMimeType *string
-	/*ReportName
-	  Valid Report Name
 
+	/* ReportName.
+
+	   Valid Report Name
 	*/
 	ReportName *string
-	/*ReportStatus
-	  Valid Report Status
+
+	/* ReportStatus.
+
+	     Valid Report Status
 
 	Valid values:
 	- COMPLETED
@@ -119,26 +130,29 @@ type SearchReportsParams struct {
 	- ERROR
 	- NO_DATA
 
-
 	*/
 	ReportStatus *string
-	/*StartTime
-	  Valid report Start Time in **ISO 8601 format**
+
+	/* StartTime.
+
+	     Valid report Start Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZ (e.g. 2018-01-01T00:00:00.000Z)
 
 
+	     Format: date-time
 	*/
 	StartTime strfmt.DateTime
-	/*TimeQueryType
-	  Specify time you would like to search
+
+	/* TimeQueryType.
+
+	     Specify time you would like to search
 
 	Valid values:
 	- reportTimeFrame
 	- executedTime
-
 
 	*/
 	TimeQueryType string
@@ -146,6 +160,21 @@ type SearchReportsParams struct {
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the search reports params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SearchReportsParams) WithDefaults() *SearchReportsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the search reports params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SearchReportsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the search reports params
@@ -292,6 +321,7 @@ func (o *SearchReportsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 	qrEndTime := o.EndTime
 	qEndTime := qrEndTime.String()
 	if qEndTime != "" {
+
 		if err := r.SetQueryParam("endTime", qEndTime); err != nil {
 			return err
 		}
@@ -301,102 +331,109 @@ func (o *SearchReportsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.ReportDefinitionID != nil {
 
 		// query param reportDefinitionId
 		var qrReportDefinitionID int32
+
 		if o.ReportDefinitionID != nil {
 			qrReportDefinitionID = *o.ReportDefinitionID
 		}
 		qReportDefinitionID := swag.FormatInt32(qrReportDefinitionID)
 		if qReportDefinitionID != "" {
+
 			if err := r.SetQueryParam("reportDefinitionId", qReportDefinitionID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.ReportFrequency != nil {
 
 		// query param reportFrequency
 		var qrReportFrequency string
+
 		if o.ReportFrequency != nil {
 			qrReportFrequency = *o.ReportFrequency
 		}
 		qReportFrequency := qrReportFrequency
 		if qReportFrequency != "" {
+
 			if err := r.SetQueryParam("reportFrequency", qReportFrequency); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.ReportMimeType != nil {
 
 		// query param reportMimeType
 		var qrReportMimeType string
+
 		if o.ReportMimeType != nil {
 			qrReportMimeType = *o.ReportMimeType
 		}
 		qReportMimeType := qrReportMimeType
 		if qReportMimeType != "" {
+
 			if err := r.SetQueryParam("reportMimeType", qReportMimeType); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.ReportName != nil {
 
 		// query param reportName
 		var qrReportName string
+
 		if o.ReportName != nil {
 			qrReportName = *o.ReportName
 		}
 		qReportName := qrReportName
 		if qReportName != "" {
+
 			if err := r.SetQueryParam("reportName", qReportName); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.ReportStatus != nil {
 
 		// query param reportStatus
 		var qrReportStatus string
+
 		if o.ReportStatus != nil {
 			qrReportStatus = *o.ReportStatus
 		}
 		qReportStatus := qrReportStatus
 		if qReportStatus != "" {
+
 			if err := r.SetQueryParam("reportStatus", qReportStatus); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// query param startTime
 	qrStartTime := o.StartTime
 	qStartTime := qrStartTime.String()
 	if qStartTime != "" {
+
 		if err := r.SetQueryParam("startTime", qStartTime); err != nil {
 			return err
 		}
@@ -406,6 +443,7 @@ func (o *SearchReportsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 	qrTimeQueryType := o.TimeQueryType
 	qTimeQueryType := qrTimeQueryType
 	if qTimeQueryType != "" {
+
 		if err := r.SetQueryParam("timeQueryType", qTimeQueryType); err != nil {
 			return err
 		}

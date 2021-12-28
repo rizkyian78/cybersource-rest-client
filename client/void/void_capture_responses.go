@@ -6,6 +6,7 @@ package void
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *VoidCaptureReader) ReadResponse(response runtime.ClientResponse, consum
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewVoidCaptureCreated() *VoidCaptureCreated {
 	return &VoidCaptureCreated{}
 }
 
-/*VoidCaptureCreated handles this case with default header values.
+/* VoidCaptureCreated describes a response with status code 201, with default header values.
 
 Successful response.
 */
@@ -65,7 +65,6 @@ type VoidCaptureCreated struct {
 func (o *VoidCaptureCreated) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/captures/{id}/voids][%d] voidCaptureCreated  %+v", 201, o.Payload)
 }
-
 func (o *VoidCaptureCreated) GetPayload() *VoidCaptureCreatedBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewVoidCaptureBadRequest() *VoidCaptureBadRequest {
 	return &VoidCaptureBadRequest{}
 }
 
-/*VoidCaptureBadRequest handles this case with default header values.
+/* VoidCaptureBadRequest describes a response with status code 400, with default header values.
 
 Invalid request.
 */
@@ -98,7 +97,6 @@ type VoidCaptureBadRequest struct {
 func (o *VoidCaptureBadRequest) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/captures/{id}/voids][%d] voidCaptureBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *VoidCaptureBadRequest) GetPayload() *VoidCaptureBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewVoidCaptureBadGateway() *VoidCaptureBadGateway {
 	return &VoidCaptureBadGateway{}
 }
 
-/*VoidCaptureBadGateway handles this case with default header values.
+/* VoidCaptureBadGateway describes a response with status code 502, with default header values.
 
 Unexpected system error or system timeout.
 */
@@ -131,7 +129,6 @@ type VoidCaptureBadGateway struct {
 func (o *VoidCaptureBadGateway) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/captures/{id}/voids][%d] voidCaptureBadGateway  %+v", 502, o.Payload)
 }
-
 func (o *VoidCaptureBadGateway) GetPayload() *VoidCaptureBadGatewayBody {
 	return o.Payload
 }
@@ -145,46 +142,6 @@ func (o *VoidCaptureBadGateway) readResponse(response runtime.ClientResponse, co
 		return err
 	}
 
-	return nil
-}
-
-/*DetailsItems0 details items0
-swagger:model DetailsItems0
-*/
-type DetailsItems0 struct {
-
-	// This is the flattened JSON object field name/path that is either missing or invalid.
-	Field string `json:"field,omitempty"`
-
-	// Possible reasons for the error.
-	//
-	// Possible values:
-	//  - MISSING_FIELD
-	//  - INVALID_DATA
-	//
-	Reason string `json:"reason,omitempty"`
-}
-
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }
 
@@ -202,7 +159,6 @@ type VoidCaptureBadGatewayBody struct {
 	//  - SYSTEM_ERROR
 	//  - SERVER_TIMEOUT
 	//  - SERVICE_TIMEOUT
-	//  - INVALID_OR_MISSING_CONFIG
 	//
 	Reason string `json:"reason,omitempty"`
 
@@ -214,14 +170,21 @@ type VoidCaptureBadGatewayBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
 
 // Validate validates this void capture bad gateway body
 func (o *VoidCaptureBadGatewayBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this void capture bad gateway body based on context it is used
+func (o *VoidCaptureBadGatewayBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -249,7 +212,7 @@ swagger:model VoidCaptureBadRequestBody
 type VoidCaptureBadRequestBody struct {
 
 	// details
-	Details []*DetailsItems0 `json:"details"`
+	Details []*VoidCaptureBadRequestBodyDetailsItems0 `json:"details"`
 
 	// The detail message related to the status and reason listed above.
 	Message string `json:"message,omitempty"`
@@ -273,8 +236,10 @@ type VoidCaptureBadRequestBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -294,7 +259,6 @@ func (o *VoidCaptureBadRequestBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *VoidCaptureBadRequestBody) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -308,6 +272,42 @@ func (o *VoidCaptureBadRequestBody) validateDetails(formats strfmt.Registry) err
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("voidCaptureBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("voidCaptureBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this void capture bad request body based on the context it is used
+func (o *VoidCaptureBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("voidCaptureBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("voidCaptureBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -336,13 +336,62 @@ func (o *VoidCaptureBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*VoidCaptureBadRequestBodyDetailsItems0 void capture bad request body details items0
+swagger:model VoidCaptureBadRequestBodyDetailsItems0
+*/
+type VoidCaptureBadRequestBodyDetailsItems0 struct {
+
+	// This is the flattened JSON object field name/path that is either missing or invalid.
+	Field string `json:"field,omitempty"`
+
+	// Possible reasons for the error.
+	//
+	// Possible values:
+	//  - MISSING_FIELD
+	//  - INVALID_DATA
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this void capture bad request body details items0
+func (o *VoidCaptureBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this void capture bad request body details items0 based on context it is used
+func (o *VoidCaptureBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *VoidCaptureBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *VoidCaptureBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res VoidCaptureBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*VoidCaptureBody void capture body
+// Example: {"clientReferenceInformation":{"transactionId":""}}
 swagger:model VoidCaptureBody
 */
 type VoidCaptureBody struct {
 
 	// client reference information
 	ClientReferenceInformation *VoidCaptureParamsBodyClientReferenceInformation `json:"clientReferenceInformation,omitempty"`
+
+	// payment information
+	PaymentInformation *VoidCaptureParamsBodyPaymentInformation `json:"paymentInformation,omitempty"`
 }
 
 // Validate validates this void capture body
@@ -353,6 +402,10 @@ func (o *VoidCaptureBody) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := o.validatePaymentInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -360,7 +413,6 @@ func (o *VoidCaptureBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *VoidCaptureBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -369,6 +421,77 @@ func (o *VoidCaptureBody) validateClientReferenceInformation(formats strfmt.Regi
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *VoidCaptureBody) validatePaymentInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.PaymentInformation) { // not required
+		return nil
+	}
+
+	if o.PaymentInformation != nil {
+		if err := o.PaymentInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "paymentInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this void capture body based on the context it is used
+func (o *VoidCaptureBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePaymentInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *VoidCaptureBody) contextValidatePaymentInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PaymentInformation != nil {
+		if err := o.PaymentInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "paymentInformation")
 			}
 			return err
 		}
@@ -396,6 +519,7 @@ func (o *VoidCaptureBody) UnmarshalBinary(b []byte) error {
 }
 
 /*VoidCaptureCreatedBody ptsV2CapturesVoidsPost201Response
+// Example: {"_links":{"self":{"href":"/pts/v2/voids/4963015122056179201545","method":"GET"}},"clientReferenceInformation":{"transactionId":"909080801"},"id":"4963015122056179201545","orderInformation":{"amountDetails":{"currency":"USD"}},"status":"VOIDED","submitTimeUtc":"2017-06-01T071832Z","voidAmountDetails":{"currency":"usd","voidAmount":"102.21"}}
 swagger:model VoidCaptureCreatedBody
 */
 type VoidCaptureCreatedBody struct {
@@ -406,9 +530,15 @@ type VoidCaptureCreatedBody struct {
 	// client reference information
 	ClientReferenceInformation *VoidCaptureCreatedBodyClientReferenceInformation `json:"clientReferenceInformation,omitempty"`
 
-	// An unique identification number assigned by CyberSource to identify the submitted request. It is also appended to the endpoint of the resource.
+	// An unique identification number generated by Cybersource to identify the submitted request. Returned by all services.
+	// It is also appended to the endpoint of the resource.
+	// On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
+	//
 	// Max Length: 26
 	ID string `json:"id,omitempty"`
+
+	// processor information
+	ProcessorInformation *VoidCaptureCreatedBodyProcessorInformation `json:"processorInformation,omitempty"`
 
 	// The status of the submitted transaction.
 	//
@@ -418,8 +548,10 @@ type VoidCaptureCreatedBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 
@@ -443,6 +575,10 @@ func (o *VoidCaptureCreatedBody) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := o.validateProcessorInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateVoidAmountDetails(formats); err != nil {
 		res = append(res, err)
 	}
@@ -454,7 +590,6 @@ func (o *VoidCaptureCreatedBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *VoidCaptureCreatedBody) validateLinks(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Links) { // not required
 		return nil
 	}
@@ -463,6 +598,8 @@ func (o *VoidCaptureCreatedBody) validateLinks(formats strfmt.Registry) error {
 		if err := o.Links.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("voidCaptureCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "_links")
 			}
 			return err
 		}
@@ -472,7 +609,6 @@ func (o *VoidCaptureCreatedBody) validateLinks(formats strfmt.Registry) error {
 }
 
 func (o *VoidCaptureCreatedBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -481,6 +617,8 @@ func (o *VoidCaptureCreatedBody) validateClientReferenceInformation(formats strf
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("voidCaptureCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -490,20 +628,37 @@ func (o *VoidCaptureCreatedBody) validateClientReferenceInformation(formats strf
 }
 
 func (o *VoidCaptureCreatedBody) validateID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("voidCaptureCreated"+"."+"id", "body", string(o.ID), 26); err != nil {
+	if err := validate.MaxLength("voidCaptureCreated"+"."+"id", "body", o.ID, 26); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (o *VoidCaptureCreatedBody) validateVoidAmountDetails(formats strfmt.Registry) error {
+func (o *VoidCaptureCreatedBody) validateProcessorInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.ProcessorInformation) { // not required
+		return nil
+	}
 
+	if o.ProcessorInformation != nil {
+		if err := o.ProcessorInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureCreated" + "." + "processorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "processorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *VoidCaptureCreatedBody) validateVoidAmountDetails(formats strfmt.Registry) error {
 	if swag.IsZero(o.VoidAmountDetails) { // not required
 		return nil
 	}
@@ -512,6 +667,98 @@ func (o *VoidCaptureCreatedBody) validateVoidAmountDetails(formats strfmt.Regist
 		if err := o.VoidAmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("voidCaptureCreated" + "." + "voidAmountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "voidAmountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this void capture created body based on the context it is used
+func (o *VoidCaptureCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateVoidAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureCreatedBody) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Links != nil {
+		if err := o.Links.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "_links")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *VoidCaptureCreatedBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *VoidCaptureCreatedBody) contextValidateProcessorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessorInformation != nil {
+		if err := o.ProcessorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureCreated" + "." + "processorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "processorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *VoidCaptureCreatedBody) contextValidateVoidAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.VoidAmountDetails != nil {
+		if err := o.VoidAmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureCreated" + "." + "voidAmountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "voidAmountDetails")
 			}
 			return err
 		}
@@ -543,10 +790,18 @@ swagger:model VoidCaptureCreatedBodyClientReferenceInformation
 */
 type VoidCaptureCreatedBodyClientReferenceInformation struct {
 
-	// Client-generated order reference or tracking number. CyberSource recommends that you send a unique value for each
+	// Merchant-generated order reference or tracking number. It is recommended that you send a unique value for each
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
-	// For information about tracking orders, see "Tracking and Reconciling Your Orders" in [Getting Started with CyberSource Advanced for the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Getting_Started_SCMP/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -562,13 +817,14 @@ type VoidCaptureCreatedBodyClientReferenceInformation struct {
 	// If your CyberSource account is enabled for Payment Tokenization, this field is returned only if you are using
 	// profile sharing and if your merchant ID is in the same merchant ID pool as the owner merchant ID.
 	//
-	// For details about how this field is used for Recurring Billing or Payment Tokenization, see the `ecp_debit_owner_merchant_id` field description in the [Electronic Check Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/EChecks_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
 	OwnerMerchantID string `json:"ownerMerchantId,omitempty"`
 
 	// Date and time at your physical location.
 	//
 	// Format: `YYYYMMDDhhmmss`, where YYYY = year, MM = month, DD = day, hh = hour, mm = minutes ss = seconds
+	//
+	// #### PIN Debit
+	// Optional field for PIN Debit purchase and credit requests.
 	//
 	// Max Length: 14
 	SubmitLocalDateTime string `json:"submitLocalDateTime,omitempty"`
@@ -593,12 +849,11 @@ func (o *VoidCaptureCreatedBodyClientReferenceInformation) Validate(formats strf
 }
 
 func (o *VoidCaptureCreatedBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("voidCaptureCreated"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("voidCaptureCreated"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
 	}
 
@@ -606,15 +861,19 @@ func (o *VoidCaptureCreatedBodyClientReferenceInformation) validateCode(formats 
 }
 
 func (o *VoidCaptureCreatedBodyClientReferenceInformation) validateSubmitLocalDateTime(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SubmitLocalDateTime) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("voidCaptureCreated"+"."+"clientReferenceInformation"+"."+"submitLocalDateTime", "body", string(o.SubmitLocalDateTime), 14); err != nil {
+	if err := validate.MaxLength("voidCaptureCreated"+"."+"clientReferenceInformation"+"."+"submitLocalDateTime", "body", o.SubmitLocalDateTime, 14); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this void capture created body client reference information based on context it is used
+func (o *VoidCaptureCreatedBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -660,7 +919,6 @@ func (o *VoidCaptureCreatedBodyLinks) Validate(formats strfmt.Registry) error {
 }
 
 func (o *VoidCaptureCreatedBodyLinks) validateSelf(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Self) { // not required
 		return nil
 	}
@@ -669,6 +927,38 @@ func (o *VoidCaptureCreatedBodyLinks) validateSelf(formats strfmt.Registry) erro
 		if err := o.Self.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("voidCaptureCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "_links" + "." + "self")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this void capture created body links based on the context it is used
+func (o *VoidCaptureCreatedBodyLinks) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateSelf(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureCreatedBodyLinks) contextValidateSelf(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Self != nil {
+		if err := o.Self.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureCreated" + "." + "_links" + "." + "self")
 			}
 			return err
 		}
@@ -712,6 +1002,11 @@ func (o *VoidCaptureCreatedBodyLinksSelf) Validate(formats strfmt.Registry) erro
 	return nil
 }
 
+// ContextValidate validates this void capture created body links self based on context it is used
+func (o *VoidCaptureCreatedBodyLinksSelf) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *VoidCaptureCreatedBodyLinksSelf) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -730,19 +1025,127 @@ func (o *VoidCaptureCreatedBodyLinksSelf) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*VoidCaptureCreatedBodyProcessorInformation void capture created body processor information
+swagger:model VoidCaptureCreatedBodyProcessorInformation
+*/
+type VoidCaptureCreatedBodyProcessorInformation struct {
+
+	// For most processors, this is the error message sent directly from the bank. Returned only when the processor
+	// returns this value.
+	//
+	// **Important** Do not use this field to evaluate the result of the authorization.
+	//
+	// #### PIN debit
+	// Response value that is returned by the processor or bank.
+	// **Important** Do not use this field to evaluate the results of the transaction request.
+	//
+	// Returned by PIN debit credit, PIN debit purchase, and PIN debit reversal.
+	//
+	// #### AIBMS
+	// If this value is `08`, you can accept the transaction if the customer provides you with identification.
+	//
+	// #### Atos
+	// This value is the response code sent from Atos and it might also include the response code from the bank.
+	// Format: `aa,bb` with the two values separated by a comma and where:
+	// - `aa` is the two-digit error message from Atos.
+	// - `bb` is the optional two-digit error message from the bank.
+	//
+	// #### Comercio Latino
+	// This value is the status code and the error or response code received from the processor separated by a colon.
+	// Format: [status code]:E[error code] or [status code]:R[response code]
+	// Example `2:R06`
+	//
+	// #### JCN Gateway
+	// Processor-defined detail error code. The associated response category code is in the `processorInformation.responseCategoryCode` field.
+	// String (3)
+	//
+	// Max Length: 10
+	ResponseCode string `json:"responseCode,omitempty"`
+}
+
+// Validate validates this void capture created body processor information
+func (o *VoidCaptureCreatedBodyProcessorInformation) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateResponseCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureCreatedBodyProcessorInformation) validateResponseCode(formats strfmt.Registry) error {
+	if swag.IsZero(o.ResponseCode) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("voidCaptureCreated"+"."+"processorInformation"+"."+"responseCode", "body", o.ResponseCode, 10); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this void capture created body processor information based on context it is used
+func (o *VoidCaptureCreatedBodyProcessorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *VoidCaptureCreatedBodyProcessorInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *VoidCaptureCreatedBodyProcessorInformation) UnmarshalBinary(b []byte) error {
+	var res VoidCaptureCreatedBodyProcessorInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*VoidCaptureCreatedBodyVoidAmountDetails void capture created body void amount details
 swagger:model VoidCaptureCreatedBodyVoidAmountDetails
 */
 type VoidCaptureCreatedBodyVoidAmountDetails struct {
 
-	// Currency used for the order. Use the three-character I[ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
+	// Currency used for the order. Use the three-character [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
 	//
-	// For details about currency as used in partial authorizations, see "Features for Debit Cards and Prepaid Cards" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
 	//
+	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
+	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
 	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
+	// Your local currency.
 	//
 	// Max Length: 3
 	Currency string `json:"currency,omitempty"`
@@ -751,6 +1154,12 @@ type VoidCaptureCreatedBodyVoidAmountDetails struct {
 	OriginalTransactionAmount string `json:"originalTransactionAmount,omitempty"`
 
 	// Total amount of the void.
+	//
+	// #### PIN Debit
+	// Amount of the reversal.
+	//
+	// Returned by PIN debit reversal.
+	//
 	VoidAmount string `json:"voidAmount,omitempty"`
 }
 
@@ -769,15 +1178,19 @@ func (o *VoidCaptureCreatedBodyVoidAmountDetails) Validate(formats strfmt.Regist
 }
 
 func (o *VoidCaptureCreatedBodyVoidAmountDetails) validateCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Currency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("voidCaptureCreated"+"."+"voidAmountDetails"+"."+"currency", "body", string(o.Currency), 3); err != nil {
+	if err := validate.MaxLength("voidCaptureCreated"+"."+"voidAmountDetails"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this void capture created body void amount details based on context it is used
+func (o *VoidCaptureCreatedBodyVoidAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -804,10 +1217,30 @@ swagger:model VoidCaptureParamsBodyClientReferenceInformation
 */
 type VoidCaptureParamsBodyClientReferenceInformation struct {
 
-	// Client-generated order reference or tracking number. CyberSource recommends that you send a unique value for each
+	// The name of the Connection Method client (such as Virtual Terminal or SOAP Toolkit API) that the merchant uses to send a transaction request to CyberSource.
+	//
+	ApplicationName string `json:"applicationName,omitempty"`
+
+	// The entity that is responsible for running the transaction and submitting the processing request to CyberSource. This could be a person, a system, or a connection method.
+	//
+	ApplicationUser string `json:"applicationUser,omitempty"`
+
+	// Version of the CyberSource application or integration used for a transaction.
+	//
+	ApplicationVersion string `json:"applicationVersion,omitempty"`
+
+	// Merchant-generated order reference or tracking number. It is recommended that you send a unique value for each
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
-	// For information about tracking orders, see "Tracking and Reconciling Your Orders" in [Getting Started with CyberSource Advanced for the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Getting_Started_SCMP/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -820,6 +1253,11 @@ type VoidCaptureParamsBodyClientReferenceInformation struct {
 
 	// partner
 	Partner *VoidCaptureParamsBodyClientReferenceInformationPartner `json:"partner,omitempty"`
+
+	// Used to resume a transaction that was paused for an order modification rule to allow for payer authentication to complete. To resume and continue with the authorization/decision service flow, call the services and include the request id from the prior decision call.
+	//
+	// Max Length: 26
+	PausedRequestID string `json:"pausedRequestId,omitempty"`
 }
 
 // Validate validates this void capture params body client reference information
@@ -834,6 +1272,10 @@ func (o *VoidCaptureParamsBodyClientReferenceInformation) Validate(formats strfm
 		res = append(res, err)
 	}
 
+	if err := o.validatePausedRequestID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -841,12 +1283,11 @@ func (o *VoidCaptureParamsBodyClientReferenceInformation) Validate(formats strfm
 }
 
 func (o *VoidCaptureParamsBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
 	}
 
@@ -854,7 +1295,6 @@ func (o *VoidCaptureParamsBodyClientReferenceInformation) validateCode(formats s
 }
 
 func (o *VoidCaptureParamsBodyClientReferenceInformation) validatePartner(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Partner) { // not required
 		return nil
 	}
@@ -863,6 +1303,50 @@ func (o *VoidCaptureParamsBodyClientReferenceInformation) validatePartner(format
 		if err := o.Partner.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *VoidCaptureParamsBodyClientReferenceInformation) validatePausedRequestID(formats strfmt.Registry) error {
+	if swag.IsZero(o.PausedRequestID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"pausedRequestId", "body", o.PausedRequestID, 26); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this void capture params body client reference information based on the context it is used
+func (o *VoidCaptureParamsBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePartner(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureParamsBodyClientReferenceInformation) contextValidatePartner(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Partner != nil {
+		if err := o.Partner.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "clientReferenceInformation" + "." + "partner")
 			}
 			return err
 		}
@@ -908,10 +1392,24 @@ type VoidCaptureParamsBodyClientReferenceInformationPartner struct {
 	//
 	// Send this value in all requests that are sent through the partner solution. CyberSource assigns the ID to the partner.
 	//
-	// **Note** When you see a partner ID of 999 in reports, the partner ID that was submitted is incorrect.
+	// **Note** When you see a solutionId of 999 in reports, the solutionId that was submitted is incorrect.
 	//
 	// Max Length: 8
 	SolutionID string `json:"solutionId,omitempty"`
+
+	// Value that identifies the application vendor and application version for a third party gateway.
+	// CyberSource provides you with this value during testing and validation.
+	// This field is supported only on CyberSource through VisaNet.
+	//
+	// #### Used by
+	// **Authorization, Authorization Reversal, Capture, Credit, Incremental Authorization, and Void**
+	// Optional field.
+	//
+	// #### PIN debit
+	// Required field for PIN debit credit, PIN debit purchase, or PIN debit reversal request.
+	//
+	// Max Length: 12
+	ThirdPartyCertificationNumber string `json:"thirdPartyCertificationNumber,omitempty"`
 }
 
 // Validate validates this void capture params body client reference information partner
@@ -926,6 +1424,10 @@ func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) Validate(format
 		res = append(res, err)
 	}
 
+	if err := o.validateThirdPartyCertificationNumber(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -933,12 +1435,11 @@ func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) Validate(format
 }
 
 func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) validateDeveloperID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeveloperID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", string(o.DeveloperID), 8); err != nil {
+	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", o.DeveloperID, 8); err != nil {
 		return err
 	}
 
@@ -946,15 +1447,31 @@ func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) validateDevelop
 }
 
 func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) validateSolutionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SolutionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", string(o.SolutionID), 8); err != nil {
+	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", o.SolutionID, 8); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) validateThirdPartyCertificationNumber(formats strfmt.Registry) error {
+	if swag.IsZero(o.ThirdPartyCertificationNumber) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("voidCaptureRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"thirdPartyCertificationNumber", "body", o.ThirdPartyCertificationNumber, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this void capture params body client reference information partner based on context it is used
+func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -969,6 +1486,238 @@ func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) MarshalBinary()
 // UnmarshalBinary interface implementation
 func (o *VoidCaptureParamsBodyClientReferenceInformationPartner) UnmarshalBinary(b []byte) error {
 	var res VoidCaptureParamsBodyClientReferenceInformationPartner
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*VoidCaptureParamsBodyPaymentInformation void capture params body payment information
+swagger:model VoidCaptureParamsBodyPaymentInformation
+*/
+type VoidCaptureParamsBodyPaymentInformation struct {
+
+	// payment type
+	PaymentType *VoidCaptureParamsBodyPaymentInformationPaymentType `json:"paymentType,omitempty"`
+}
+
+// Validate validates this void capture params body payment information
+func (o *VoidCaptureParamsBodyPaymentInformation) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validatePaymentType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureParamsBodyPaymentInformation) validatePaymentType(formats strfmt.Registry) error {
+	if swag.IsZero(o.PaymentType) { // not required
+		return nil
+	}
+
+	if o.PaymentType != nil {
+		if err := o.PaymentType.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this void capture params body payment information based on the context it is used
+func (o *VoidCaptureParamsBodyPaymentInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePaymentType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureParamsBodyPaymentInformation) contextValidatePaymentType(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PaymentType != nil {
+		if err := o.PaymentType.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *VoidCaptureParamsBodyPaymentInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *VoidCaptureParamsBodyPaymentInformation) UnmarshalBinary(b []byte) error {
+	var res VoidCaptureParamsBodyPaymentInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*VoidCaptureParamsBodyPaymentInformationPaymentType void capture params body payment information payment type
+swagger:model VoidCaptureParamsBodyPaymentInformationPaymentType
+*/
+type VoidCaptureParamsBodyPaymentInformationPaymentType struct {
+
+	// method
+	Method *VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod `json:"method,omitempty"`
+
+	// A Payment Type is an agreed means for a payee to receive legal tender from a payer. The way one pays for a commercial financial transaction. Examples: Card, Bank Transfer, Digital, Direct Debit.
+	// Possible values:
+	// - `CARD` (use this for a PIN debit transaction)
+	// - `CHECK` (use this for all eCheck payment transactions - ECP Debit, ECP Follow-on Credit, ECP StandAlone Credit)
+	//
+	Name string `json:"name,omitempty"`
+
+	// Detailed information about the Payment Type. Possible values:
+	// - `DEBIT`: Use this value to indicate a PIN debit transaction.
+	//
+	// Examples: For Card, if Credit or Debit or PrePaid. For Bank Transfer, if Online Bank Transfer or Wire Transfers.
+	//
+	SubTypeName string `json:"subTypeName,omitempty"`
+}
+
+// Validate validates this void capture params body payment information payment type
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentType) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateMethod(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentType) validateMethod(formats strfmt.Registry) error {
+	if swag.IsZero(o.Method) { // not required
+		return nil
+	}
+
+	if o.Method != nil {
+		if err := o.Method.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType" + "." + "method")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType" + "." + "method")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this void capture params body payment information payment type based on the context it is used
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentType) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateMethod(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentType) contextValidateMethod(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Method != nil {
+		if err := o.Method.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType" + "." + "method")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("voidCaptureRequest" + "." + "paymentInformation" + "." + "paymentType" + "." + "method")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentType) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentType) UnmarshalBinary(b []byte) error {
+	var res VoidCaptureParamsBodyPaymentInformationPaymentType
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod void capture params body payment information payment type method
+swagger:model VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod
+*/
+type VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod struct {
+
+	// A Payment Type is enabled through a Method. Examples: Visa, Master Card, ApplePay, iDeal
+	//
+	Name string `json:"name,omitempty"`
+}
+
+// Validate validates this void capture params body payment information payment type method
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this void capture params body payment information payment type method based on context it is used
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod) UnmarshalBinary(b []byte) error {
+	var res VoidCaptureParamsBodyPaymentInformationPaymentTypeMethod
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ package payer_authentication
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *CheckPayerAuthEnrollmentReader) ReadResponse(response runtime.ClientRes
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewCheckPayerAuthEnrollmentCreated() *CheckPayerAuthEnrollmentCreated {
 	return &CheckPayerAuthEnrollmentCreated{}
 }
 
-/*CheckPayerAuthEnrollmentCreated handles this case with default header values.
+/* CheckPayerAuthEnrollmentCreated describes a response with status code 201, with default header values.
 
 Successful response
 */
@@ -65,7 +65,6 @@ type CheckPayerAuthEnrollmentCreated struct {
 func (o *CheckPayerAuthEnrollmentCreated) Error() string {
 	return fmt.Sprintf("[POST /risk/v1/authentications][%d] checkPayerAuthEnrollmentCreated  %+v", 201, o.Payload)
 }
-
 func (o *CheckPayerAuthEnrollmentCreated) GetPayload() *CheckPayerAuthEnrollmentCreatedBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewCheckPayerAuthEnrollmentBadRequest() *CheckPayerAuthEnrollmentBadRequest
 	return &CheckPayerAuthEnrollmentBadRequest{}
 }
 
-/*CheckPayerAuthEnrollmentBadRequest handles this case with default header values.
+/* CheckPayerAuthEnrollmentBadRequest describes a response with status code 400, with default header values.
 
 Invalid request
 */
@@ -98,7 +97,6 @@ type CheckPayerAuthEnrollmentBadRequest struct {
 func (o *CheckPayerAuthEnrollmentBadRequest) Error() string {
 	return fmt.Sprintf("[POST /risk/v1/authentications][%d] checkPayerAuthEnrollmentBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *CheckPayerAuthEnrollmentBadRequest) GetPayload() *CheckPayerAuthEnrollmentBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewCheckPayerAuthEnrollmentBadGateway() *CheckPayerAuthEnrollmentBadGateway
 	return &CheckPayerAuthEnrollmentBadGateway{}
 }
 
-/*CheckPayerAuthEnrollmentBadGateway handles this case with default header values.
+/* CheckPayerAuthEnrollmentBadGateway describes a response with status code 502, with default header values.
 
 Unexpected system error or system timeout.
 */
@@ -131,7 +129,6 @@ type CheckPayerAuthEnrollmentBadGateway struct {
 func (o *CheckPayerAuthEnrollmentBadGateway) Error() string {
 	return fmt.Sprintf("[POST /risk/v1/authentications][%d] checkPayerAuthEnrollmentBadGateway  %+v", 502, o.Payload)
 }
-
 func (o *CheckPayerAuthEnrollmentBadGateway) GetPayload() *CheckPayerAuthEnrollmentBadGatewayBody {
 	return o.Payload
 }
@@ -173,16 +170,21 @@ type CheckPayerAuthEnrollmentBadGatewayBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
 	// The `T` separates the date and the time. The `Z` indicates UTC.
 	//
-	// Returned by authorization service.
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
 
 // Validate validates this check payer auth enrollment bad gateway body
 func (o *CheckPayerAuthEnrollmentBadGatewayBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment bad gateway body based on context it is used
+func (o *CheckPayerAuthEnrollmentBadGatewayBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -210,7 +212,7 @@ swagger:model CheckPayerAuthEnrollmentBadRequestBody
 type CheckPayerAuthEnrollmentBadRequestBody struct {
 
 	// details
-	Details []*DetailsItems0 `json:"details"`
+	Details []*CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0 `json:"details"`
 
 	// The message describing the reason of the status. Value is:
 	// - Encountered a Payer Authentication problem. Payer could not be authenticated.
@@ -231,10 +233,10 @@ type CheckPayerAuthEnrollmentBadRequestBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
 	// The `T` separates the date and the time. The `Z` indicates UTC.
 	//
-	// Returned by authorization service.
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -254,7 +256,6 @@ func (o *CheckPayerAuthEnrollmentBadRequestBody) Validate(formats strfmt.Registr
 }
 
 func (o *CheckPayerAuthEnrollmentBadRequestBody) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -268,6 +269,42 @@ func (o *CheckPayerAuthEnrollmentBadRequestBody) validateDetails(formats strfmt.
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment bad request body based on the context it is used
+func (o *CheckPayerAuthEnrollmentBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -296,6 +333,51 @@ func (o *CheckPayerAuthEnrollmentBadRequestBody) UnmarshalBinary(b []byte) error
 	return nil
 }
 
+/*CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0 check payer auth enrollment bad request body details items0
+swagger:model CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0
+*/
+type CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0 struct {
+
+	// This is the flattened JSON object field name/path that is either missing or invalid.
+	Field string `json:"field,omitempty"`
+
+	// Possible reasons for the error.
+	//
+	// Possible values:
+	//  - MISSING_FIELD
+	//  - INVALID_DATA
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this check payer auth enrollment bad request body details items0
+func (o *CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment bad request body details items0 based on context it is used
+func (o *CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res CheckPayerAuthEnrollmentBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CheckPayerAuthEnrollmentBody check payer auth enrollment body
 swagger:model CheckPayerAuthEnrollmentBody
 */
@@ -317,7 +399,7 @@ type CheckPayerAuthEnrollmentBody struct {
 	DeviceInformation *CheckPayerAuthEnrollmentParamsBodyDeviceInformation `json:"deviceInformation,omitempty"`
 
 	// merchant defined information
-	MerchantDefinedInformation []*MerchantDefinedInformationItems0 `json:"merchantDefinedInformation"`
+	MerchantDefinedInformation []*CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0 `json:"merchantDefinedInformation"`
 
 	// merchant information
 	MerchantInformation *CheckPayerAuthEnrollmentParamsBodyMerchantInformation `json:"merchantInformation,omitempty"`
@@ -336,6 +418,9 @@ type CheckPayerAuthEnrollmentBody struct {
 
 	// risk information
 	RiskInformation *CheckPayerAuthEnrollmentParamsBodyRiskInformation `json:"riskInformation,omitempty"`
+
+	// token information
+	TokenInformation *CheckPayerAuthEnrollmentParamsBodyTokenInformation `json:"tokenInformation,omitempty"`
 
 	// travel information
 	TravelInformation *CheckPayerAuthEnrollmentParamsBodyTravelInformation `json:"travelInformation,omitempty"`
@@ -393,6 +478,10 @@ func (o *CheckPayerAuthEnrollmentBody) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := o.validateTokenInformation(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateTravelInformation(formats); err != nil {
 		res = append(res, err)
 	}
@@ -404,7 +493,6 @@ func (o *CheckPayerAuthEnrollmentBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateAcquirerInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcquirerInformation) { // not required
 		return nil
 	}
@@ -413,6 +501,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateAcquirerInformation(formats strfm
 		if err := o.AcquirerInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "acquirerInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "acquirerInformation")
 			}
 			return err
 		}
@@ -422,7 +512,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateAcquirerInformation(formats strfm
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateBuyerInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.BuyerInformation) { // not required
 		return nil
 	}
@@ -431,6 +520,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateBuyerInformation(formats strfmt.R
 		if err := o.BuyerInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation")
 			}
 			return err
 		}
@@ -440,7 +531,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateBuyerInformation(formats strfmt.R
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -449,6 +539,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateClientReferenceInformation(format
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -458,7 +550,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateClientReferenceInformation(format
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateConsumerAuthenticationInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ConsumerAuthenticationInformation) { // not required
 		return nil
 	}
@@ -467,6 +558,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateConsumerAuthenticationInformation
 		if err := o.ConsumerAuthenticationInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation")
 			}
 			return err
 		}
@@ -476,7 +569,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateConsumerAuthenticationInformation
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateDeviceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeviceInformation) { // not required
 		return nil
 	}
@@ -485,6 +577,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateDeviceInformation(formats strfmt.
 		if err := o.DeviceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation")
 			}
 			return err
 		}
@@ -494,7 +588,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateDeviceInformation(formats strfmt.
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateMerchantDefinedInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantDefinedInformation) { // not required
 		return nil
 	}
@@ -508,6 +601,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateMerchantDefinedInformation(format
 			if err := o.MerchantDefinedInformation[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -519,7 +614,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateMerchantDefinedInformation(format
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateMerchantInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantInformation) { // not required
 		return nil
 	}
@@ -528,6 +622,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateMerchantInformation(formats strfm
 		if err := o.MerchantInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation")
 			}
 			return err
 		}
@@ -537,7 +633,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateMerchantInformation(formats strfm
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateOrderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrderInformation) { // not required
 		return nil
 	}
@@ -546,6 +641,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateOrderInformation(formats strfmt.R
 		if err := o.OrderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation")
 			}
 			return err
 		}
@@ -555,7 +652,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateOrderInformation(formats strfmt.R
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validatePaymentInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentInformation) { // not required
 		return nil
 	}
@@ -564,6 +660,8 @@ func (o *CheckPayerAuthEnrollmentBody) validatePaymentInformation(formats strfmt
 		if err := o.PaymentInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation")
 			}
 			return err
 		}
@@ -573,7 +671,6 @@ func (o *CheckPayerAuthEnrollmentBody) validatePaymentInformation(formats strfmt
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateProcessingInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProcessingInformation) { // not required
 		return nil
 	}
@@ -582,6 +679,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateProcessingInformation(formats str
 		if err := o.ProcessingInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "processingInformation")
 			}
 			return err
 		}
@@ -591,7 +690,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateProcessingInformation(formats str
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateRecurringPaymentInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RecurringPaymentInformation) { // not required
 		return nil
 	}
@@ -600,6 +698,8 @@ func (o *CheckPayerAuthEnrollmentBody) validateRecurringPaymentInformation(forma
 		if err := o.RecurringPaymentInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "recurringPaymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "recurringPaymentInformation")
 			}
 			return err
 		}
@@ -609,7 +709,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateRecurringPaymentInformation(forma
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateRiskInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RiskInformation) { // not required
 		return nil
 	}
@@ -618,6 +717,27 @@ func (o *CheckPayerAuthEnrollmentBody) validateRiskInformation(formats strfmt.Re
 		if err := o.RiskInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) validateTokenInformation(formats strfmt.Registry) error {
+	if swag.IsZero(o.TokenInformation) { // not required
+		return nil
+	}
+
+	if o.TokenInformation != nil {
+		if err := o.TokenInformation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "tokenInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "tokenInformation")
 			}
 			return err
 		}
@@ -627,7 +747,6 @@ func (o *CheckPayerAuthEnrollmentBody) validateRiskInformation(formats strfmt.Re
 }
 
 func (o *CheckPayerAuthEnrollmentBody) validateTravelInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TravelInformation) { // not required
 		return nil
 	}
@@ -636,6 +755,302 @@ func (o *CheckPayerAuthEnrollmentBody) validateTravelInformation(formats strfmt.
 		if err := o.TravelInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment body based on the context it is used
+func (o *CheckPayerAuthEnrollmentBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAcquirerInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateBuyerInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateConsumerAuthenticationInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateDeviceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMerchantDefinedInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMerchantInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePaymentInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessingInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateRecurringPaymentInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateRiskInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTokenInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTravelInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateAcquirerInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AcquirerInformation != nil {
+		if err := o.AcquirerInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "acquirerInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "acquirerInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateBuyerInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.BuyerInformation != nil {
+		if err := o.BuyerInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateConsumerAuthenticationInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ConsumerAuthenticationInformation != nil {
+		if err := o.ConsumerAuthenticationInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateDeviceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.DeviceInformation != nil {
+		if err := o.DeviceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateMerchantDefinedInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.MerchantDefinedInformation); i++ {
+
+		if o.MerchantDefinedInformation[i] != nil {
+			if err := o.MerchantDefinedInformation[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantDefinedInformation" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateMerchantInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantInformation != nil {
+		if err := o.MerchantInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateOrderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrderInformation != nil {
+		if err := o.OrderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidatePaymentInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PaymentInformation != nil {
+		if err := o.PaymentInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateProcessingInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessingInformation != nil {
+		if err := o.ProcessingInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "processingInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateRecurringPaymentInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.RecurringPaymentInformation != nil {
+		if err := o.RecurringPaymentInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "recurringPaymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "recurringPaymentInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateRiskInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.RiskInformation != nil {
+		if err := o.RiskInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateTokenInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.TokenInformation != nil {
+		if err := o.TokenInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "tokenInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "tokenInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentBody) contextValidateTravelInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.TravelInformation != nil {
+		if err := o.TravelInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation")
 			}
 			return err
 		}
@@ -679,8 +1094,8 @@ type CheckPayerAuthEnrollmentCreatedBody struct {
 	// error information
 	ErrorInformation *CheckPayerAuthEnrollmentCreatedBodyErrorInformation `json:"errorInformation,omitempty"`
 
-	// An unique identification number assigned by CyberSource to identify the submitted request. It is also appended to the endpoint of the resource.
-	//
+	// An unique identification number generated by Cybersource to identify the submitted request. Returned by all services.
+	// It is also appended to the endpoint of the resource.
 	// On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
 	//
 	// Max Length: 26
@@ -703,14 +1118,14 @@ type CheckPayerAuthEnrollmentCreatedBody struct {
 	//
 	Status string `json:"status,omitempty"`
 
-	// Time that the transaction was submitted in local time.
+	// Time that the transaction was submitted in local time. Generated by Cybersource.
 	SubmitTimeLocal string `json:"submitTimeLocal,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
 	// The `T` separates the date and the time. The `Z` indicates UTC.
 	//
-	// Returned by authorization service.
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
@@ -750,7 +1165,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) Validate(formats strfmt.Registry) 
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBody) validateLinks(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Links) { // not required
 		return nil
 	}
@@ -759,6 +1173,8 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateLinks(formats strfmt.Regis
 		if err := o.Links.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links")
 			}
 			return err
 		}
@@ -768,7 +1184,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateLinks(formats strfmt.Regis
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -777,6 +1192,8 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateClientReferenceInformation
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -786,7 +1203,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateClientReferenceInformation
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBody) validateConsumerAuthenticationInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ConsumerAuthenticationInformation) { // not required
 		return nil
 	}
@@ -795,6 +1211,8 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateConsumerAuthenticationInfo
 		if err := o.ConsumerAuthenticationInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation")
 			}
 			return err
 		}
@@ -804,7 +1222,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateConsumerAuthenticationInfo
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -813,6 +1230,8 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateErrorInformation(formats s
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -822,12 +1241,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateErrorInformation(formats s
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBody) validateID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"id", "body", string(o.ID), 26); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"id", "body", o.ID, 26); err != nil {
 		return err
 	}
 
@@ -835,7 +1253,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateID(formats strfmt.Registry
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBody) validateOrderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrderInformation) { // not required
 		return nil
 	}
@@ -844,6 +1261,118 @@ func (o *CheckPayerAuthEnrollmentCreatedBody) validateOrderInformation(formats s
 		if err := o.OrderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment created body based on the context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateConsumerAuthenticationInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBody) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Links != nil {
+		if err := o.Links.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBody) contextValidateConsumerAuthenticationInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ConsumerAuthenticationInformation != nil {
+		if err := o.ConsumerAuthenticationInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBody) contextValidateOrderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrderInformation != nil {
+		if err := o.OrderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation")
 			}
 			return err
 		}
@@ -879,14 +1408,28 @@ type CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation struct {
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
 	// #### Used by
-	// **Authorization**\
+	// **Authorization**
 	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
 	//
 	// Max Length: 50
 	Code string `json:"code,omitempty"`
+
+	// Brief description of the order or any comment you wish to add to the order.
+	//
+	// Max Length: 255
+	Comments string `json:"comments,omitempty"`
+
+	// partner
+	Partner *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner `json:"partner,omitempty"`
 }
 
 // Validate validates this check payer auth enrollment created body client reference information
@@ -897,6 +1440,14 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) Validate
 		res = append(res, err)
 	}
 
+	if err := o.validateComments(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePartner(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -904,13 +1455,73 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) Validate
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) validateComments(formats strfmt.Registry) error {
+	if swag.IsZero(o.Comments) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"clientReferenceInformation"+"."+"comments", "body", o.Comments, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) validatePartner(formats strfmt.Registry) error {
+	if swag.IsZero(o.Partner) { // not required
+		return nil
+	}
+
+	if o.Partner != nil {
+		if err := o.Partner.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment created body client reference information based on the context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePartner(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) contextValidatePartner(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Partner != nil {
+		if err := o.Partner.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -934,10 +1545,105 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformation) Unmarsha
 	return nil
 }
 
+/*CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner check payer auth enrollment created body client reference information partner
+swagger:model CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner
+*/
+type CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner struct {
+
+	// Identifier for the developer that helped integrate a partner solution to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solutions built by that developer.
+	// CyberSource assigns the ID to the developer.
+	//
+	// **Note** When you see a developer ID of 999 in reports, the developer ID that was submitted is incorrect.
+	//
+	// Max Length: 8
+	DeveloperID string `json:"developerId,omitempty"`
+
+	// Identifier for the partner that is integrated to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solution. CyberSource assigns the ID to the partner.
+	//
+	// **Note** When you see a solutionId of 999 in reports, the solutionId that was submitted is incorrect.
+	//
+	// Max Length: 8
+	SolutionID string `json:"solutionId,omitempty"`
+}
+
+// Validate validates this check payer auth enrollment created body client reference information partner
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateDeveloperID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSolutionID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner) validateDeveloperID(formats strfmt.Registry) error {
+	if swag.IsZero(o.DeveloperID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", o.DeveloperID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner) validateSolutionID(formats strfmt.Registry) error {
+	if swag.IsZero(o.SolutionID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", o.SolutionID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment created body client reference information partner based on context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner) UnmarshalBinary(b []byte) error {
+	var res CheckPayerAuthEnrollmentCreatedBodyClientReferenceInformationPartner
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation check payer auth enrollment created body consumer authentication information
 swagger:model CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation
 */
 type CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation struct {
+
+	// JSON Web Token (JWT) used to authenticate the consumer with the authentication provider, such as, CardinalCommerce or Rupay.
+	// Note - Max Length of this field is 2048 characters.
+	//
+	AccessToken string `json:"accessToken,omitempty"`
 
 	// Identifies the UI Type the ACS will use to complete the challenge. **NOTE**: Only available for App transactions using the Cardinal Mobile SDK.
 	//
@@ -1048,9 +1754,8 @@ type CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation struct
 	// Max Length: 1
 	DecoupledAuthenticationIndicator string `json:"decoupledAuthenticationIndicator,omitempty"`
 
-	// The directory server error code indicating a problem with this transaction.
+	// The directory server error code indicating a problem with this transaction. Note - Max Length of this field is typically 3 characters.
 	//
-	// Max Length: 3
 	DirectoryServerErrorCode string `json:"directoryServerErrorCode,omitempty"`
 
 	// Directory server text and additional detail about the error for this transaction.
@@ -1197,8 +1902,7 @@ type CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation struct
 	// - `1`: Authentication data not collected because customer authentication was not completed.
 	// - `2`: Authentication data collected because customer completed authentication.
 	//
-	// Max Length: 1
-	UcafCollectionIndicator float64 `json:"ucafCollectionIndicator,omitempty"`
+	UcafCollectionIndicator string `json:"ucafCollectionIndicator,omitempty"`
 
 	// Result of the enrollment check. This field can contain one of these values:
 	// - `Y`: Card enrolled or can be enrolled; you must authenticate. Liability shift.
@@ -1270,10 +1974,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) V
 		res = append(res, err)
 	}
 
-	if err := o.validateDirectoryServerErrorCode(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateDirectoryServerErrorDescription(formats); err != nil {
 		res = append(res, err)
 	}
@@ -1314,10 +2014,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) V
 		res = append(res, err)
 	}
 
-	if err := o.validateUcafCollectionIndicator(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateWhiteListStatusSource(formats); err != nil {
 		res = append(res, err)
 	}
@@ -1329,12 +2025,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) V
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateAcsTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcsTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"acsTransactionId", "body", string(o.AcsTransactionID), 36); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"acsTransactionId", "body", o.AcsTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -1342,12 +2037,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateAcsURL(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcsURL) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"acsUrl", "body", string(o.AcsURL), 2048); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"acsUrl", "body", o.AcsURL, 2048); err != nil {
 		return err
 	}
 
@@ -1355,12 +2049,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateAuthenticationTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthenticationTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"authenticationTransactionId", "body", string(o.AuthenticationTransactionID), 20); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"authenticationTransactionId", "body", o.AuthenticationTransactionID, 20); err != nil {
 		return err
 	}
 
@@ -1368,12 +2061,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateCardholderMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CardholderMessage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"cardholderMessage", "body", string(o.CardholderMessage), 128); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"cardholderMessage", "body", o.CardholderMessage, 128); err != nil {
 		return err
 	}
 
@@ -1381,12 +2073,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateCavv(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Cavv) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"cavv", "body", string(o.Cavv), 255); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"cavv", "body", o.Cavv, 255); err != nil {
 		return err
 	}
 
@@ -1394,12 +2085,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateCavvAlgorithm(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CavvAlgorithm) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"cavvAlgorithm", "body", string(o.CavvAlgorithm), 1); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"cavvAlgorithm", "body", o.CavvAlgorithm, 1); err != nil {
 		return err
 	}
 
@@ -1407,12 +2097,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateChallengeCancelCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ChallengeCancelCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"challengeCancelCode", "body", string(o.ChallengeCancelCode), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"challengeCancelCode", "body", o.ChallengeCancelCode, 2); err != nil {
 		return err
 	}
 
@@ -1420,12 +2109,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateChallengeRequired(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ChallengeRequired) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"challengeRequired", "body", string(o.ChallengeRequired), 1); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"challengeRequired", "body", o.ChallengeRequired, 1); err != nil {
 		return err
 	}
 
@@ -1433,25 +2121,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateDecoupledAuthenticationIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DecoupledAuthenticationIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"decoupledAuthenticationIndicator", "body", string(o.DecoupledAuthenticationIndicator), 1); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateDirectoryServerErrorCode(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.DirectoryServerErrorCode) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerErrorCode", "body", string(o.DirectoryServerErrorCode), 3); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"decoupledAuthenticationIndicator", "body", o.DecoupledAuthenticationIndicator, 1); err != nil {
 		return err
 	}
 
@@ -1459,12 +2133,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateDirectoryServerErrorDescription(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DirectoryServerErrorDescription) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerErrorDescription", "body", string(o.DirectoryServerErrorDescription), 4096); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerErrorDescription", "body", o.DirectoryServerErrorDescription, 4096); err != nil {
 		return err
 	}
 
@@ -1472,12 +2145,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateDirectoryServerTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DirectoryServerTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerTransactionId", "body", string(o.DirectoryServerTransactionID), 36); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"directoryServerTransactionId", "body", o.DirectoryServerTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -1485,12 +2157,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateEcommerceIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.EcommerceIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ecommerceIndicator", "body", string(o.EcommerceIndicator), 255); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ecommerceIndicator", "body", o.EcommerceIndicator, 255); err != nil {
 		return err
 	}
 
@@ -1498,12 +2169,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateEffectiveAuthenticationType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.EffectiveAuthenticationType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"effectiveAuthenticationType", "body", string(o.EffectiveAuthenticationType), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"effectiveAuthenticationType", "body", o.EffectiveAuthenticationType, 2); err != nil {
 		return err
 	}
 
@@ -1511,7 +2181,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateIvr(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Ivr) { // not required
 		return nil
 	}
@@ -1520,6 +2189,8 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 		if err := o.Ivr.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation" + "." + "ivr")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation" + "." + "ivr")
 			}
 			return err
 		}
@@ -1529,12 +2200,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateNetworkScore(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.NetworkScore) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"networkScore", "body", string(o.NetworkScore), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"networkScore", "body", o.NetworkScore, 2); err != nil {
 		return err
 	}
 
@@ -1542,12 +2212,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateSdkTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SdkTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"sdkTransactionId", "body", string(o.SdkTransactionID), 36); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"sdkTransactionId", "body", o.SdkTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -1555,12 +2224,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateSignedParesStatusReason(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SignedParesStatusReason) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"signedParesStatusReason", "body", string(o.SignedParesStatusReason), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"signedParesStatusReason", "body", o.SignedParesStatusReason, 2); err != nil {
 		return err
 	}
 
@@ -1568,12 +2236,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateStepUpURL(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.StepUpURL) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"stepUpUrl", "body", string(o.StepUpURL), 2048); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"stepUpUrl", "body", o.StepUpURL, 2048); err != nil {
 		return err
 	}
 
@@ -1581,25 +2248,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateThreeDSServerTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ThreeDSServerTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"threeDSServerTransactionId", "body", string(o.ThreeDSServerTransactionID), 36); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateUcafCollectionIndicator(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.UcafCollectionIndicator) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ucafCollectionIndicator", "body", fmt.Sprintf("%f", o.UcafAuthenticationData), 1); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"threeDSServerTransactionId", "body", o.ThreeDSServerTransactionID, 36); err != nil {
 		return err
 	}
 
@@ -1607,13 +2260,42 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) v
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) validateWhiteListStatusSource(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.WhiteListStatusSource) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatusSource", "body", string(o.WhiteListStatusSource), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatusSource", "body", o.WhiteListStatusSource, 2); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment created body consumer authentication information based on the context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateIvr(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformation) contextValidateIvr(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Ivr != nil {
+		if err := o.Ivr.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation" + "." + "ivr")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "consumerAuthenticationInformation" + "." + "ivr")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -1707,12 +2389,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr) validateEncryptionKey(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.EncryptionKey) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"encryptionKey", "body", string(o.EncryptionKey), 16); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"encryptionKey", "body", o.EncryptionKey, 16); err != nil {
 		return err
 	}
 
@@ -1720,12 +2401,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr) validateEncryptionType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.EncryptionType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"encryptionType", "body", string(o.EncryptionType), 20); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"encryptionType", "body", o.EncryptionType, 20); err != nil {
 		return err
 	}
 
@@ -1733,12 +2413,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr) validateLabel(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Label) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"label", "body", string(o.Label), 20); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"label", "body", o.Label, 20); err != nil {
 		return err
 	}
 
@@ -1746,12 +2425,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr) validatePrompt(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Prompt) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"prompt", "body", string(o.Prompt), 80); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"prompt", "body", o.Prompt, 80); err != nil {
 		return err
 	}
 
@@ -1759,15 +2437,19 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr) validateStatusMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.StatusMessage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"statusMessage", "body", string(o.StatusMessage), 80); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"consumerAuthenticationInformation"+"."+"ivr"+"."+"statusMessage", "body", o.StatusMessage, 80); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment created body consumer authentication information ivr based on context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyConsumerAuthenticationInformationIvr) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1802,7 +2484,8 @@ type CheckPayerAuthEnrollmentCreatedBodyErrorInformation struct {
 
 	// The reason of the status. Possible values are:
 	// - `INVALID_MERCHANT_CONFIGURATION`
-	// - `PENDING_AUTHENTICATION`
+	// - `CONSUMER_AUTHENTICATION_REQUIRED`
+	// - `CONSUMER_AUTHENTICATION_FAILED`
 	// - `AUTHENTICATION_FAILED`
 	//
 	Reason string `json:"reason,omitempty"`
@@ -1823,7 +2506,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformation) Validate(formats s
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformation) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -1837,6 +2519,42 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformation) validateDetails(fo
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment created body error information based on the context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformation) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -1887,6 +2605,11 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformationDetailsItems0) Valid
 	return nil
 }
 
+// ContextValidate validates this check payer auth enrollment created body error information details items0 based on context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformationDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *CheckPayerAuthEnrollmentCreatedBodyErrorInformationDetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -1929,7 +2652,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyLinks) Validate(formats strfmt.Regis
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyLinks) validateSelf(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Self) { // not required
 		return nil
 	}
@@ -1938,6 +2660,38 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyLinks) validateSelf(formats strfmt.R
 		if err := o.Self.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links" + "." + "self")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment created body links based on the context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyLinks) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateSelf(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyLinks) contextValidateSelf(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Self != nil {
+		if err := o.Self.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "_links" + "." + "self")
 			}
 			return err
 		}
@@ -1978,6 +2732,11 @@ type CheckPayerAuthEnrollmentCreatedBodyLinksSelf struct {
 
 // Validate validates this check payer auth enrollment created body links self
 func (o *CheckPayerAuthEnrollmentCreatedBodyLinksSelf) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment created body links self based on context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyLinksSelf) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2023,7 +2782,6 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformation) Validate(formats s
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformation) validateAmountDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountDetails) { // not required
 		return nil
 	}
@@ -2032,6 +2790,38 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformation) validateAmountDeta
 		if err := o.AmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment created body order information based on the context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformation) contextValidateAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AmountDetails != nil {
+		if err := o.AmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentCreated" + "." + "orderInformation" + "." + "amountDetails")
 			}
 			return err
 		}
@@ -2072,10 +2862,25 @@ type CheckPayerAuthEnrollmentCreatedBodyOrderInformationAmountDetails struct {
 	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
 	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
 	// #### GPX
 	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
+	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
 	// Your local currency.
 	//
 	// Max Length: 3
@@ -2097,15 +2902,19 @@ func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformationAmountDetails) Valid
 }
 
 func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformationAmountDetails) validateCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Currency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", string(o.Currency), 3); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment created body order information amount details based on context it is used
+func (o *CheckPayerAuthEnrollmentCreatedBodyOrderInformationAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2134,7 +2943,7 @@ type CheckPayerAuthEnrollmentParamsBodyAcquirerInformation struct {
 
 	// Acquirer bank ID number that  corresponds to a certificate that Cybersource already has.This ID has this format. 4XXXXX for Visa and 5XXXXX for Mastercard.
 	//
-	// Max Length: 6
+	// Max Length: 11
 	AcquirerBin string `json:"acquirerBin,omitempty"`
 
 	// Issuers need to be aware of the Acquirer's Country Code when the Acquirer country differs from the Merchant country and the Acquirer is in the EEA (European Economic Area).
@@ -2180,12 +2989,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) Validate(formats
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) validateAcquirerBin(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcquirerBin) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"acquirerBin", "body", string(o.AcquirerBin), 6); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"acquirerBin", "body", o.AcquirerBin, 11); err != nil {
 		return err
 	}
 
@@ -2193,12 +3001,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) validateAcquirer
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -2206,12 +3013,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) validateCountry(
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) validateMerchantID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"merchantId", "body", string(o.MerchantID), 15); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"merchantId", "body", o.MerchantID, 15); err != nil {
 		return err
 	}
 
@@ -2219,15 +3025,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) validateMerchant
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) validatePassword(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Password) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"password", "body", string(o.Password), 8); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"acquirerInformation"+"."+"password", "body", o.Password, 8); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body acquirer information based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyAcquirerInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2254,12 +3064,33 @@ swagger:model CheckPayerAuthEnrollmentParamsBodyBuyerInformation
 */
 type CheckPayerAuthEnrollmentParamsBodyBuyerInformation struct {
 
+	// Your identifier for the customer.
+	//
+	// When a subscription or customer profile is being created, the maximum length for this field for most processors is 30. Otherwise, the maximum length is 100.
+	//
+	// #### Comercio Latino
+	// For recurring payments in Mexico, the value is the customer’s contract number.
+	// Note Before you request the authorization, you must inform the issuer of the customer contract numbers that will be used for recurring transactions.
+	//
+	// #### Worldpay VAP
+	// For a follow-on credit with Worldpay VAP, CyberSource checks the following locations, in the order
+	// given, for a customer account ID value and uses the first value it finds:
+	// 1. `customer_account_id` value in the follow-on credit request
+	// 2. Customer account ID value that was used for the capture that is being credited
+	// 3. Customer account ID value that was used for the original authorization
+	// If a customer account ID value cannot be found in any of these locations, then no value is used.
+	//
+	// For processor-specific information, see the `customer_account_id` field description in
+	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	//
+	// Max Length: 100
+	MerchantCustomerID string `json:"merchantCustomerId,omitempty"`
+
 	// Cardholder’s mobile phone number.
 	// **Important** Required for Visa Secure transactions in Brazil.
 	// Do not use this request field for any other types of transactions.
 	//
 	// Required: true
-	// Max Length: 25
 	MobilePhone *int64 `json:"mobilePhone"`
 
 	// This array contains detailed information about the buyer's form of persoanl identification.
@@ -2269,6 +3100,10 @@ type CheckPayerAuthEnrollmentParamsBodyBuyerInformation struct {
 // Validate validates this check payer auth enrollment params body buyer information
 func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := o.validateMerchantCustomerID(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := o.validateMobilePhone(formats); err != nil {
 		res = append(res, err)
@@ -2284,13 +3119,21 @@ func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) Validate(formats st
 	return nil
 }
 
-func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) validateMobilePhone(formats strfmt.Registry) error {
+func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) validateMerchantCustomerID(formats strfmt.Registry) error {
+	if swag.IsZero(o.MerchantCustomerID) { // not required
+		return nil
+	}
 
-	if err := validate.Required("checkPayerAuthEnrollmentRequest"+"."+"buyerInformation"+"."+"mobilePhone", "body", o.MobilePhone); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"buyerInformation"+"."+"merchantCustomerId", "body", o.MerchantCustomerID, 100); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"buyerInformation"+"."+"mobilePhone", "body", string(*o.MobilePhone), 25); err != nil {
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) validateMobilePhone(formats strfmt.Registry) error {
+
+	if err := validate.Required("checkPayerAuthEnrollmentRequest"+"."+"buyerInformation"+"."+"mobilePhone", "body", o.MobilePhone); err != nil {
 		return err
 	}
 
@@ -2298,7 +3141,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) validateMobilePhone
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) validatePersonalIdentification(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PersonalIdentification) { // not required
 		return nil
 	}
@@ -2312,6 +3154,42 @@ func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) validatePersonalIde
 			if err := o.PersonalIdentification[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation" + "." + "personalIdentification" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation" + "." + "personalIdentification" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body buyer information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePersonalIdentification(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformation) contextValidatePersonalIdentification(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.PersonalIdentification); i++ {
+
+		if o.PersonalIdentification[i] != nil {
+			if err := o.PersonalIdentification[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation" + "." + "personalIdentification" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "buyerInformation" + "." + "personalIdentification" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -2369,7 +3247,7 @@ type CheckPayerAuthEnrollmentParamsBodyBuyerInformationPersonalIdentificationIte
 	//
 	// If **type**` = PASSPORT`, this is the Issuing country for the cardholder’s passport. Recommended for Discover ProtectBuy.
 	//
-	// Use the two-character State, Province, and Territory Codes for the United States and Canada.
+	// Use the two-character [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).
 	//
 	// #### TeleCheck
 	// Contact your TeleCheck representative to find out whether this field is required or optional.
@@ -2393,6 +3271,9 @@ type CheckPayerAuthEnrollmentParamsBodyBuyerInformationPersonalIdentificationIte
 	//   - `CURP`
 	//   - `SSN`
 	//   - `DRIVER_LICENSE`
+	//   - `PASSPORT_NUMBER`
+	//   - `PERSONAL_ID`
+	//   - `TAX_ID`
 	//
 	// This field is supported only on the following processors.
 	//
@@ -2406,6 +3287,10 @@ type CheckPayerAuthEnrollmentParamsBodyBuyerInformationPersonalIdentificationIte
 	// For processor-specific information, see the `personal_id` field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
 	//
 	Type string `json:"type,omitempty"`
+
+	// Verification results received from Issuer or Card Network for verification transactions. Response Only Field.
+	//
+	VerificationResults string `json:"verificationResults,omitempty"`
 }
 
 // Validate validates this check payer auth enrollment params body buyer information personal identification items0
@@ -2423,15 +3308,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformationPersonalIdentificatio
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformationPersonalIdentificationItems0) validateID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("id", "body", string(o.ID), 26); err != nil {
+	if err := validate.MaxLength("id", "body", o.ID, 26); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body buyer information personal identification items0 based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyBuyerInformationPersonalIdentificationItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2462,8 +3351,14 @@ type CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation struct {
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
 	// #### Used by
-	// **Authorization**\
+	// **Authorization**
 	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -2471,6 +3366,19 @@ type CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation struct {
 	// Required: true
 	// Max Length: 50
 	Code *string `json:"code"`
+
+	// Brief description of the order or any comment you wish to add to the order.
+	//
+	// Max Length: 255
+	Comments string `json:"comments,omitempty"`
+
+	// partner
+	Partner *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner `json:"partner,omitempty"`
+
+	// Used to resume a transaction that was paused for an order modification rule to allow for payer authentication to complete. To resume and continue with the authorization/decision service flow, call the services and include the request id from the prior decision call.
+	//
+	// Max Length: 26
+	PausedRequestID string `json:"pausedRequestId,omitempty"`
 }
 
 // Validate validates this check payer auth enrollment params body client reference information
@@ -2478,6 +3386,18 @@ func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) Validate(
 	var res []error
 
 	if err := o.validateCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateComments(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePartner(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validatePausedRequestID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -2493,8 +3413,81 @@ func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) validateC
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"clientReferenceInformation"+"."+"code", "body", string(*o.Code), 50); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"clientReferenceInformation"+"."+"code", "body", *o.Code, 50); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) validateComments(formats strfmt.Registry) error {
+	if swag.IsZero(o.Comments) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"clientReferenceInformation"+"."+"comments", "body", o.Comments, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) validatePartner(formats strfmt.Registry) error {
+	if swag.IsZero(o.Partner) { // not required
+		return nil
+	}
+
+	if o.Partner != nil {
+		if err := o.Partner.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) validatePausedRequestID(formats strfmt.Registry) error {
+	if swag.IsZero(o.PausedRequestID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"clientReferenceInformation"+"."+"pausedRequestId", "body", o.PausedRequestID, 26); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body client reference information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePartner(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) contextValidatePartner(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Partner != nil {
+		if err := o.Partner.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "clientReferenceInformation" + "." + "partner")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -2511,6 +3504,96 @@ func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) MarshalBi
 // UnmarshalBinary interface implementation
 func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation) UnmarshalBinary(b []byte) error {
 	var res CheckPayerAuthEnrollmentParamsBodyClientReferenceInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner check payer auth enrollment params body client reference information partner
+swagger:model CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner
+*/
+type CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner struct {
+
+	// Identifier for the developer that helped integrate a partner solution to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solutions built by that developer.
+	// CyberSource assigns the ID to the developer.
+	//
+	// **Note** When you see a developer ID of 999 in reports, the developer ID that was submitted is incorrect.
+	//
+	// Max Length: 8
+	DeveloperID string `json:"developerId,omitempty"`
+
+	// Identifier for the partner that is integrated to CyberSource.
+	//
+	// Send this value in all requests that are sent through the partner solution. CyberSource assigns the ID to the partner.
+	//
+	// **Note** When you see a solutionId of 999 in reports, the solutionId that was submitted is incorrect.
+	//
+	// Max Length: 8
+	SolutionID string `json:"solutionId,omitempty"`
+}
+
+// Validate validates this check payer auth enrollment params body client reference information partner
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateDeveloperID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateSolutionID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner) validateDeveloperID(formats strfmt.Registry) error {
+	if swag.IsZero(o.DeveloperID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"developerId", "body", o.DeveloperID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner) validateSolutionID(formats strfmt.Registry) error {
+	if swag.IsZero(o.SolutionID) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"clientReferenceInformation"+"."+"partner"+"."+"solutionId", "body", o.SolutionID, 8); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body client reference information partner based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner) UnmarshalBinary(b []byte) error {
+	var res CheckPayerAuthEnrollmentParamsBodyClientReferenceInformationPartner
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -2562,6 +3645,9 @@ type CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation struct 
 	// The date/time of the authentication at the 3DS servers. RISK update authorization service in auth request
 	// payload with value returned in `consumerAuthenticationInformation.alternateAuthenticationData` if merchant calls via CYBS or field can be
 	// provided by merchant in authorization request if calling an external 3DS provider.
+	//
+	// This field is supported for Cartes Bancaires Fast'R transactions on Credit Mutuel-CIC.
+	// Format: YYYYMMDDHHMMSS
 	//
 	// Max Length: 14
 	AuthenticationDate string `json:"authenticationDate,omitempty"`
@@ -2668,7 +3754,6 @@ type CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation struct 
 	// An integer value greater than 1 indicating the max number of permitted authorizations for installment payments.
 	// **Note** This is required if the merchant and cardholder have agreed to installment payments.
 	//
-	// Max Length: 4
 	InstallmentTotalCount int64 `json:"installmentTotalCount,omitempty"`
 
 	// Indicates whether the customer has opted in for marketing offers.
@@ -2709,7 +3794,6 @@ type CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation struct 
 
 	// Risk Score provided by merchants. This is specific for CB transactions.
 	//
-	// Max Length: 2
 	MerchantScore int64 `json:"merchantScore,omitempty"`
 
 	// Category of the message for a specific use case. Possible values:
@@ -2732,7 +3816,7 @@ type CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation struct 
 	// Max Length: 2
 	NpaCode string `json:"npaCode,omitempty"`
 
-	// Two-character ISO standard Country Codes.
+	// Two-character [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)..
 	//
 	// Max Length: 2
 	OverrideCountryCode string `json:"overrideCountryCode,omitempty"`
@@ -2852,6 +3936,15 @@ type CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation struct 
 	// Max Length: 40
 	RequestorName string `json:"requestorName,omitempty"`
 
+	// The URL of the merchant’s return page. CyberSource adds this return URL to the step-up JWT and returns it in the
+	// response of the Payer Authentication enrollment call. The merchant's return URL page serves as a listening URL.
+	// Once the bank session completes, the merchant receives a POST to their URL. This response contains the completed
+	// bank session’s transactionId. The merchant’s return page should capture the transaction ID and send it in the
+	// Payer Authentication validation call.
+	//
+	// Max Length: 2048
+	ReturnURL string `json:"returnUrl,omitempty"`
+
 	// This field indicates the maximum amount of time for all 3DS 2.0 messages to be communicated between all components (in minutes).
 	//
 	// Possible Values:
@@ -2949,10 +4042,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) Va
 		res = append(res, err)
 	}
 
-	if err := o.validateInstallmentTotalCount(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateMarketingSource(formats); err != nil {
 		res = append(res, err)
 	}
@@ -2962,10 +4051,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) Va
 	}
 
 	if err := o.validateMerchantFraudRate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateMerchantScore(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -3013,6 +4098,10 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) Va
 		res = append(res, err)
 	}
 
+	if err := o.validateReturnURL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateSdkMaxTimeout(formats); err != nil {
 		res = append(res, err)
 	}
@@ -3036,12 +4125,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) Va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateAcsWindowSize(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcsWindowSize) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"acsWindowSize", "body", string(o.AcsWindowSize), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"acsWindowSize", "body", o.AcsWindowSize, 2); err != nil {
 		return err
 	}
 
@@ -3049,12 +4137,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateAlternateAuthenticationData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AlternateAuthenticationData) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"alternateAuthenticationData", "body", string(o.AlternateAuthenticationData), 2048); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"alternateAuthenticationData", "body", o.AlternateAuthenticationData, 2048); err != nil {
 		return err
 	}
 
@@ -3062,12 +4149,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateAlternateAuthenticationDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AlternateAuthenticationDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"alternateAuthenticationDate", "body", string(o.AlternateAuthenticationDate), 14); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"alternateAuthenticationDate", "body", o.AlternateAuthenticationDate, 14); err != nil {
 		return err
 	}
 
@@ -3075,12 +4161,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateAuthenticationDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthenticationDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationDate", "body", string(o.AuthenticationDate), 14); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationDate", "body", o.AuthenticationDate, 14); err != nil {
 		return err
 	}
 
@@ -3088,12 +4173,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateAuthenticationTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthenticationTransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationTransactionId", "body", string(o.AuthenticationTransactionID), 20); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationTransactionId", "body", o.AuthenticationTransactionID, 20); err != nil {
 		return err
 	}
 
@@ -3101,12 +4185,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateAuthenticationType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthenticationType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationType", "body", string(o.AuthenticationType), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"authenticationType", "body", o.AuthenticationType, 2); err != nil {
 		return err
 	}
 
@@ -3114,12 +4197,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateChallengeCancelCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ChallengeCancelCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"challengeCancelCode", "body", string(o.ChallengeCancelCode), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"challengeCancelCode", "body", o.ChallengeCancelCode, 2); err != nil {
 		return err
 	}
 
@@ -3127,12 +4209,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateChallengeStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ChallengeStatus) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"challengeStatus", "body", string(o.ChallengeStatus), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"challengeStatus", "body", o.ChallengeStatus, 2); err != nil {
 		return err
 	}
 
@@ -3140,12 +4221,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateCustomerCardAlias(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CustomerCardAlias) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"customerCardAlias", "body", string(o.CustomerCardAlias), 128); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"customerCardAlias", "body", o.CustomerCardAlias, 128); err != nil {
 		return err
 	}
 
@@ -3153,12 +4233,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateDecoupledAuthenticationIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DecoupledAuthenticationIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"decoupledAuthenticationIndicator", "body", string(o.DecoupledAuthenticationIndicator), 1); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"decoupledAuthenticationIndicator", "body", o.DecoupledAuthenticationIndicator, 1); err != nil {
 		return err
 	}
 
@@ -3166,12 +4245,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateDecoupledAuthenticationMaxTime(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DecoupledAuthenticationMaxTime) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"decoupledAuthenticationMaxTime", "body", string(o.DecoupledAuthenticationMaxTime), 5); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"decoupledAuthenticationMaxTime", "body", o.DecoupledAuthenticationMaxTime, 5); err != nil {
 		return err
 	}
 
@@ -3179,25 +4257,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateDeviceChannel(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeviceChannel) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"deviceChannel", "body", string(o.DeviceChannel), 10); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateInstallmentTotalCount(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.InstallmentTotalCount) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"installmentTotalCount", "body", string(o.InstallmentTotalCount), 4); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"deviceChannel", "body", o.DeviceChannel, 10); err != nil {
 		return err
 	}
 
@@ -3205,12 +4269,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateMarketingSource(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MarketingSource) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"marketingSource", "body", string(o.MarketingSource), 40); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"marketingSource", "body", o.MarketingSource, 40); err != nil {
 		return err
 	}
 
@@ -3218,12 +4281,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateMcc(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Mcc) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"mcc", "body", string(o.Mcc), 4); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"mcc", "body", o.Mcc, 4); err != nil {
 		return err
 	}
 
@@ -3231,25 +4293,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateMerchantFraudRate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantFraudRate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"merchantFraudRate", "body", string(o.MerchantFraudRate), 2); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateMerchantScore(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.MerchantScore) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"merchantScore", "body", string(o.MerchantScore), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"merchantFraudRate", "body", o.MerchantFraudRate, 2); err != nil {
 		return err
 	}
 
@@ -3257,12 +4305,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateNpaCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.NpaCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"npaCode", "body", string(o.NpaCode), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"npaCode", "body", o.NpaCode, 2); err != nil {
 		return err
 	}
 
@@ -3270,12 +4317,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateOverrideCountryCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OverrideCountryCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"overrideCountryCode", "body", string(o.OverrideCountryCode), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"overrideCountryCode", "body", o.OverrideCountryCode, 2); err != nil {
 		return err
 	}
 
@@ -3283,12 +4329,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validatePriorAuthenticationData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PriorAuthenticationData) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationData", "body", string(o.PriorAuthenticationData), 2048); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationData", "body", o.PriorAuthenticationData, 2048); err != nil {
 		return err
 	}
 
@@ -3296,12 +4341,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validatePriorAuthenticationMethod(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PriorAuthenticationMethod) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationMethod", "body", string(o.PriorAuthenticationMethod), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationMethod", "body", o.PriorAuthenticationMethod, 2); err != nil {
 		return err
 	}
 
@@ -3309,12 +4353,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validatePriorAuthenticationReferenceID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PriorAuthenticationReferenceID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationReferenceId", "body", string(o.PriorAuthenticationReferenceID), 36); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationReferenceId", "body", o.PriorAuthenticationReferenceID, 36); err != nil {
 		return err
 	}
 
@@ -3322,12 +4365,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validatePriorAuthenticationTime(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PriorAuthenticationTime) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationTime", "body", string(o.PriorAuthenticationTime), 12); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"priorAuthenticationTime", "body", o.PriorAuthenticationTime, 12); err != nil {
 		return err
 	}
 
@@ -3335,12 +4377,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateProductCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProductCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"productCode", "body", string(o.ProductCode), 3); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"productCode", "body", o.ProductCode, 3); err != nil {
 		return err
 	}
 
@@ -3348,12 +4389,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateReferenceID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReferenceID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"referenceId", "body", string(o.ReferenceID), 50); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"referenceId", "body", o.ReferenceID, 50); err != nil {
 		return err
 	}
 
@@ -3361,12 +4401,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateRequestorID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RequestorID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"requestorId", "body", string(o.RequestorID), 35); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"requestorId", "body", o.RequestorID, 35); err != nil {
 		return err
 	}
 
@@ -3374,12 +4413,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateRequestorInitiatedAuthenticationIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RequestorInitiatedAuthenticationIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"requestorInitiatedAuthenticationIndicator", "body", string(o.RequestorInitiatedAuthenticationIndicator), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"requestorInitiatedAuthenticationIndicator", "body", o.RequestorInitiatedAuthenticationIndicator, 2); err != nil {
 		return err
 	}
 
@@ -3387,12 +4425,23 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateRequestorName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RequestorName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"requestorName", "body", string(o.RequestorName), 40); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"requestorName", "body", o.RequestorName, 40); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateReturnURL(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReturnURL) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"returnUrl", "body", o.ReturnURL, 2048); err != nil {
 		return err
 	}
 
@@ -3400,12 +4449,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateSdkMaxTimeout(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SdkMaxTimeout) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"sdkMaxTimeout", "body", string(o.SdkMaxTimeout), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"sdkMaxTimeout", "body", o.SdkMaxTimeout, 2); err != nil {
 		return err
 	}
 
@@ -3413,12 +4461,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateSecureCorporatePaymentIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SecureCorporatePaymentIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"secureCorporatePaymentIndicator", "body", string(o.SecureCorporatePaymentIndicator), 1); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"secureCorporatePaymentIndicator", "body", o.SecureCorporatePaymentIndicator, 1); err != nil {
 		return err
 	}
 
@@ -3426,7 +4473,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateStrongAuthentication(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.StrongAuthentication) { // not required
 		return nil
 	}
@@ -3435,6 +4481,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 		if err := o.StrongAuthentication.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation" + "." + "strongAuthentication")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation" + "." + "strongAuthentication")
 			}
 			return err
 		}
@@ -3444,13 +4492,42 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) validateWhiteListStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.WhiteListStatus) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatus", "body", string(o.WhiteListStatus), 1); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"whiteListStatus", "body", o.WhiteListStatus, 1); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body consumer authentication information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateStrongAuthentication(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformation) contextValidateStrongAuthentication(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.StrongAuthentication != nil {
+		if err := o.StrongAuthentication.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation" + "." + "strongAuthentication")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "consumerAuthenticationInformation" + "." + "strongAuthentication")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -3512,15 +4589,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformationStro
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformationStrongAuthentication) validateAuthenticationIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AuthenticationIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"strongAuthentication"+"."+"authenticationIndicator", "body", string(o.AuthenticationIndicator), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"consumerAuthenticationInformation"+"."+"strongAuthentication"+"."+"authenticationIndicator", "body", o.AuthenticationIndicator, 2); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body consumer authentication information strong authentication based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyConsumerAuthenticationInformationStrongAuthentication) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3601,7 +4682,7 @@ type CheckPayerAuthEnrollmentParamsBodyDeviceInformation struct {
 	// **Authorization, Capture, and Credit**
 	// Optional field.
 	//
-	// Max Length: 48
+	// Max Length: 45
 	IPAddress string `json:"ipAddress,omitempty"`
 
 	// raw data
@@ -3665,12 +4746,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) Validate(formats s
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPAcceptBrowserValue(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HTTPAcceptBrowserValue) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpAcceptBrowserValue", "body", string(o.HTTPAcceptBrowserValue), 255); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpAcceptBrowserValue", "body", o.HTTPAcceptBrowserValue, 255); err != nil {
 		return err
 	}
 
@@ -3678,12 +4758,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPAccept
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPAcceptContent(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HTTPAcceptContent) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpAcceptContent", "body", string(o.HTTPAcceptContent), 256); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpAcceptContent", "body", o.HTTPAcceptContent, 256); err != nil {
 		return err
 	}
 
@@ -3691,12 +4770,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPAccept
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowserColorDepth(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HTTPBrowserColorDepth) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserColorDepth", "body", string(o.HTTPBrowserColorDepth), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserColorDepth", "body", o.HTTPBrowserColorDepth, 2); err != nil {
 		return err
 	}
 
@@ -3704,12 +4782,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowse
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowserLanguage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HTTPBrowserLanguage) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserLanguage", "body", string(o.HTTPBrowserLanguage), 8); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserLanguage", "body", o.HTTPBrowserLanguage, 8); err != nil {
 		return err
 	}
 
@@ -3717,12 +4794,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowse
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowserScreenHeight(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HTTPBrowserScreenHeight) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserScreenHeight", "body", string(o.HTTPBrowserScreenHeight), 6); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserScreenHeight", "body", o.HTTPBrowserScreenHeight, 6); err != nil {
 		return err
 	}
 
@@ -3730,12 +4806,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowse
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowserScreenWidth(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HTTPBrowserScreenWidth) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserScreenWidth", "body", string(o.HTTPBrowserScreenWidth), 6); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserScreenWidth", "body", o.HTTPBrowserScreenWidth, 6); err != nil {
 		return err
 	}
 
@@ -3743,12 +4818,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowse
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowserTimeDifference(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.HTTPBrowserTimeDifference) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserTimeDifference", "body", string(o.HTTPBrowserTimeDifference), 5); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"httpBrowserTimeDifference", "body", o.HTTPBrowserTimeDifference, 5); err != nil {
 		return err
 	}
 
@@ -3756,12 +4830,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateHTTPBrowse
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateIPAddress(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.IPAddress) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"ipAddress", "body", string(o.IPAddress), 48); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"ipAddress", "body", o.IPAddress, 45); err != nil {
 		return err
 	}
 
@@ -3769,7 +4842,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateIPAddress(
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateRawData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RawData) { // not required
 		return nil
 	}
@@ -3783,6 +4855,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateRawData(fo
 			if err := o.RawData[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation" + "." + "rawData" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation" + "." + "rawData" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -3794,13 +4868,46 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateRawData(fo
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) validateUserAgentBrowserValue(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.UserAgentBrowserValue) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"userAgentBrowserValue", "body", string(o.UserAgentBrowserValue), 255); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"deviceInformation"+"."+"userAgentBrowserValue", "body", o.UserAgentBrowserValue, 255); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body device information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateRawData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformation) contextValidateRawData(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.RawData); i++ {
+
+		if o.RawData[i] != nil {
+			if err := o.RawData[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation" + "." + "rawData" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "deviceInformation" + "." + "rawData" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -3857,15 +4964,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformationRawDataItems0) Valid
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformationRawDataItems0) validateProvider(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Provider) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("provider", "body", string(o.Provider), 32); err != nil {
+	if err := validate.MaxLength("provider", "body", o.Provider, 32); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body device information raw data items0 based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformationRawDataItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3880,6 +4991,107 @@ func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformationRawDataItems0) Marsh
 // UnmarshalBinary interface implementation
 func (o *CheckPayerAuthEnrollmentParamsBodyDeviceInformationRawDataItems0) UnmarshalBinary(b []byte) error {
 	var res CheckPayerAuthEnrollmentParamsBodyDeviceInformationRawDataItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0 Contains merchant-defined key-value pairs.
+swagger:model CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0
+*/
+type CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0 struct {
+
+	// Fields that you can use to store information. The value
+	// appears in the Case Management Details window in the
+	// Business Center. The first four fields are the same fields
+	// that are used by the Secure Data services. See request
+	// code examples.
+	// **Warning** Merchant-defined data fields are not intended
+	// to and must not be used to capture personally identifying
+	// information. Accordingly, merchants are prohibited from
+	// capturing, obtaining, and/or transmitting any personally
+	// identifying information in or via the merchant-defined data
+	// fields. Personally identifying information includes, but is
+	// not limited to, address, credit card number, social security
+	// number, driver's license number, state-issued
+	// identification number, passport number, and card
+	// verification numbers (CVV, CVC2, CVV2, CID, CVN). In
+	// the event CyberSource discovers that a merchant is
+	// capturing and/or transmitting personally identifying
+	// information via the merchant-defined data fields, whether
+	// or not intentionally, CyberSource will immediately
+	// suspend the merchant's account, which will result in a
+	// rejection of any and all transaction requests submitted by
+	// the merchant after the point of suspension.
+	//
+	// Max Length: 255
+	Key string `json:"key,omitempty"`
+
+	// String value for the key
+	// Max Length: 255
+	Value string `json:"value,omitempty"`
+}
+
+// Validate validates this check payer auth enrollment params body merchant defined information items0
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateKey(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateValue(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0) validateKey(formats strfmt.Registry) error {
+	if swag.IsZero(o.Key) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("key", "body", o.Key, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0) validateValue(formats strfmt.Registry) error {
+	if swag.IsZero(o.Value) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("value", "body", o.Value, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body merchant defined information items0 based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0) UnmarshalBinary(b []byte) error {
+	var res CheckPayerAuthEnrollmentParamsBodyMerchantDefinedInformationItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -3921,7 +5133,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformation) Validate(formats
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformation) validateMerchantDescriptor(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantDescriptor) { // not required
 		return nil
 	}
@@ -3930,6 +5141,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformation) validateMerchant
 		if err := o.MerchantDescriptor.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
 			}
 			return err
 		}
@@ -3939,13 +5152,42 @@ func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformation) validateMerchant
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformation) validateMerchantName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"merchantInformation"+"."+"merchantName", "body", string(o.MerchantName), 25); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"merchantInformation"+"."+"merchantName", "body", o.MerchantName, 25); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body merchant information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateMerchantDescriptor(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformation) contextValidateMerchantDescriptor(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantDescriptor != nil {
+		if err := o.MerchantDescriptor.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -3974,11 +5216,27 @@ swagger:model CheckPayerAuthEnrollmentParamsBodyMerchantInformationMerchantDescr
 */
 type CheckPayerAuthEnrollmentParamsBodyMerchantInformationMerchantDescriptor struct {
 
-	// Merchant's name.
-	//
-	// For more details about the merchant-related fields, see the `merchant_descriptor` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// Your merchant name.
 	//
 	// **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.
+	//
+	// #### PIN debit
+	// Your business name. This name is displayed on the cardholder’s statement. When you
+	// include more than one consecutive space, extra spaces are removed.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase requests.
+	//
+	// #### Airline processing
+	// Your merchant name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.
+	//
+	// **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.
+	//
+	// **Important** This value must consist of English characters.
+	//
+	// Required for captures and credits.
 	//
 	Name string `json:"name,omitempty"`
 
@@ -4003,15 +5261,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformationMerchantDescriptor
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformationMerchantDescriptor) validateURL(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.URL) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"url", "body", string(o.URL), 255); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"url", "body", o.URL, 255); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body merchant information merchant descriptor based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyMerchantInformationMerchantDescriptor) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -4111,7 +5373,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) Validate(formats st
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateAmountDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountDetails) { // not required
 		return nil
 	}
@@ -4120,6 +5381,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateAmountDetai
 		if err := o.AmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "amountDetails")
 			}
 			return err
 		}
@@ -4129,7 +5392,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateAmountDetai
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateBillTo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.BillTo) { // not required
 		return nil
 	}
@@ -4138,6 +5400,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateBillTo(form
 		if err := o.BillTo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "billTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "billTo")
 			}
 			return err
 		}
@@ -4147,7 +5411,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateBillTo(form
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateLineItems(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LineItems) { // not required
 		return nil
 	}
@@ -4161,6 +5424,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateLineItems(f
 			if err := o.LineItems[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -4172,12 +5437,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateLineItems(f
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validatePreOrderDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PreOrderDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"preOrderDate", "body", string(o.PreOrderDate), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"preOrderDate", "body", o.PreOrderDate, 10); err != nil {
 		return err
 	}
 
@@ -4185,7 +5449,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validatePreOrderDat
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateShipTo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ShipTo) { // not required
 		return nil
 	}
@@ -4194,6 +5457,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateShipTo(form
 		if err := o.ShipTo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "shipTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "shipTo")
 			}
 			return err
 		}
@@ -4203,13 +5468,106 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateShipTo(form
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) validateTotalOffersCount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalOffersCount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"totalOffersCount", "body", string(o.TotalOffersCount), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"totalOffersCount", "body", o.TotalOffersCount, 2); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body order information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateBillTo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateLineItems(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateShipTo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) contextValidateAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AmountDetails != nil {
+		if err := o.AmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) contextValidateBillTo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.BillTo != nil {
+		if err := o.BillTo.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "billTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "billTo")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) contextValidateLineItems(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.LineItems); i++ {
+
+		if o.LineItems[i] != nil {
+			if err := o.LineItems[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "lineItems" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformation) contextValidateShipTo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ShipTo != nil {
+		if err := o.ShipTo.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "shipTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "orderInformation" + "." + "shipTo")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -4247,10 +5605,25 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationAmountDetails struct {
 	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
 	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
 	// #### GPX
 	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
+	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
 	// Your local currency.
 	//
 	// Required: true
@@ -4272,6 +5645,15 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationAmountDetails struct {
 	// #### Card Present
 	// Required to include either this field or `orderInformation.lineItems[].unitPrice` for the order.
 	//
+	// #### Invoicing
+	// Required for creating a new invoice.
+	//
+	// #### PIN Debit
+	// Amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount.
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
 	// #### GPX
 	// This field is optional for reversing an authorization or credit; however, for all other processors, these fields are required.
 	//
@@ -4283,9 +5665,6 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationAmountDetails struct {
 	//
 	// #### DCC for First Data
 	// Not used.
-	//
-	// #### Invoicing
-	// Required for creating a new invoice.
 	//
 	// Required: true
 	// Max Length: 19
@@ -4316,7 +5695,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationAmountDetails) valida
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", string(*o.Currency), 3); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", *o.Currency, 3); err != nil {
 		return err
 	}
 
@@ -4329,10 +5708,15 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationAmountDetails) valida
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", string(*o.TotalAmount), 19); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", *o.TotalAmount, 19); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body order information amount details based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -4431,8 +5815,7 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo struct {
 	// Max Length: 60
 	Address2 string `json:"address2,omitempty"`
 
-	// State or province of the billing address. Use the State, Province, and Territory Codes for the United States
-	// and Canada.
+	// State or province of the billing address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).
 	//
 	// For Payouts: This field may be sent only for FDC Compass.
 	//
@@ -4799,7 +6182,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateAddre
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address1", "body", string(*o.Address1), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address1", "body", *o.Address1, 60); err != nil {
 		return err
 	}
 
@@ -4807,12 +6190,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateAddre
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateAddress2(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address2) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address2", "body", string(o.Address2), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address2", "body", o.Address2, 60); err != nil {
 		return err
 	}
 
@@ -4825,7 +6207,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateAdmin
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"administrativeArea", "body", string(*o.AdministrativeArea), 20); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"administrativeArea", "body", *o.AdministrativeArea, 20); err != nil {
 		return err
 	}
 
@@ -4838,7 +6220,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateCount
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"country", "body", string(*o.Country), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"country", "body", *o.Country, 2); err != nil {
 		return err
 	}
 
@@ -4851,7 +6233,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateEmail
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"email", "body", string(*o.Email), 255); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"email", "body", *o.Email, 255); err != nil {
 		return err
 	}
 
@@ -4864,7 +6246,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateFirst
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"firstName", "body", string(*o.FirstName), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"firstName", "body", *o.FirstName, 60); err != nil {
 		return err
 	}
 
@@ -4877,7 +6259,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateLastN
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"lastName", "body", string(*o.LastName), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"lastName", "body", *o.LastName, 60); err != nil {
 		return err
 	}
 
@@ -4885,12 +6267,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateLastN
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"locality", "body", string(o.Locality), 50); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"locality", "body", o.Locality, 50); err != nil {
 		return err
 	}
 
@@ -4898,12 +6279,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validateLocal
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validatePhoneNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PhoneNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"phoneNumber", "body", string(o.PhoneNumber), 15); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"phoneNumber", "body", o.PhoneNumber, 15); err != nil {
 		return err
 	}
 
@@ -4916,10 +6296,15 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) validatePosta
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"postalCode", "body", string(*o.PostalCode), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"postalCode", "body", *o.PostalCode, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body order information bill to based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationBillTo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -4954,7 +6339,6 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0 struct {
 	//
 	// For the possible values, see the [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
 	//
-	// Max Length: 3
 	GiftCardCurrency int64 `json:"giftCardCurrency,omitempty"`
 
 	// passenger
@@ -4967,11 +6351,18 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0 struct {
 	// this field is required when `orderInformation.lineItems[].productCode` is not `default` or one of
 	// the other values that are related to shipping and/or handling.
 	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	//
 	// Max Length: 255
 	ProductName string `json:"productName,omitempty"`
 
 	// Product identifier code. Also known as the Stock Keeping Unit (SKU) code for the product.
 	//
+	// For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`), this field is required when `orderInformation.lineItems[].productCode` is not set to **default** or one of the other values that are related to shipping and/or handling.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
 	// For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`), this field is
 	// required when `orderInformation.lineItems[].productCode` is not `default` or one of the values related to shipping and/or handling.
 	//
@@ -4983,6 +6374,9 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0 struct {
 	// The default is `1`. For an authorization or capture transaction (`processingOptions.capture` is set to `true` or `false`),
 	// this field is required when `orderInformation.lineItems[].productCode` is not `default` or one of the other values
 	// related to shipping and/or handling.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
 	//
 	// Maximum: 9.99999999e+08
 	// Minimum: 1
@@ -5004,6 +6398,16 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0 struct {
 	//  2. The total amount authorized will be 32.40, not 30.00 with 2.40 of tax included.
 	//
 	// Optional field.
+	//
+	// #### Airlines processing
+	// Tax portion of the order amount. This value cannot exceed 99999999999999 (fourteen 9s).
+	// Format: English characters only.
+	// Optional request field for a line item.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	//
+	// Note if you send this field in your tax request, the value in the field will override the tax engine
 	//
 	// Max Length: 15
 	TaxAmount string `json:"taxAmount,omitempty"`
@@ -5033,6 +6437,9 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0 struct {
 	// If you accept IDR or CLP currencies, see the entry for FDMS South in the [Merchant Descriptors Using the SCMP API Guide.]
 	// (https://apps.cybersource.com/library/documentation/dev_guides/Merchant_Descriptors_SCMP_API/html/)
 	//
+	// #### Tax Calculation
+	// Required field for U.S., Canadian, international and value added taxes.
+	//
 	// #### Zero Amount Authorizations
 	// If your processor supports zero amount authorizations, you can set this field to 0 for the
 	// authorization to check if the card is lost or stolen.
@@ -5049,10 +6456,6 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0 struct {
 // Validate validates this check payer auth enrollment params body order information line items items0
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := o.validateGiftCardCurrency(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := o.validatePassenger(formats); err != nil {
 		res = append(res, err)
@@ -5092,21 +6495,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) Vali
 	return nil
 }
 
-func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validateGiftCardCurrency(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.GiftCardCurrency) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("giftCardCurrency", "body", string(o.GiftCardCurrency), 3); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validatePassenger(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Passenger) { // not required
 		return nil
 	}
@@ -5115,6 +6504,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 		if err := o.Passenger.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("passenger")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("passenger")
 			}
 			return err
 		}
@@ -5124,12 +6515,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validateProductName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProductName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("productName", "body", string(o.ProductName), 255); err != nil {
+	if err := validate.MaxLength("productName", "body", o.ProductName, 255); err != nil {
 		return err
 	}
 
@@ -5137,12 +6527,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validateProductSKU(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProductSKU) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("productSKU", "body", string(o.ProductSKU), 255); err != nil {
+	if err := validate.MaxLength("productSKU", "body", o.ProductSKU, 255); err != nil {
 		return err
 	}
 
@@ -5150,16 +6539,15 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validateQuantity(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Quantity) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("quantity", "body", int64(o.Quantity), 1, false); err != nil {
+	if err := validate.MinimumInt("quantity", "body", o.Quantity, 1, false); err != nil {
 		return err
 	}
 
-	if err := validate.MaximumInt("quantity", "body", int64(o.Quantity), 9.99999999e+08, false); err != nil {
+	if err := validate.MaximumInt("quantity", "body", o.Quantity, 9.99999999e+08, false); err != nil {
 		return err
 	}
 
@@ -5167,12 +6555,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validateShippingDestinationTypes(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ShippingDestinationTypes) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("shippingDestinationTypes", "body", string(o.ShippingDestinationTypes), 50); err != nil {
+	if err := validate.MaxLength("shippingDestinationTypes", "body", o.ShippingDestinationTypes, 50); err != nil {
 		return err
 	}
 
@@ -5180,12 +6567,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validateTaxAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TaxAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("taxAmount", "body", string(o.TaxAmount), 15); err != nil {
+	if err := validate.MaxLength("taxAmount", "body", o.TaxAmount, 15); err != nil {
 		return err
 	}
 
@@ -5193,12 +6579,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) validateTotalAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("totalAmount", "body", string(o.TotalAmount), 13); err != nil {
+	if err := validate.MaxLength("totalAmount", "body", o.TotalAmount, 13); err != nil {
 		return err
 	}
 
@@ -5211,8 +6596,38 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) vali
 		return err
 	}
 
-	if err := validate.MaxLength("unitPrice", "body", string(*o.UnitPrice), 15); err != nil {
+	if err := validate.MaxLength("unitPrice", "body", *o.UnitPrice, 15); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body order information line items items0 based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePassenger(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0) contextValidatePassenger(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Passenger != nil {
+		if err := o.Passenger.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("passenger")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("passenger")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -5259,12 +6674,12 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger 
 	// Max Length: 60
 	LastName string `json:"lastName,omitempty"`
 
-	// Passenger's nationality country. Use the two character ISO Standard Country Codes.
+	// Passenger's nationality country. Use the two character [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
 	// Max Length: 2
 	Nationality string `json:"nationality,omitempty"`
 
 	// Passenger's phone number. If the order is from outside the U.S., CyberSource recommends that you include
-	// the [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)
+	// the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
 	//
 	// Max Length: 15
 	Phone string `json:"phone,omitempty"`
@@ -5331,12 +6746,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validateEmail(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Email) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"email", "body", string(o.Email), 255); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"email", "body", o.Email, 255); err != nil {
 		return err
 	}
 
@@ -5344,12 +6758,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"firstName", "body", string(o.FirstName), 60); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"firstName", "body", o.FirstName, 60); err != nil {
 		return err
 	}
 
@@ -5357,12 +6770,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validateID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"id", "body", string(o.ID), 40); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"id", "body", o.ID, 40); err != nil {
 		return err
 	}
 
@@ -5370,12 +6782,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"lastName", "body", string(o.LastName), 60); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"lastName", "body", o.LastName, 60); err != nil {
 		return err
 	}
 
@@ -5383,12 +6794,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validateNationality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Nationality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"nationality", "body", string(o.Nationality), 2); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"nationality", "body", o.Nationality, 2); err != nil {
 		return err
 	}
 
@@ -5396,12 +6806,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validatePhone(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Phone) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"phone", "body", string(o.Phone), 15); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"phone", "body", o.Phone, 15); err != nil {
 		return err
 	}
 
@@ -5409,12 +6818,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Status) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"status", "body", string(o.Status), 32); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"status", "body", o.Status, 32); err != nil {
 		return err
 	}
 
@@ -5422,15 +6830,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) validateType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Type) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("passenger"+"."+"type", "body", string(o.Type), 32); err != nil {
+	if err := validate.MaxLength("passenger"+"."+"type", "body", o.Type, 32); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body order information line items items0 passenger based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationLineItemsItems0Passenger) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -5461,12 +6873,20 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo struct {
 	//
 	// Required field for authorization if any shipping address information is included in the request; otherwise, optional.
 	//
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+	//
 	// Max Length: 60
 	Address1 string `json:"address1,omitempty"`
 
 	// Second line of the shipping address.
 	//
 	// Optional field.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
 	//
 	// Max Length: 60
 	Address2 string `json:"address2,omitempty"`
@@ -5476,12 +6896,20 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo struct {
 	// Required field for authorization if any shipping address information is included in the request and shipping to the U.S.
 	// or Canada; otherwise, optional.
 	//
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
+	//
 	// Max Length: 2
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
 	// Country of the shipping address. Use the two-character [ISO Standard Country Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)
 	//
 	// Required field for authorization if any shipping address information is included in the request; otherwise, optional.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S., Canadian, international tax, and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
 	//
 	// Max Length: 2
 	Country string `json:"country,omitempty"`
@@ -5495,7 +6923,6 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo struct {
 	// - 06- Travel and event tickets, not shipped
 	// - 07- Other
 	//
-	// Max Length: 2
 	DestinationCode int64 `json:"destinationCode,omitempty"`
 
 	// Shipping destination of item. Example: Commercial, Residential, Store
@@ -5533,6 +6960,10 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo struct {
 	//
 	// Required field for authorization if any shipping address information is included in the request and shipping to the U.S. or
 	// Canada; otherwise, optional.
+	//
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
 	//
 	// Max Length: 50
 	Locality string `json:"locality,omitempty"`
@@ -5573,6 +7004,9 @@ type CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo struct {
 	// #### American Express Direct
 	// Before sending the postal code to the processor, all nonalphanumeric characters are removed and, if the
 	// remaining value is longer than nine characters, the value is truncated starting from the right side.
+	// #### Tax Calculation
+	// Optional field for U.S. and Canadian taxes. Not applicable to international and value added taxes.
+	// Billing address objects will be used to determine the cardholder’s location when shipTo objects are not present.
 	//
 	// Max Length: 10
 	PostalCode string `json:"postalCode,omitempty"`
@@ -5595,10 +7029,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) Validate(form
 	}
 
 	if err := o.validateCountry(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateDestinationCode(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -5637,12 +7067,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) Validate(form
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateAddress1(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address1) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"address1", "body", string(o.Address1), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"address1", "body", o.Address1, 60); err != nil {
 		return err
 	}
 
@@ -5650,12 +7079,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateAddre
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateAddress2(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address2) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"address2", "body", string(o.Address2), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"address2", "body", o.Address2, 60); err != nil {
 		return err
 	}
 
@@ -5663,12 +7091,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateAddre
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateAdministrativeArea(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdministrativeArea) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"administrativeArea", "body", o.AdministrativeArea, 2); err != nil {
 		return err
 	}
 
@@ -5676,25 +7103,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateAdmin
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"country", "body", string(o.Country), 2); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateDestinationCode(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.DestinationCode) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"destinationCode", "body", string(o.DestinationCode), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -5702,12 +7115,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateDesti
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateDestinationTypes(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DestinationTypes) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"destinationTypes", "body", string(o.DestinationTypes), 25); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"destinationTypes", "body", o.DestinationTypes, 25); err != nil {
 		return err
 	}
 
@@ -5715,12 +7127,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateDesti
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"firstName", "body", string(o.FirstName), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"firstName", "body", o.FirstName, 60); err != nil {
 		return err
 	}
 
@@ -5728,12 +7139,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateFirst
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"lastName", "body", string(o.LastName), 60); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"lastName", "body", o.LastName, 60); err != nil {
 		return err
 	}
 
@@ -5741,12 +7151,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateLastN
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"locality", "body", string(o.Locality), 50); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"locality", "body", o.Locality, 50); err != nil {
 		return err
 	}
 
@@ -5754,12 +7163,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateLocal
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateMethod(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Method) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"method", "body", string(o.Method), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"method", "body", o.Method, 10); err != nil {
 		return err
 	}
 
@@ -5767,12 +7175,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validateMetho
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validatePhoneNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PhoneNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"phoneNumber", "body", string(o.PhoneNumber), 15); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"phoneNumber", "body", o.PhoneNumber, 15); err != nil {
 		return err
 	}
 
@@ -5780,15 +7187,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validatePhone
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"postalCode", "body", string(o.PostalCode), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"orderInformation"+"."+"shipTo"+"."+"postalCode", "body", o.PostalCode, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body order information ship to based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyOrderInformationShipTo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -5818,6 +7229,9 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformation struct {
 	// card
 	Card *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard `json:"card,omitempty"`
 
+	// customer
+	Customer *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer `json:"customer,omitempty"`
+
 	// fluid data
 	FluidData *CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData `json:"fluidData,omitempty"`
 
@@ -5830,6 +7244,10 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) Validate(formats 
 	var res []error
 
 	if err := o.validateCard(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCustomer(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -5848,7 +7266,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) Validate(formats 
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateCard(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Card) { // not required
 		return nil
 	}
@@ -5857,6 +7274,27 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateCard(form
 		if err := o.Card.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateCustomer(formats strfmt.Registry) error {
+	if swag.IsZero(o.Customer) { // not required
+		return nil
+	}
+
+	if o.Customer != nil {
+		if err := o.Customer.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "customer")
 			}
 			return err
 		}
@@ -5866,7 +7304,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateCard(form
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateFluidData(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FluidData) { // not required
 		return nil
 	}
@@ -5875,6 +7312,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateFluidData
 		if err := o.FluidData.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "fluidData")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "fluidData")
 			}
 			return err
 		}
@@ -5884,7 +7323,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateFluidData
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateTokenizedCard(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TokenizedCard) { // not required
 		return nil
 	}
@@ -5893,6 +7331,98 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) validateTokenized
 		if err := o.TokenizedCard.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body payment information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateCustomer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateFluidData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateTokenizedCard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) contextValidateCard(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Card != nil {
+		if err := o.Card.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) contextValidateCustomer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Customer != nil {
+		if err := o.Customer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "customer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) contextValidateFluidData(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.FluidData != nil {
+		if err := o.FluidData.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "fluidData")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "fluidData")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformation) contextValidateTokenizedCard(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.TokenizedCard != nil {
+		if err := o.TokenizedCard.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "paymentInformation" + "." + "tokenizedCard")
 			}
 			return err
 		}
@@ -5947,15 +7477,13 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard struct {
 	// #### FDMS Nashville
 	// Required field.
 	//
-	// #### GPX
-	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
-	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
-	// whether a field is required for the transaction you are requesting.
-	//
 	// #### All other processors
 	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
 	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
 	// whether a field is required for the transaction you are requesting.
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// Required: true
 	// Max Length: 2
@@ -5977,15 +7505,13 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard struct {
 	// #### FDC Nashville Global and FDMS South
 	// You can send in 2 digits or 4 digits. If you send in 2 digits, they must be the last 2 digits of the year.
 	//
-	// #### GPX
-	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
-	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
-	// whether a field is required for the transaction you are requesting.
-	//
 	// #### All other processors
 	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
 	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
 	// whether a field is required for the transaction you are requesting.
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// Required: true
 	// Max Length: 4
@@ -6030,7 +7556,7 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard struct {
 	// - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types.
 	// - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types.
 	// - `034`: Dankort[^1]
-	// - `036`: Cartes Bancaires[^1]
+	// - `036`: Cartes Bancaires[^1,4]
 	// - `037`: Carta Si[^1]
 	// - `039`: Encoded account number[^1]
 	// - `040`: UATP[^1]
@@ -6043,6 +7569,7 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard struct {
 	// [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit.
 	// [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5.
 	// [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.
+	// [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.
 	//
 	// #### Used by
 	// **Authorization**
@@ -6062,6 +7589,9 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard struct {
 	// - FDC Nashville Global
 	// - OmniPay Direct
 	// - SIX
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// #### GPX
 	// This field only supports transactions from the following card types:
@@ -6108,12 +7638,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) Validate(form
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) validateBin(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Bin) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"bin", "body", string(o.Bin), 6); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"bin", "body", o.Bin, 6); err != nil {
 		return err
 	}
 
@@ -6126,7 +7655,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) validateExpir
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationMonth", "body", string(*o.ExpirationMonth), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationMonth", "body", *o.ExpirationMonth, 2); err != nil {
 		return err
 	}
 
@@ -6139,7 +7668,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) validateExpir
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationYear", "body", string(*o.ExpirationYear), 4); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationYear", "body", *o.ExpirationYear, 4); err != nil {
 		return err
 	}
 
@@ -6152,7 +7681,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) validateNumbe
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"number", "body", string(*o.Number), 20); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"card"+"."+"number", "body", *o.Number, 20); err != nil {
 		return err
 	}
 
@@ -6165,6 +7694,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) validateType(
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body payment information card based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6186,31 +7720,108 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCard) UnmarshalBina
 	return nil
 }
 
+/*CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer check payer auth enrollment params body payment information customer
+swagger:model CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer
+*/
+type CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer struct {
+
+	// Unique identifier for the customer's card and billing information.
+	//
+	// When you use Payment Tokenization or Recurring Billing and you include this value in
+	// your request, many of the fields that are normally required for an authorization or credit
+	// become optional.
+	//
+	// **NOTE** When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually the Cybersource payment token for a customer. This token stores information such as the consumer’s card number so it can be applied towards bill payments, recurring payments, or one-time payments. By using this token in a payment API request, the merchant doesn't need to pass in data such as the card number or expiration date in the request itself.
+	//
+	// For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	CustomerID string `json:"customerId,omitempty"`
+
+	// Unique identifier for the Customer token used in the transaction.
+	// When you include this value in your request, many of the fields that are normally required for an authorization or credit
+	// become optional.
+	//
+	// Max Length: 32
+	// Min Length: 1
+	ID string `json:"id,omitempty"`
+}
+
+// Validate validates this check payer auth enrollment params body payment information customer
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer) validateID(formats strfmt.Registry) error {
+	if swag.IsZero(o.ID) { // not required
+		return nil
+	}
+
+	if err := validate.MinLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 32); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body payment information customer based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer) UnmarshalBinary(b []byte) error {
+	var res CheckPayerAuthEnrollmentParamsBodyPaymentInformationCustomer
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData check payer auth enrollment params body payment information fluid data
 swagger:model CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData
 */
 type CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData struct {
 
-	// The identifier for a payment solution, which is sending the encrypted payment data for decryption.
-	// Valid values:
-	// - Samsung Pay: `RklEPUNPTU1PTi5TQU1TVU5HLklOQVBQLlBBWU1FTlQ=`
+	// The identifier for a payment solution, which is sending the encrypted payment data for decryption. Valid values:
+	// Samsung Pay: RklEPUNPTU1PTi5TQU1TVU5HLklOQVBQLlBBWU1FTlQ=
+	// Note: For other payment solutions, the value may be specific to the terminal or device initiatinf the payment. For example, the descriptor for a Bluefin payment encryption would be a device-generated descriptor.
+	// Used by Authorization and Standalone Credits. Required for authorizations and standalone credits.
 	//
-	// **Note**: For other payment solutions, the value may be specific to the customer's mobile device. For example,
-	// the descriptor for a Bluefin payment encryption would be a device-generated descriptor.
-	//
-	// #### Used by
-	// **Authorization and Standalone Credits**
-	// Required for authorizations and standalone credits that use Bluefin PCI P2PE.
-	//
-	// #### Card Present processing
-	// Format of the encrypted payment data. The value for Bluefin PCI P2PE is `Ymx1ZWZpbg==`.
+	// Card Present processing:
+	// Format of the encrypted payment data.
+	// The value for Bluefin PCI P2PE is `Ymx1ZWZpbg==`. paymentInformation.fluidData.encoding must be `Base64`.
+	// The value for Cybersource P2PE decryption depends on the encoding method used and identified in encoding field.
+	// If paymentInformation.fluidData.encoding is `Base64`, the value is: `RklEPUVNVi5QQVlNRU5ULkFQSQ==`
+	// If paymentInformation.fluidData.encoding is `HEX`, the value is: `4649443D454D562E5041594D454E542E41504`
 	//
 	// Max Length: 128
 	Descriptor string `json:"descriptor,omitempty"`
 
 	// Encoding method used to encrypt the payment data.
-	//
-	// Valid value: Base64
+	// Valid values: `Base64`, `HEX`
+	// If no value is provided, `Base64` is taken as the default value. And the `Base64` descriptor is used for paymentInformation.fluidData.encoding
 	//
 	// Max Length: 6
 	Encoding string `json:"encoding,omitempty"`
@@ -6219,14 +7830,10 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData struct {
 	//
 	KeySerialNumber string `json:"keySerialNumber,omitempty"`
 
-	// Represents the encrypted payment data BLOB. The entry for this field is dependent on the payment solution a merchant uses.
-	//
-	// #### Used by
-	// **Authorization and Standalone Credits**
-	// Required for authorizations and standalone credits that use Bluefin PCI P2PE.
-	//
-	// #### Card Present processing
-	// This field represents the encrypted Bluefin PCI P2PE payment data. Obtain the encrypted payment data from a Bluefin-supported device.
+	// Represents the encrypted payment data BLOB. The entry for this field is dependent on the payment solution used by the merchant.
+	// Used by Authorization and Standalone Credits. Required for authorizations and standalone credits that use a Cybersource suppored Point-to-Point encryption method.
+	// Card Present processing
+	// This field represents the encrypted payment data generated by the payment terminal/device.
 	//
 	// Required: true
 	// Max Length: 3072
@@ -6256,12 +7863,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData) Validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData) validateDescriptor(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Descriptor) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"descriptor", "body", string(o.Descriptor), 128); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"descriptor", "body", o.Descriptor, 128); err != nil {
 		return err
 	}
 
@@ -6269,12 +7875,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData) validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData) validateEncoding(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Encoding) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"encoding", "body", string(o.Encoding), 6); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"encoding", "body", o.Encoding, 6); err != nil {
 		return err
 	}
 
@@ -6287,10 +7892,15 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData) validate
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"value", "body", string(*o.Value), 3072); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"fluidData"+"."+"value", "body", *o.Value, 3072); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body payment information fluid data based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationFluidData) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6398,7 +8008,7 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard struct {
 	// - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types.
 	// - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types.
 	// - `034`: Dankort[^1]
-	// - `036`: Cartes Bancaires[^1]
+	// - `036`: Cartes Bancaires[^1,4]
 	// - `037`: Carta Si[^1]
 	// - `039`: Encoded account number[^1]
 	// - `040`: UATP[^1]
@@ -6411,6 +8021,7 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard struct {
 	// [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit.
 	// [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5.
 	// [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.
+	// [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.
 	//
 	// #### Used by
 	// **Authorization**
@@ -6430,6 +8041,9 @@ type CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard struct {
 	// - FDC Nashville Global
 	// - OmniPay Direct
 	// - SIX
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// #### GPX
 	// This field only supports transactions from the following card types:
@@ -6477,7 +8091,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard) vali
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationMonth", "body", string(*o.ExpirationMonth), 2); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationMonth", "body", *o.ExpirationMonth, 2); err != nil {
 		return err
 	}
 
@@ -6490,7 +8104,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard) vali
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationYear", "body", string(*o.ExpirationYear), 4); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"expirationYear", "body", *o.ExpirationYear, 4); err != nil {
 		return err
 	}
 
@@ -6503,7 +8117,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard) vali
 		return err
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"number", "body", string(*o.Number), 20); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"paymentInformation"+"."+"tokenizedCard"+"."+"number", "body", *o.Number, 20); err != nil {
 		return err
 	}
 
@@ -6516,6 +8130,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard) vali
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body payment information tokenized card based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyPaymentInformationTokenizedCard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6552,14 +8171,16 @@ type CheckPayerAuthEnrollmentParamsBodyProcessingInformation struct {
 	//  - `007`: Chase Pay.
 	//  - `008`: Samsung Pay.
 	//  - `012`: Google Pay.
+	//  - `013`: Cybersource P2PE Decryption
+	//  - `014`: Mastercard credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.
+	//  - `015`: Visa credential on file (COF) payment network token. Returned in authorizations that use a payment network token associated with a TMS token.
+	//  - `027`: Click to Pay.
 	//
 	// Max Length: 12
 	PaymentSolution string `json:"paymentSolution,omitempty"`
 
 	// Identifier for the **Visa Checkout** order. Visa Checkout provides a unique order ID for every transaction in
 	// the Visa Checkout **callID** field.
-	//
-	// For details, see the `vc_order_id` field description in [Visa Checkout Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/VCO_SCMP_API/html/)
 	//
 	// Max Length: 48
 	VisaCheckoutID string `json:"visaCheckoutId,omitempty"`
@@ -6584,12 +8205,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyProcessingInformation) Validate(forma
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyProcessingInformation) validatePaymentSolution(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentSolution) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"processingInformation"+"."+"paymentSolution", "body", string(o.PaymentSolution), 12); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"processingInformation"+"."+"paymentSolution", "body", o.PaymentSolution, 12); err != nil {
 		return err
 	}
 
@@ -6597,15 +8217,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyProcessingInformation) validatePaymen
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyProcessingInformation) validateVisaCheckoutID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VisaCheckoutID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"processingInformation"+"."+"visaCheckoutId", "body", string(o.VisaCheckoutID), 48); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"processingInformation"+"."+"visaCheckoutId", "body", o.VisaCheckoutID, 48); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body processing information based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyProcessingInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6650,8 +8274,11 @@ type CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation struct {
 	//
 	// **Note** This field is required for recurring transactions.
 	//
-	// Max Length: 4
 	Frequency int64 `json:"frequency,omitempty"`
+
+	// Total number of payments for the duration of the recurring subscription.
+	//
+	NumberOfPayments int64 `json:"numberOfPayments,omitempty"`
 
 	// Date of original purchase. Required for recurring transactions.
 	// Format: `YYYY-MM-DDTHH:MM:SSZ`
@@ -6659,6 +8286,11 @@ type CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation struct {
 	//
 	// Max Length: 17
 	OriginalPurchaseDate string `json:"originalPurchaseDate,omitempty"`
+
+	// This field is mandatory for Cartes Bancaires recurring transactions on Credit Mutuel-CIC.
+	// This field records recurring sequence, e.g. 1st for initial,  2 for subsequent, 3 etc
+	//
+	SequenceNumber int64 `json:"sequenceNumber,omitempty"`
 }
 
 // Validate validates this check payer auth enrollment params body recurring payment information
@@ -6666,10 +8298,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation) Validate
 	var res []error
 
 	if err := o.validateEndDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateFrequency(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -6684,25 +8312,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation) Validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation) validateEndDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.EndDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"recurringPaymentInformation"+"."+"endDate", "body", string(o.EndDate), 10); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation) validateFrequency(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Frequency) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"recurringPaymentInformation"+"."+"frequency", "body", string(o.Frequency), 4); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"recurringPaymentInformation"+"."+"endDate", "body", o.EndDate, 10); err != nil {
 		return err
 	}
 
@@ -6710,15 +8324,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation) validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation) validateOriginalPurchaseDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OriginalPurchaseDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"recurringPaymentInformation"+"."+"originalPurchaseDate", "body", string(o.OriginalPurchaseDate), 17); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"recurringPaymentInformation"+"."+"originalPurchaseDate", "body", o.OriginalPurchaseDate, 17); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body recurring payment information based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyRecurringPaymentInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -6764,7 +8382,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformation) Validate(formats str
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformation) validateBuyerHistory(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.BuyerHistory) { // not required
 		return nil
 	}
@@ -6773,6 +8390,38 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformation) validateBuyerHistory
 		if err := o.BuyerHistory.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body risk information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateBuyerHistory(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformation) contextValidateBuyerHistory(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.BuyerHistory != nil {
+		if err := o.BuyerHistory.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory")
 			}
 			return err
 		}
@@ -6810,13 +8459,11 @@ type CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory struct {
 	// Number of purchases with this cardholder account during the previous six months.
 	// Recommended for Discover ProtectBuy.
 	//
-	// Max Length: 4
 	AccountPurchases int64 `json:"accountPurchases,omitempty"`
 
 	// Number of add card attempts in the last 24 hours.
 	// Recommended for Discover ProtectBuy.
 	//
-	// Max Length: 3
 	AddCardAttempts int64 `json:"addCardAttempts,omitempty"`
 
 	// customer account
@@ -6824,7 +8471,6 @@ type CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory struct {
 
 	// Date applicable only for PAYMENT_ACCOUNT_EXISTS in paymentAccountHistory
 	//
-	// Max Length: 8
 	PaymentAccountDate int64 `json:"paymentAccountDate,omitempty"`
 
 	// This only applies for NEW_ACCOUNT and EXISTING_ACCOUNT in creationHistory. Possible values are:
@@ -6841,13 +8487,11 @@ type CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory struct {
 	// Number of transaction (successful or abandoned) for this cardholder account within the last 24 hours.
 	// Recommended for Discover ProtectBuy.
 	//
-	// Max Length: 3
 	TransactionCountDay int64 `json:"transactionCountDay,omitempty"`
 
 	// Number of transaction (successful or abandoned) for this cardholder account within the last year.
 	// Recommended for Discover ProtectBuy.
 	//
-	// Max Length: 3
 	TransactionCountYear int64 `json:"transactionCountYear,omitempty"`
 }
 
@@ -6859,27 +8503,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) Validate
 		res = append(res, err)
 	}
 
-	if err := o.validateAccountPurchases(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateAddCardAttempts(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateCustomerAccount(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validatePaymentAccountDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateTransactionCountDay(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateTransactionCountYear(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -6890,7 +8514,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) Validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validateAccountHistory(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AccountHistory) { // not required
 		return nil
 	}
@@ -6899,6 +8522,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validate
 		if err := o.AccountHistory.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "accountHistory")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "accountHistory")
 			}
 			return err
 		}
@@ -6907,34 +8532,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validate
 	return nil
 }
 
-func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validateAccountPurchases(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.AccountPurchases) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"accountPurchases", "body", string(o.AccountPurchases), 4); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validateAddCardAttempts(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.AddCardAttempts) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"addCardAttempts", "body", string(o.AddCardAttempts), 3); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validateCustomerAccount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CustomerAccount) { // not required
 		return nil
 	}
@@ -6943,6 +8541,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validate
 		if err := o.CustomerAccount.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "customerAccount")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "customerAccount")
 			}
 			return err
 		}
@@ -6951,40 +8551,51 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validate
 	return nil
 }
 
-func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validatePaymentAccountDate(formats strfmt.Registry) error {
+// ContextValidate validate this check payer auth enrollment params body risk information buyer history based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
 
-	if swag.IsZero(o.PaymentAccountDate) { // not required
-		return nil
+	if err := o.contextValidateAccountHistory(ctx, formats); err != nil {
+		res = append(res, err)
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"paymentAccountDate", "body", string(o.PaymentAccountDate), 8); err != nil {
-		return err
+	if err := o.contextValidateCustomerAccount(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) contextValidateAccountHistory(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AccountHistory != nil {
+		if err := o.AccountHistory.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "accountHistory")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "accountHistory")
+			}
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validateTransactionCountDay(formats strfmt.Registry) error {
+func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) contextValidateCustomerAccount(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(o.TransactionCountDay) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"transactionCountDay", "body", string(o.TransactionCountDay), 3); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistory) validateTransactionCountYear(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.TransactionCountYear) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"transactionCountYear", "body", string(o.TransactionCountYear), 3); err != nil {
-		return err
+	if o.CustomerAccount != nil {
+		if err := o.CustomerAccount.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "customerAccount")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "riskInformation" + "." + "buyerHistory" + "." + "customerAccount")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -7040,15 +8651,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryAccountHis
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryAccountHistory) validateShippingAddressUsageDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ShippingAddressUsageDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"accountHistory"+"."+"shippingAddressUsageDate", "body", string(o.ShippingAddressUsageDate), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"accountHistory"+"."+"shippingAddressUsageDate", "body", o.ShippingAddressUsageDate, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body risk information buyer history account history based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryAccountHistory) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -7141,12 +8756,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAc
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAccount) validateCreateDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CreateDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"customerAccount"+"."+"createDate", "body", string(o.CreateDate), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"customerAccount"+"."+"createDate", "body", o.CreateDate, 10); err != nil {
 		return err
 	}
 
@@ -7154,12 +8768,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAc
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAccount) validateLastChangeDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastChangeDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"customerAccount"+"."+"lastChangeDate", "body", string(o.LastChangeDate), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"customerAccount"+"."+"lastChangeDate", "body", o.LastChangeDate, 10); err != nil {
 		return err
 	}
 
@@ -7167,15 +8780,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAc
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAccount) validatePasswordChangeDate(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PasswordChangeDate) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"customerAccount"+"."+"passwordChangeDate", "body", string(o.PasswordChangeDate), 10); err != nil {
+	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"riskInformation"+"."+"buyerHistory"+"."+"customerAccount"+"."+"passwordChangeDate", "body", o.PasswordChangeDate, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body risk information buyer history customer account based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAccount) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -7197,6 +8814,50 @@ func (o *CheckPayerAuthEnrollmentParamsBodyRiskInformationBuyerHistoryCustomerAc
 	return nil
 }
 
+/*CheckPayerAuthEnrollmentParamsBodyTokenInformation check payer auth enrollment params body token information
+swagger:model CheckPayerAuthEnrollmentParamsBodyTokenInformation
+*/
+type CheckPayerAuthEnrollmentParamsBodyTokenInformation struct {
+
+	// A temporary ID that represents the customer's payment data (which is securely stored in Visa Data Centers). Flex
+	// Microform generates this ID and sets it to expire within 15 minutes from when the ID is generated or until the
+	// first payment authorization is carried out (whichever occurs first).
+	//
+	// Valid value for the ID is a 64-character, alphanumeric string.
+	//
+	// Example: 1D08M4YB968R1F7YVL4TBBKYVNRIR02VZFH9CBYSQIJJXORPI1NK5C98D7F6EB53
+	//
+	TransientToken string `json:"transientToken,omitempty"`
+}
+
+// Validate validates this check payer auth enrollment params body token information
+func (o *CheckPayerAuthEnrollmentParamsBodyTokenInformation) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body token information based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyTokenInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyTokenInformation) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *CheckPayerAuthEnrollmentParamsBodyTokenInformation) UnmarshalBinary(b []byte) error {
+	var res CheckPayerAuthEnrollmentParamsBodyTokenInformation
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*CheckPayerAuthEnrollmentParamsBodyTravelInformation check payer auth enrollment params body travel information
 swagger:model CheckPayerAuthEnrollmentParamsBodyTravelInformation
 */
@@ -7209,7 +8870,6 @@ type CheckPayerAuthEnrollmentParamsBodyTravelInformation struct {
 	// If you do not include this field in your request, CyberSource uses a default value of 1.
 	// Required for American Express SafeKey (U.S.) for travel-related requests.
 	//
-	// Max Length: 3
 	NumberOfPassengers int64 `json:"numberOfPassengers,omitempty"`
 
 	// passengers
@@ -7224,10 +8884,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) Validate(formats s
 		res = append(res, err)
 	}
 
-	if err := o.validateNumberOfPassengers(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validatePassengers(formats); err != nil {
 		res = append(res, err)
 	}
@@ -7239,7 +8895,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) Validate(formats s
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) validateLegs(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Legs) { // not required
 		return nil
 	}
@@ -7253,6 +8908,8 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) validateLegs(forma
 			if err := o.Legs[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "legs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "legs" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -7263,21 +8920,7 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) validateLegs(forma
 	return nil
 }
 
-func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) validateNumberOfPassengers(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.NumberOfPassengers) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("checkPayerAuthEnrollmentRequest"+"."+"travelInformation"+"."+"numberOfPassengers", "body", string(o.NumberOfPassengers), 3); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) validatePassengers(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Passengers) { // not required
 		return nil
 	}
@@ -7291,6 +8934,66 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) validatePassengers
 			if err := o.Passengers[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "passengers" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "passengers" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this check payer auth enrollment params body travel information based on the context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLegs(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePassengers(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) contextValidateLegs(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Legs); i++ {
+
+		if o.Legs[i] != nil {
+			if err := o.Legs[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "legs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "legs" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformation) contextValidatePassengers(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Passengers); i++ {
+
+		if o.Passengers[i] != nil {
+			if err := o.Passengers[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "passengers" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("checkPayerAuthEnrollmentRequest" + "." + "travelInformation" + "." + "passengers" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -7328,17 +9031,11 @@ type CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0 struct {
 	// Required for each leg.
 	// Required for American Express SafeKey (U.S.) for travel-related requests.
 	//
-	// For details, see `airline_leg#_carrier_code` in [Airline Processing Using the SCMP API.]
-	// (https://apps.cybersource.com/library/documentation/dev_guides/Airline_SCMP_API/Airline_SCMP_API.pdf)
-	//
 	// Max Length: 2
 	CarrierCode string `json:"carrierCode,omitempty"`
 
 	// Departure date for the first leg of the trip. Format: YYYYMMDD.
 	// Required for American Express SafeKey (U.S.) for travel-related requests.
-	//
-	// For details, see `airline_leg#_leg_departure_date` in [Airline Processing Using the SCMP API.]
-	// (https://apps.cybersource.com/library/documentation/dev_guides/Airline_SCMP_API/Airline_SCMP_API.pdf)
 	//
 	DepartureDate string `json:"departureDate,omitempty"`
 
@@ -7399,12 +9096,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0) Validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0) validateCarrierCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CarrierCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("carrierCode", "body", string(o.CarrierCode), 2); err != nil {
+	if err := validate.MaxLength("carrierCode", "body", o.CarrierCode, 2); err != nil {
 		return err
 	}
 
@@ -7412,12 +9108,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0) validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0) validateDestination(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Destination) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("destination", "body", string(o.Destination), 3); err != nil {
+	if err := validate.MaxLength("destination", "body", o.Destination, 3); err != nil {
 		return err
 	}
 
@@ -7425,15 +9120,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0) validate
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0) validateOrigination(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Origination) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("origination", "body", string(o.Origination), 3); err != nil {
+	if err := validate.MaxLength("origination", "body", o.Origination, 3); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body travel information legs items0 based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationLegsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -7498,12 +9197,11 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0) Va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("firstName", "body", string(o.FirstName), 60); err != nil {
+	if err := validate.MaxLength("firstName", "body", o.FirstName, 60); err != nil {
 		return err
 	}
 
@@ -7511,15 +9209,19 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0) va
 }
 
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("lastName", "body", string(o.LastName), 60); err != nil {
+	if err := validate.MaxLength("lastName", "body", o.LastName, 60); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this check payer auth enrollment params body travel information passengers items0 based on context it is used
+func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -7534,144 +9236,6 @@ func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0) Ma
 // UnmarshalBinary interface implementation
 func (o *CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0) UnmarshalBinary(b []byte) error {
 	var res CheckPayerAuthEnrollmentParamsBodyTravelInformationPassengersItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*DetailsItems0 details items0
-swagger:model DetailsItems0
-*/
-type DetailsItems0 struct {
-
-	// This is the flattened JSON object field name/path that is either missing or invalid.
-	Field string `json:"field,omitempty"`
-
-	// Possible reasons for the error.
-	//
-	// Possible values:
-	//  - MISSING_FIELD
-	//  - INVALID_DATA
-	//
-	Reason string `json:"reason,omitempty"`
-}
-
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-/*MerchantDefinedInformationItems0 Contains merchant-defined key-value pairs.
-swagger:model MerchantDefinedInformationItems0
-*/
-type MerchantDefinedInformationItems0 struct {
-
-	// Fields that you can use to store information. The value
-	// appears in the Case Management Details window in the
-	// Business Center. The first four fields are the same fields
-	// that are used by the Secure Data services. See request
-	// code examples.
-	// **Warning** Merchant-defined data fields are not intended
-	// to and must not be used to capture personally identifying
-	// information. Accordingly, merchants are prohibited from
-	// capturing, obtaining, and/or transmitting any personally
-	// identifying information in or via the merchant-defined data
-	// fields. Personally identifying information includes, but is
-	// not limited to, address, credit card number, social security
-	// number, driver's license number, state-issued
-	// identification number, passport number, and card
-	// verification numbers (CVV, CVC2, CVV2, CID, CVN). In
-	// the event CyberSource discovers that a merchant is
-	// capturing and/or transmitting personally identifying
-	// information via the merchant-defined data fields, whether
-	// or not intentionally, CyberSource will immediately
-	// suspend the merchant's account, which will result in a
-	// rejection of any and all transaction requests submitted by
-	// the merchant after the point of suspension.
-	//
-	// Max Length: 255
-	Key string `json:"key,omitempty"`
-
-	// String value for the key
-	// Max Length: 255
-	Value string `json:"value,omitempty"`
-}
-
-// Validate validates this merchant defined information items0
-func (o *MerchantDefinedInformationItems0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateKey(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateValue(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *MerchantDefinedInformationItems0) validateKey(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Key) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("key", "body", string(o.Key), 255); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *MerchantDefinedInformationItems0) validateValue(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Value) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("value", "body", string(o.Value), 255); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *MerchantDefinedInformationItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *MerchantDefinedInformationItems0) UnmarshalBinary(b []byte) error {
-	var res MerchantDefinedInformationItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -25,66 +25,34 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreatePaymentInstrument(params *CreatePaymentInstrumentParams) (*CreatePaymentInstrumentCreated, error)
+	DeletePaymentInstrument(params *DeletePaymentInstrumentParams, opts ...ClientOption) (*DeletePaymentInstrumentNoContent, error)
 
-	DeletePaymentInstrument(params *DeletePaymentInstrumentParams) (*DeletePaymentInstrumentNoContent, error)
+	GetPaymentInstrument(params *GetPaymentInstrumentParams, opts ...ClientOption) (*GetPaymentInstrumentOK, error)
 
-	GetPaymentInstrument(params *GetPaymentInstrumentParams) (*GetPaymentInstrumentOK, error)
+	PatchPaymentInstrument(params *PatchPaymentInstrumentParams, opts ...ClientOption) (*PatchPaymentInstrumentOK, error)
 
-	UpdatePaymentInstrument(params *UpdatePaymentInstrumentParams) (*UpdatePaymentInstrumentOK, error)
+	PostPaymentInstrument(params *PostPaymentInstrumentParams, opts ...ClientOption) (*PostPaymentInstrumentCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  CreatePaymentInstrument creates a payment instrument
-*/
-func (a *Client) CreatePaymentInstrument(params *CreatePaymentInstrumentParams) (*CreatePaymentInstrumentCreated, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewCreatePaymentInstrumentParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "createPaymentInstrument",
-		Method:             "POST",
-		PathPattern:        "/tms/v1/paymentinstruments",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
-		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &CreatePaymentInstrumentReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*CreatePaymentInstrumentCreated)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for createPaymentInstrument: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
   DeletePaymentInstrument deletes a payment instrument
 */
-func (a *Client) DeletePaymentInstrument(params *DeletePaymentInstrumentParams) (*DeletePaymentInstrumentNoContent, error) {
+func (a *Client) DeletePaymentInstrument(params *DeletePaymentInstrumentParams, opts ...ClientOption) (*DeletePaymentInstrumentNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeletePaymentInstrumentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "deletePaymentInstrument",
 		Method:             "DELETE",
-		PathPattern:        "/tms/v1/paymentinstruments/{tokenId}",
+		PathPattern:        "/tms/v1/paymentinstruments/{paymentInstrumentTokenId}",
 		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
@@ -92,7 +60,12 @@ func (a *Client) DeletePaymentInstrument(params *DeletePaymentInstrumentParams) 
 		Reader:             &DeletePaymentInstrumentReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -109,16 +82,15 @@ func (a *Client) DeletePaymentInstrument(params *DeletePaymentInstrumentParams) 
 /*
   GetPaymentInstrument retrieves a payment instrument
 */
-func (a *Client) GetPaymentInstrument(params *GetPaymentInstrumentParams) (*GetPaymentInstrumentOK, error) {
+func (a *Client) GetPaymentInstrument(params *GetPaymentInstrumentParams, opts ...ClientOption) (*GetPaymentInstrumentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPaymentInstrumentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getPaymentInstrument",
 		Method:             "GET",
-		PathPattern:        "/tms/v1/paymentinstruments/{tokenId}",
+		PathPattern:        "/tms/v1/paymentinstruments/{paymentInstrumentTokenId}",
 		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
@@ -126,7 +98,12 @@ func (a *Client) GetPaymentInstrument(params *GetPaymentInstrumentParams) (*GetP
 		Reader:             &GetPaymentInstrumentReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -141,36 +118,82 @@ func (a *Client) GetPaymentInstrument(params *GetPaymentInstrumentParams) (*GetP
 }
 
 /*
-  UpdatePaymentInstrument updates a payment instrument
+  PatchPaymentInstrument updates a payment instrument
 */
-func (a *Client) UpdatePaymentInstrument(params *UpdatePaymentInstrumentParams) (*UpdatePaymentInstrumentOK, error) {
+func (a *Client) PatchPaymentInstrument(params *PatchPaymentInstrumentParams, opts ...ClientOption) (*PatchPaymentInstrumentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdatePaymentInstrumentParams()
+		params = NewPatchPaymentInstrumentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "updatePaymentInstrument",
+	op := &runtime.ClientOperation{
+		ID:                 "patchPaymentInstrument",
 		Method:             "PATCH",
-		PathPattern:        "/tms/v1/paymentinstruments/{tokenId}",
+		PathPattern:        "/tms/v1/paymentinstruments/{paymentInstrumentTokenId}",
 		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdatePaymentInstrumentReader{formats: a.formats},
+		Reader:             &PatchPaymentInstrumentReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdatePaymentInstrumentOK)
+	success, ok := result.(*PatchPaymentInstrumentOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for updatePaymentInstrument: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for patchPaymentInstrument: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  PostPaymentInstrument creates a payment instrument
+
+  Include an existing TMS Instrument Identifier id in the request body.
+* An Instrument Identifier token can be created by calling: **POST [*]/tms/v1/instrumentidentifiers***
+
+*/
+func (a *Client) PostPaymentInstrument(params *PostPaymentInstrumentParams, opts ...ClientOption) (*PostPaymentInstrumentCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPostPaymentInstrumentParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "postPaymentInstrument",
+		Method:             "POST",
+		PathPattern:        "/tms/v1/paymentinstruments",
+		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PostPaymentInstrumentReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*PostPaymentInstrumentCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for postPaymentInstrument: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

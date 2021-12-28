@@ -16,64 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetInstrumentIdentifierParams creates a new GetInstrumentIdentifierParams object
-// with the default values initialized.
+// NewGetInstrumentIdentifierParams creates a new GetInstrumentIdentifierParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetInstrumentIdentifierParams() *GetInstrumentIdentifierParams {
-	var ()
 	return &GetInstrumentIdentifierParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetInstrumentIdentifierParamsWithTimeout creates a new GetInstrumentIdentifierParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetInstrumentIdentifierParamsWithTimeout(timeout time.Duration) *GetInstrumentIdentifierParams {
-	var ()
 	return &GetInstrumentIdentifierParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetInstrumentIdentifierParamsWithContext creates a new GetInstrumentIdentifierParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetInstrumentIdentifierParamsWithContext(ctx context.Context) *GetInstrumentIdentifierParams {
-	var ()
 	return &GetInstrumentIdentifierParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetInstrumentIdentifierParamsWithHTTPClient creates a new GetInstrumentIdentifierParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetInstrumentIdentifierParamsWithHTTPClient(client *http.Client) *GetInstrumentIdentifierParams {
-	var ()
 	return &GetInstrumentIdentifierParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetInstrumentIdentifierParams contains all the parameters to send to the API endpoint
-for the get instrument identifier operation typically these are written to a http.Request
+/* GetInstrumentIdentifierParams contains all the parameters to send to the API endpoint
+   for the get instrument identifier operation.
+
+   Typically these are written to a http.Request.
 */
 type GetInstrumentIdentifierParams struct {
 
-	/*ProfileID
-	  The id of a profile containing user specific TMS configuration.
+	/* InstrumentIdentifierTokenID.
 
+	   The TokenId of a Instrument Identifier.
 	*/
-	ProfileID string
-	/*TokenID
-	  The TokenId of an Instrument Identifier.
+	InstrumentIdentifierTokenID string
 
+	/* ProfileID.
+
+	   The id of a profile containing user specific TMS configuration.
 	*/
-	TokenID string
+	ProfileID *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get instrument identifier params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetInstrumentIdentifierParams) WithDefaults() *GetInstrumentIdentifierParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get instrument identifier params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetInstrumentIdentifierParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get instrument identifier params
@@ -109,26 +124,26 @@ func (o *GetInstrumentIdentifierParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithInstrumentIdentifierTokenID adds the instrumentIdentifierTokenID to the get instrument identifier params
+func (o *GetInstrumentIdentifierParams) WithInstrumentIdentifierTokenID(instrumentIdentifierTokenID string) *GetInstrumentIdentifierParams {
+	o.SetInstrumentIdentifierTokenID(instrumentIdentifierTokenID)
+	return o
+}
+
+// SetInstrumentIdentifierTokenID adds the instrumentIdentifierTokenId to the get instrument identifier params
+func (o *GetInstrumentIdentifierParams) SetInstrumentIdentifierTokenID(instrumentIdentifierTokenID string) {
+	o.InstrumentIdentifierTokenID = instrumentIdentifierTokenID
+}
+
 // WithProfileID adds the profileID to the get instrument identifier params
-func (o *GetInstrumentIdentifierParams) WithProfileID(profileID string) *GetInstrumentIdentifierParams {
+func (o *GetInstrumentIdentifierParams) WithProfileID(profileID *string) *GetInstrumentIdentifierParams {
 	o.SetProfileID(profileID)
 	return o
 }
 
 // SetProfileID adds the profileId to the get instrument identifier params
-func (o *GetInstrumentIdentifierParams) SetProfileID(profileID string) {
+func (o *GetInstrumentIdentifierParams) SetProfileID(profileID *string) {
 	o.ProfileID = profileID
-}
-
-// WithTokenID adds the tokenID to the get instrument identifier params
-func (o *GetInstrumentIdentifierParams) WithTokenID(tokenID string) *GetInstrumentIdentifierParams {
-	o.SetTokenID(tokenID)
-	return o
-}
-
-// SetTokenID adds the tokenId to the get instrument identifier params
-func (o *GetInstrumentIdentifierParams) SetTokenID(tokenID string) {
-	o.TokenID = tokenID
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -139,14 +154,17 @@ func (o *GetInstrumentIdentifierParams) WriteToRequest(r runtime.ClientRequest, 
 	}
 	var res []error
 
-	// header param profile-id
-	if err := r.SetHeaderParam("profile-id", o.ProfileID); err != nil {
+	// path param instrumentIdentifierTokenId
+	if err := r.SetPathParam("instrumentIdentifierTokenId", o.InstrumentIdentifierTokenID); err != nil {
 		return err
 	}
 
-	// path param tokenId
-	if err := r.SetPathParam("tokenId", o.TokenID); err != nil {
-		return err
+	if o.ProfileID != nil {
+
+		// header param profile-id
+		if err := r.SetHeaderParam("profile-id", *o.ProfileID); err != nil {
+			return err
+		}
 	}
 
 	if len(res) > 0 {

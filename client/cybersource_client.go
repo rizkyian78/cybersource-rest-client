@@ -10,13 +10,22 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/asymmetric_key_management"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/capture"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/chargeback_details"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/chargeback_summaries"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/conversion_details"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/credit"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/customer"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/customer_payment_instrument"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/customer_shipping_address"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/decision_manager"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/download_d_t_d"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/download_x_s_d"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/instrument_identifier"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/interchange_clearing_level_details"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/invoice_settings"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/invoices"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/key_generation"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/net_fundings"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/notification_of_changes"
@@ -31,13 +40,19 @@ import (
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/report_downloads"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/report_subscriptions"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/reports"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/retrieval_details"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/retrieval_summaries"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/reversal"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/search_transactions"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/secure_file_share"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/symmetric_key_management"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/taxes"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/tokenization"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/transaction_batches"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/transaction_details"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/user_management"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/user_management_search"
+	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/verification"
 	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/void"
 )
 
@@ -83,13 +98,22 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Cybersourc
 
 	cli := new(Cybersource)
 	cli.Transport = transport
+	cli.AsymmetricKeyManagement = asymmetric_key_management.New(transport, formats)
 	cli.Capture = capture.New(transport, formats)
+	cli.ChargebackDetails = chargeback_details.New(transport, formats)
+	cli.ChargebackSummaries = chargeback_summaries.New(transport, formats)
 	cli.ConversionDetails = conversion_details.New(transport, formats)
 	cli.Credit = credit.New(transport, formats)
+	cli.Customer = customer.New(transport, formats)
+	cli.CustomerPaymentInstrument = customer_payment_instrument.New(transport, formats)
+	cli.CustomerShippingAddress = customer_shipping_address.New(transport, formats)
 	cli.DecisionManager = decision_manager.New(transport, formats)
 	cli.Downloaddtd = download_d_t_d.New(transport, formats)
 	cli.Downloadxsd = download_x_s_d.New(transport, formats)
 	cli.InstrumentIdentifier = instrument_identifier.New(transport, formats)
+	cli.InterchangeClearingLevelDetails = interchange_clearing_level_details.New(transport, formats)
+	cli.InvoiceSettings = invoice_settings.New(transport, formats)
+	cli.Invoices = invoices.New(transport, formats)
 	cli.KeyGeneration = key_generation.New(transport, formats)
 	cli.NetFundings = net_fundings.New(transport, formats)
 	cli.NotificationOfChanges = notification_of_changes.New(transport, formats)
@@ -104,13 +128,19 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Cybersourc
 	cli.ReportDownloads = report_downloads.New(transport, formats)
 	cli.ReportSubscriptions = report_subscriptions.New(transport, formats)
 	cli.Reports = reports.New(transport, formats)
+	cli.RetrievalDetails = retrieval_details.New(transport, formats)
+	cli.RetrievalSummaries = retrieval_summaries.New(transport, formats)
 	cli.Reversal = reversal.New(transport, formats)
 	cli.SearchTransactions = search_transactions.New(transport, formats)
 	cli.SecureFileShare = secure_file_share.New(transport, formats)
+	cli.SymmetricKeyManagement = symmetric_key_management.New(transport, formats)
+	cli.Taxes = taxes.New(transport, formats)
 	cli.Tokenization = tokenization.New(transport, formats)
 	cli.TransactionBatches = transaction_batches.New(transport, formats)
 	cli.TransactionDetails = transaction_details.New(transport, formats)
 	cli.UserManagement = user_management.New(transport, formats)
+	cli.UserManagementSearch = user_management_search.New(transport, formats)
+	cli.Verification = verification.New(transport, formats)
 	cli.Void = void.New(transport, formats)
 	return cli
 }
@@ -156,11 +186,23 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Cybersource is a client for cybersource
 type Cybersource struct {
+	AsymmetricKeyManagement asymmetric_key_management.ClientService
+
 	Capture capture.ClientService
+
+	ChargebackDetails chargeback_details.ClientService
+
+	ChargebackSummaries chargeback_summaries.ClientService
 
 	ConversionDetails conversion_details.ClientService
 
 	Credit credit.ClientService
+
+	Customer customer.ClientService
+
+	CustomerPaymentInstrument customer_payment_instrument.ClientService
+
+	CustomerShippingAddress customer_shipping_address.ClientService
 
 	DecisionManager decision_manager.ClientService
 
@@ -169,6 +211,12 @@ type Cybersource struct {
 	Downloadxsd download_x_s_d.ClientService
 
 	InstrumentIdentifier instrument_identifier.ClientService
+
+	InterchangeClearingLevelDetails interchange_clearing_level_details.ClientService
+
+	InvoiceSettings invoice_settings.ClientService
+
+	Invoices invoices.ClientService
 
 	KeyGeneration key_generation.ClientService
 
@@ -198,11 +246,19 @@ type Cybersource struct {
 
 	Reports reports.ClientService
 
+	RetrievalDetails retrieval_details.ClientService
+
+	RetrievalSummaries retrieval_summaries.ClientService
+
 	Reversal reversal.ClientService
 
 	SearchTransactions search_transactions.ClientService
 
 	SecureFileShare secure_file_share.ClientService
+
+	SymmetricKeyManagement symmetric_key_management.ClientService
+
+	Taxes taxes.ClientService
 
 	Tokenization tokenization.ClientService
 
@@ -212,6 +268,10 @@ type Cybersource struct {
 
 	UserManagement user_management.ClientService
 
+	UserManagementSearch user_management_search.ClientService
+
+	Verification verification.ClientService
+
 	Void void.ClientService
 
 	Transport runtime.ClientTransport
@@ -220,13 +280,22 @@ type Cybersource struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Cybersource) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
+	c.AsymmetricKeyManagement.SetTransport(transport)
 	c.Capture.SetTransport(transport)
+	c.ChargebackDetails.SetTransport(transport)
+	c.ChargebackSummaries.SetTransport(transport)
 	c.ConversionDetails.SetTransport(transport)
 	c.Credit.SetTransport(transport)
+	c.Customer.SetTransport(transport)
+	c.CustomerPaymentInstrument.SetTransport(transport)
+	c.CustomerShippingAddress.SetTransport(transport)
 	c.DecisionManager.SetTransport(transport)
 	c.Downloaddtd.SetTransport(transport)
 	c.Downloadxsd.SetTransport(transport)
 	c.InstrumentIdentifier.SetTransport(transport)
+	c.InterchangeClearingLevelDetails.SetTransport(transport)
+	c.InvoiceSettings.SetTransport(transport)
+	c.Invoices.SetTransport(transport)
 	c.KeyGeneration.SetTransport(transport)
 	c.NetFundings.SetTransport(transport)
 	c.NotificationOfChanges.SetTransport(transport)
@@ -241,12 +310,18 @@ func (c *Cybersource) SetTransport(transport runtime.ClientTransport) {
 	c.ReportDownloads.SetTransport(transport)
 	c.ReportSubscriptions.SetTransport(transport)
 	c.Reports.SetTransport(transport)
+	c.RetrievalDetails.SetTransport(transport)
+	c.RetrievalSummaries.SetTransport(transport)
 	c.Reversal.SetTransport(transport)
 	c.SearchTransactions.SetTransport(transport)
 	c.SecureFileShare.SetTransport(transport)
+	c.SymmetricKeyManagement.SetTransport(transport)
+	c.Taxes.SetTransport(transport)
 	c.Tokenization.SetTransport(transport)
 	c.TransactionBatches.SetTransport(transport)
 	c.TransactionDetails.SetTransport(transport)
 	c.UserManagement.SetTransport(transport)
+	c.UserManagementSearch.SetTransport(transport)
+	c.Verification.SetTransport(transport)
 	c.Void.SetTransport(transport)
 }

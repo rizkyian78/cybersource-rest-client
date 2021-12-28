@@ -25,9 +25,12 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetTransaction(params *GetTransactionParams) (*GetTransactionOK, error)
+	GetTransaction(params *GetTransactionParams, opts ...ClientOption) (*GetTransactionOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -37,24 +40,28 @@ type ClientService interface {
 
   Include the Request ID in the GET request to retrieve the transaction details.
 */
-func (a *Client) GetTransaction(params *GetTransactionParams) (*GetTransactionOK, error) {
+func (a *Client) GetTransaction(params *GetTransactionParams, opts ...ClientOption) (*GetTransactionOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTransactionParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTransaction",
 		Method:             "GET",
 		PathPattern:        "/tss/v2/transactions/{id}",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ProducesMediaTypes: []string{"application/hal+json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &GetTransactionReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

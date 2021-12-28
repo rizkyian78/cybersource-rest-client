@@ -25,13 +25,16 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateReport(params *CreateReportParams) (*CreateReportCreated, error)
+	CreateReport(params *CreateReportParams, opts ...ClientOption) (*CreateReportCreated, error)
 
-	GetReportByReportID(params *GetReportByReportIDParams) (*GetReportByReportIDOK, error)
+	GetReportByReportID(params *GetReportByReportIDParams, opts ...ClientOption) (*GetReportByReportIDOK, error)
 
-	SearchReports(params *SearchReportsParams) (*SearchReportsOK, error)
+	SearchReports(params *SearchReportsParams, opts ...ClientOption) (*SearchReportsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -39,18 +42,15 @@ type ClientService interface {
 /*
   CreateReport creates adhoc report
 
-  Create a one-time report. You must specify the
-type of report in reportDefinitionName. For a list of values for
-reportDefinitionName, see the [Reporting Developer Guide](https://www.cybersource.com/developers/documentation/reporting_and_reconciliation)
+  Create a one-time report. You must specify the type of report in reportDefinitionName. For a list of values for reportDefinitionName, see the [Reporting Developer Guide](https://www.cybersource.com/developers/documentation/reporting_and_reconciliation)
 
 */
-func (a *Client) CreateReport(params *CreateReportParams) (*CreateReportCreated, error) {
+func (a *Client) CreateReport(params *CreateReportParams, opts ...ClientOption) (*CreateReportCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateReportParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "createReport",
 		Method:             "POST",
 		PathPattern:        "/reporting/v3/reports",
@@ -61,7 +61,12 @@ func (a *Client) CreateReport(params *CreateReportParams) (*CreateReportCreated,
 		Reader:             &CreateReportReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -78,18 +83,15 @@ func (a *Client) CreateReport(params *CreateReportParams) (*CreateReportCreated,
 /*
   GetReportByReportID gets report based on report Id
 
-  Download a report using the reportId value. If
-you don’t already know this value, you can obtain it using the
-Retrieve available reports call.
+  Download a report using the reportId value. If you don’t already know this value, you can obtain it using the Retrieve available reports call.
 
 */
-func (a *Client) GetReportByReportID(params *GetReportByReportIDParams) (*GetReportByReportIDOK, error) {
+func (a *Client) GetReportByReportID(params *GetReportByReportIDParams, opts ...ClientOption) (*GetReportByReportIDOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetReportByReportIDParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getReportByReportId",
 		Method:             "GET",
 		PathPattern:        "/reporting/v3/reports/{reportId}",
@@ -100,7 +102,12 @@ func (a *Client) GetReportByReportID(params *GetReportByReportIDParams) (*GetRep
 		Reader:             &GetReportByReportIDReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -117,18 +124,15 @@ func (a *Client) GetReportByReportID(params *GetReportByReportIDParams) (*GetRep
 /*
   SearchReports retrieves available reports
 
-  Retrieve a list of the available reports to which
-you are subscribed. This will also give you the reportId value,
-which you can also use to download a report.
+  Retrieve a list of the available reports to which you are subscribed. This will also give you the reportId value, which you can also use to download a report.
 
 */
-func (a *Client) SearchReports(params *SearchReportsParams) (*SearchReportsOK, error) {
+func (a *Client) SearchReports(params *SearchReportsParams, opts ...ClientOption) (*SearchReportsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSearchReportsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "searchReports",
 		Method:             "GET",
 		PathPattern:        "/reporting/v3/reports",
@@ -139,7 +143,12 @@ func (a *Client) SearchReports(params *SearchReportsParams) (*SearchReportsOK, e
 		Reader:             &SearchReportsReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

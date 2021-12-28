@@ -16,79 +16,107 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetFileDetailParams creates a new GetFileDetailParams object
-// with the default values initialized.
+// NewGetFileDetailParams creates a new GetFileDetailParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetFileDetailParams() *GetFileDetailParams {
-	var ()
 	return &GetFileDetailParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetFileDetailParamsWithTimeout creates a new GetFileDetailParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetFileDetailParamsWithTimeout(timeout time.Duration) *GetFileDetailParams {
-	var ()
 	return &GetFileDetailParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetFileDetailParamsWithContext creates a new GetFileDetailParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetFileDetailParamsWithContext(ctx context.Context) *GetFileDetailParams {
-	var ()
 	return &GetFileDetailParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetFileDetailParamsWithHTTPClient creates a new GetFileDetailParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetFileDetailParamsWithHTTPClient(client *http.Client) *GetFileDetailParams {
-	var ()
 	return &GetFileDetailParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetFileDetailParams contains all the parameters to send to the API endpoint
-for the get file detail operation typically these are written to a http.Request
+/* GetFileDetailParams contains all the parameters to send to the API endpoint
+   for the get file detail operation.
+
+   Typically these are written to a http.Request.
 */
 type GetFileDetailParams struct {
 
-	/*EndDate
-	  Valid end date in **ISO 8601 format**
+	/* EndDate.
+
+	     Valid end date in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	 **Example date format:**
 	  - yyyy-MM-dd
 
 
+	     Format: date
 	*/
 	EndDate strfmt.Date
-	/*OrganizationID
-	  Valid Cybersource Organization Id
+
+	/* Name.
+
+	     **Tailored to searches for specific files with in given Date range**
+	example : MyTransactionDetailreport.xml
 
 	*/
+	Name *string
+
+	/* OrganizationID.
+
+	   Valid Cybersource Organization Id
+	*/
 	OrganizationID *string
-	/*StartDate
-	  Valid start date in **ISO 8601 format**
+
+	/* StartDate.
+
+	     Valid start date in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	 **Example date format:**
 	  - yyyy-MM-dd
 
 
+	     Format: date
 	*/
 	StartDate strfmt.Date
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get file detail params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetFileDetailParams) WithDefaults() *GetFileDetailParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get file detail params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetFileDetailParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get file detail params
@@ -135,6 +163,17 @@ func (o *GetFileDetailParams) SetEndDate(endDate strfmt.Date) {
 	o.EndDate = endDate
 }
 
+// WithName adds the name to the get file detail params
+func (o *GetFileDetailParams) WithName(name *string) *GetFileDetailParams {
+	o.SetName(name)
+	return o
+}
+
+// SetName adds the name to the get file detail params
+func (o *GetFileDetailParams) SetName(name *string) {
+	o.Name = name
+}
+
 // WithOrganizationID adds the organizationID to the get file detail params
 func (o *GetFileDetailParams) WithOrganizationID(organizationID *string) *GetFileDetailParams {
 	o.SetOrganizationID(organizationID)
@@ -169,8 +208,26 @@ func (o *GetFileDetailParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 	qrEndDate := o.EndDate
 	qEndDate := qrEndDate.String()
 	if qEndDate != "" {
+
 		if err := r.SetQueryParam("endDate", qEndDate); err != nil {
 			return err
+		}
+	}
+
+	if o.Name != nil {
+
+		// query param name
+		var qrName string
+
+		if o.Name != nil {
+			qrName = *o.Name
+		}
+		qName := qrName
+		if qName != "" {
+
+			if err := r.SetQueryParam("name", qName); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -178,22 +235,24 @@ func (o *GetFileDetailParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// query param startDate
 	qrStartDate := o.StartDate
 	qStartDate := qrStartDate.String()
 	if qStartDate != "" {
+
 		if err := r.SetQueryParam("startDate", qStartDate); err != nil {
 			return err
 		}

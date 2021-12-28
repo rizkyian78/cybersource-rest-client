@@ -16,56 +16,70 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewCreateCreditParams creates a new CreateCreditParams object
-// with the default values initialized.
+// NewCreateCreditParams creates a new CreateCreditParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCreateCreditParams() *CreateCreditParams {
-	var ()
 	return &CreateCreditParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCreateCreditParamsWithTimeout creates a new CreateCreditParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCreateCreditParamsWithTimeout(timeout time.Duration) *CreateCreditParams {
-	var ()
 	return &CreateCreditParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCreateCreditParamsWithContext creates a new CreateCreditParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCreateCreditParamsWithContext(ctx context.Context) *CreateCreditParams {
-	var ()
 	return &CreateCreditParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCreateCreditParamsWithHTTPClient creates a new CreateCreditParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCreateCreditParamsWithHTTPClient(client *http.Client) *CreateCreditParams {
-	var ()
 	return &CreateCreditParams{
 		HTTPClient: client,
 	}
 }
 
-/*CreateCreditParams contains all the parameters to send to the API endpoint
-for the create credit operation typically these are written to a http.Request
+/* CreateCreditParams contains all the parameters to send to the API endpoint
+   for the create credit operation.
+
+   Typically these are written to a http.Request.
 */
 type CreateCreditParams struct {
 
-	/*CreateCreditRequest*/
+	// CreateCreditRequest.
 	CreateCreditRequest CreateCreditBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the create credit params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateCreditParams) WithDefaults() *CreateCreditParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the create credit params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateCreditParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the create credit params
@@ -119,7 +133,6 @@ func (o *CreateCreditParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.CreateCreditRequest); err != nil {
 		return err
 	}

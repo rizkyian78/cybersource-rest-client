@@ -6,13 +6,16 @@ package payment_instrument
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // DeletePaymentInstrumentReader is a Reader for the DeletePaymentInstrument structure.
@@ -59,9 +62,8 @@ func (o *DeletePaymentInstrumentReader) ReadResponse(response runtime.ClientResp
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -70,24 +72,40 @@ func NewDeletePaymentInstrumentNoContent() *DeletePaymentInstrumentNoContent {
 	return &DeletePaymentInstrumentNoContent{}
 }
 
-/*DeletePaymentInstrumentNoContent handles this case with default header values.
+/* DeletePaymentInstrumentNoContent describes a response with status code 204, with default header values.
 
-An existing Payment Instrument associated with the supplied `tokenId` has been deleted.
+The  request is fulfilled but does not need to return a body
 */
 type DeletePaymentInstrumentNoContent struct {
-	/*A globally unique ID associated with your request.
+
+	/* A globally unique ID associated with your request.
 	 */
 	UniqueTransactionID string
+
+	/* The mandatory correlation id passed by upstream (calling) system.
+	 */
+	VcCorrelationID string
 }
 
 func (o *DeletePaymentInstrumentNoContent) Error() string {
-	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{tokenId}][%d] deletePaymentInstrumentNoContent ", 204)
+	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{paymentInstrumentTokenId}][%d] deletePaymentInstrumentNoContent ", 204)
 }
 
 func (o *DeletePaymentInstrumentNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	// response header uniqueTransactionID
-	o.UniqueTransactionID = response.GetHeader("uniqueTransactionID")
+	// hydrates response header uniqueTransactionID
+	hdrUniqueTransactionID := response.GetHeader("uniqueTransactionID")
+
+	if hdrUniqueTransactionID != "" {
+		o.UniqueTransactionID = hdrUniqueTransactionID
+	}
+
+	// hydrates response header v-c-correlation-id
+	hdrVcCorrelationID := response.GetHeader("v-c-correlation-id")
+
+	if hdrVcCorrelationID != "" {
+		o.VcCorrelationID = hdrVcCorrelationID
+	}
 
 	return nil
 }
@@ -97,33 +115,50 @@ func NewDeletePaymentInstrumentForbidden() *DeletePaymentInstrumentForbidden {
 	return &DeletePaymentInstrumentForbidden{}
 }
 
-/*DeletePaymentInstrumentForbidden handles this case with default header values.
+/* DeletePaymentInstrumentForbidden describes a response with status code 403, with default header values.
 
-Forbidden. The profile might not have permission to perform the token operation.
+403ForbiddenResponse: e.g. The profile might not have permission to perform the operation.
 */
 type DeletePaymentInstrumentForbidden struct {
-	/*A globally unique ID associated with your request.
+
+	/* A globally unique id associated with your request.
 	 */
 	UniqueTransactionID string
 
-	Payload []*DeletePaymentInstrumentForbiddenBodyItems0
+	/* The mandatory correlation id passed by upstream (calling) system.
+	 */
+	VcCorrelationID string
+
+	Payload *DeletePaymentInstrumentForbiddenBody
 }
 
 func (o *DeletePaymentInstrumentForbidden) Error() string {
-	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{tokenId}][%d] deletePaymentInstrumentForbidden  %+v", 403, o.Payload)
+	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{paymentInstrumentTokenId}][%d] deletePaymentInstrumentForbidden  %+v", 403, o.Payload)
 }
-
-func (o *DeletePaymentInstrumentForbidden) GetPayload() []*DeletePaymentInstrumentForbiddenBodyItems0 {
+func (o *DeletePaymentInstrumentForbidden) GetPayload() *DeletePaymentInstrumentForbiddenBody {
 	return o.Payload
 }
 
 func (o *DeletePaymentInstrumentForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	// response header uniqueTransactionID
-	o.UniqueTransactionID = response.GetHeader("uniqueTransactionID")
+	// hydrates response header uniqueTransactionID
+	hdrUniqueTransactionID := response.GetHeader("uniqueTransactionID")
+
+	if hdrUniqueTransactionID != "" {
+		o.UniqueTransactionID = hdrUniqueTransactionID
+	}
+
+	// hydrates response header v-c-correlation-id
+	hdrVcCorrelationID := response.GetHeader("v-c-correlation-id")
+
+	if hdrVcCorrelationID != "" {
+		o.VcCorrelationID = hdrVcCorrelationID
+	}
+
+	o.Payload = new(DeletePaymentInstrumentForbiddenBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
@@ -135,33 +170,50 @@ func NewDeletePaymentInstrumentNotFound() *DeletePaymentInstrumentNotFound {
 	return &DeletePaymentInstrumentNotFound{}
 }
 
-/*DeletePaymentInstrumentNotFound handles this case with default header values.
+/* DeletePaymentInstrumentNotFound describes a response with status code 404, with default header values.
 
 Token Not Found. The `tokenid` may not exist or was entered incorrectly.
 */
 type DeletePaymentInstrumentNotFound struct {
-	/*A globally unique ID associated with your request.
+
+	/* A globally unique ID associated with your request.
 	 */
 	UniqueTransactionID string
 
-	Payload []*DeletePaymentInstrumentNotFoundBodyItems0
+	/* The mandatory correlation id passed by upstream (calling) system.
+	 */
+	VcCorrelationID string
+
+	Payload *DeletePaymentInstrumentNotFoundBody
 }
 
 func (o *DeletePaymentInstrumentNotFound) Error() string {
-	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{tokenId}][%d] deletePaymentInstrumentNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{paymentInstrumentTokenId}][%d] deletePaymentInstrumentNotFound  %+v", 404, o.Payload)
 }
-
-func (o *DeletePaymentInstrumentNotFound) GetPayload() []*DeletePaymentInstrumentNotFoundBodyItems0 {
+func (o *DeletePaymentInstrumentNotFound) GetPayload() *DeletePaymentInstrumentNotFoundBody {
 	return o.Payload
 }
 
 func (o *DeletePaymentInstrumentNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	// response header uniqueTransactionID
-	o.UniqueTransactionID = response.GetHeader("uniqueTransactionID")
+	// hydrates response header uniqueTransactionID
+	hdrUniqueTransactionID := response.GetHeader("uniqueTransactionID")
+
+	if hdrUniqueTransactionID != "" {
+		o.UniqueTransactionID = hdrUniqueTransactionID
+	}
+
+	// hydrates response header v-c-correlation-id
+	hdrVcCorrelationID := response.GetHeader("v-c-correlation-id")
+
+	if hdrVcCorrelationID != "" {
+		o.VcCorrelationID = hdrVcCorrelationID
+	}
+
+	o.Payload = new(DeletePaymentInstrumentNotFoundBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
@@ -173,33 +225,50 @@ func NewDeletePaymentInstrumentGone() *DeletePaymentInstrumentGone {
 	return &DeletePaymentInstrumentGone{}
 }
 
-/*DeletePaymentInstrumentGone handles this case with default header values.
+/* DeletePaymentInstrumentGone describes a response with status code 410, with default header values.
 
 Token Not Available. The token has been deleted.
 */
 type DeletePaymentInstrumentGone struct {
-	/*A globally unique ID associated with your request.
+
+	/* A globally unique ID associated with your request.
 	 */
 	UniqueTransactionID string
 
-	Payload []*DeletePaymentInstrumentGoneBodyItems0
+	/* The mandatory correlation id passed by upstream (calling) system.
+	 */
+	VcCorrelationID string
+
+	Payload *DeletePaymentInstrumentGoneBody
 }
 
 func (o *DeletePaymentInstrumentGone) Error() string {
-	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{tokenId}][%d] deletePaymentInstrumentGone  %+v", 410, o.Payload)
+	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{paymentInstrumentTokenId}][%d] deletePaymentInstrumentGone  %+v", 410, o.Payload)
 }
-
-func (o *DeletePaymentInstrumentGone) GetPayload() []*DeletePaymentInstrumentGoneBodyItems0 {
+func (o *DeletePaymentInstrumentGone) GetPayload() *DeletePaymentInstrumentGoneBody {
 	return o.Payload
 }
 
 func (o *DeletePaymentInstrumentGone) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	// response header uniqueTransactionID
-	o.UniqueTransactionID = response.GetHeader("uniqueTransactionID")
+	// hydrates response header uniqueTransactionID
+	hdrUniqueTransactionID := response.GetHeader("uniqueTransactionID")
+
+	if hdrUniqueTransactionID != "" {
+		o.UniqueTransactionID = hdrUniqueTransactionID
+	}
+
+	// hydrates response header v-c-correlation-id
+	hdrVcCorrelationID := response.GetHeader("v-c-correlation-id")
+
+	if hdrVcCorrelationID != "" {
+		o.VcCorrelationID = hdrVcCorrelationID
+	}
+
+	o.Payload = new(DeletePaymentInstrumentGoneBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
@@ -211,33 +280,50 @@ func NewDeletePaymentInstrumentFailedDependency() *DeletePaymentInstrumentFailed
 	return &DeletePaymentInstrumentFailedDependency{}
 }
 
-/*DeletePaymentInstrumentFailedDependency handles this case with default header values.
+/* DeletePaymentInstrumentFailedDependency describes a response with status code 424, with default header values.
 
 Failed Dependency: e.g. The profile represented by the profile-id may not exist or the profile-id was entered incorrectly.
 */
 type DeletePaymentInstrumentFailedDependency struct {
-	/*A globally unique id associated with your request.
+
+	/* A globally unique id associated with your request.
 	 */
 	UniqueTransactionID string
 
-	Payload []*DeletePaymentInstrumentFailedDependencyBodyItems0
+	/* The mandatory correlation id passed by upstream (calling) system.
+	 */
+	VcCorrelationID string
+
+	Payload *DeletePaymentInstrumentFailedDependencyBody
 }
 
 func (o *DeletePaymentInstrumentFailedDependency) Error() string {
-	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{tokenId}][%d] deletePaymentInstrumentFailedDependency  %+v", 424, o.Payload)
+	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{paymentInstrumentTokenId}][%d] deletePaymentInstrumentFailedDependency  %+v", 424, o.Payload)
 }
-
-func (o *DeletePaymentInstrumentFailedDependency) GetPayload() []*DeletePaymentInstrumentFailedDependencyBodyItems0 {
+func (o *DeletePaymentInstrumentFailedDependency) GetPayload() *DeletePaymentInstrumentFailedDependencyBody {
 	return o.Payload
 }
 
 func (o *DeletePaymentInstrumentFailedDependency) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	// response header uniqueTransactionID
-	o.UniqueTransactionID = response.GetHeader("uniqueTransactionID")
+	// hydrates response header uniqueTransactionID
+	hdrUniqueTransactionID := response.GetHeader("uniqueTransactionID")
+
+	if hdrUniqueTransactionID != "" {
+		o.UniqueTransactionID = hdrUniqueTransactionID
+	}
+
+	// hydrates response header v-c-correlation-id
+	hdrVcCorrelationID := response.GetHeader("v-c-correlation-id")
+
+	if hdrVcCorrelationID != "" {
+		o.VcCorrelationID = hdrVcCorrelationID
+	}
+
+	o.Payload = new(DeletePaymentInstrumentFailedDependencyBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
@@ -249,56 +335,182 @@ func NewDeletePaymentInstrumentInternalServerError() *DeletePaymentInstrumentInt
 	return &DeletePaymentInstrumentInternalServerError{}
 }
 
-/*DeletePaymentInstrumentInternalServerError handles this case with default header values.
+/* DeletePaymentInstrumentInternalServerError describes a response with status code 500, with default header values.
 
 Unexpected error.
 */
 type DeletePaymentInstrumentInternalServerError struct {
-	/*A globally unique id associated with your request.
+
+	/* A globally unique id associated with your request.
 	 */
 	UniqueTransactionID string
 
-	Payload []*DeletePaymentInstrumentInternalServerErrorBodyItems0
+	/* The mandatory correlation id passed by upstream (calling) system.
+	 */
+	VcCorrelationID string
+
+	Payload *DeletePaymentInstrumentInternalServerErrorBody
 }
 
 func (o *DeletePaymentInstrumentInternalServerError) Error() string {
-	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{tokenId}][%d] deletePaymentInstrumentInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[DELETE /tms/v1/paymentinstruments/{paymentInstrumentTokenId}][%d] deletePaymentInstrumentInternalServerError  %+v", 500, o.Payload)
 }
-
-func (o *DeletePaymentInstrumentInternalServerError) GetPayload() []*DeletePaymentInstrumentInternalServerErrorBodyItems0 {
+func (o *DeletePaymentInstrumentInternalServerError) GetPayload() *DeletePaymentInstrumentInternalServerErrorBody {
 	return o.Payload
 }
 
 func (o *DeletePaymentInstrumentInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	// response header uniqueTransactionID
-	o.UniqueTransactionID = response.GetHeader("uniqueTransactionID")
+	// hydrates response header uniqueTransactionID
+	hdrUniqueTransactionID := response.GetHeader("uniqueTransactionID")
+
+	if hdrUniqueTransactionID != "" {
+		o.UniqueTransactionID = hdrUniqueTransactionID
+	}
+
+	// hydrates response header v-c-correlation-id
+	hdrVcCorrelationID := response.GetHeader("v-c-correlation-id")
+
+	if hdrVcCorrelationID != "" {
+		o.VcCorrelationID = hdrVcCorrelationID
+	}
+
+	o.Payload = new(DeletePaymentInstrumentInternalServerErrorBody)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 
 	return nil
 }
 
-/*DeletePaymentInstrumentFailedDependencyBodyItems0 delete payment instrument failed dependency body items0
-swagger:model DeletePaymentInstrumentFailedDependencyBodyItems0
+/*DeletePaymentInstrumentFailedDependencyBody delete payment instrument failed dependency body
+swagger:model DeletePaymentInstrumentFailedDependencyBody
 */
-type DeletePaymentInstrumentFailedDependencyBodyItems0 struct {
+type DeletePaymentInstrumentFailedDependencyBody struct {
+
+	// errors
+	// Read Only: true
+	Errors []*DeletePaymentInstrumentFailedDependencyBodyErrorsItems0 `json:"errors"`
+}
+
+// Validate validates this delete payment instrument failed dependency body
+func (o *DeletePaymentInstrumentFailedDependencyBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateErrors(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentFailedDependencyBody) validateErrors(formats strfmt.Registry) error {
+	if swag.IsZero(o.Errors) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+		if swag.IsZero(o.Errors[i]) { // not required
+			continue
+		}
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentFailedDependency" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentFailedDependency" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument failed dependency body based on the context it is used
+func (o *DeletePaymentInstrumentFailedDependencyBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentFailedDependencyBody) contextValidateErrors(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "deletePaymentInstrumentFailedDependency"+"."+"errors", "body", []*DeletePaymentInstrumentFailedDependencyBodyErrorsItems0(o.Errors)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentFailedDependency" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentFailedDependency" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeletePaymentInstrumentFailedDependencyBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeletePaymentInstrumentFailedDependencyBody) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentFailedDependencyBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*DeletePaymentInstrumentFailedDependencyBodyErrorsItems0 delete payment instrument failed dependency body errors items0
+swagger:model DeletePaymentInstrumentFailedDependencyBodyErrorsItems0
+*/
+type DeletePaymentInstrumentFailedDependencyBodyErrorsItems0 struct {
 
 	// details
-	Details *DeletePaymentInstrumentFailedDependencyBodyItems0Details `json:"details,omitempty"`
+	// Read Only: true
+	Details []*DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0 `json:"details"`
 
 	// The detailed message related to the type stated above.
+	// Read Only: true
 	Message string `json:"message,omitempty"`
 
-	// type
+	// The type of error.
+	// Read Only: true
 	Type string `json:"type,omitempty"`
 }
 
-// Validate validates this delete payment instrument failed dependency body items0
-func (o *DeletePaymentInstrumentFailedDependencyBodyItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument failed dependency body errors items0
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateDetails(formats); err != nil {
@@ -311,26 +523,98 @@ func (o *DeletePaymentInstrumentFailedDependencyBodyItems0) Validate(formats str
 	return nil
 }
 
-func (o *DeletePaymentInstrumentFailedDependencyBodyItems0) validateDetails(formats strfmt.Registry) error {
-
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) validateDetails(formats strfmt.Registry) error {
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
 
-	if o.Details != nil {
-		if err := o.Details.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("details")
-			}
-			return err
+	for i := 0; i < len(o.Details); i++ {
+		if swag.IsZero(o.Details[i]) { // not required
+			continue
 		}
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument failed dependency body errors items0 based on the context it is used
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMessage(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "details", "body", []*DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0(o.Details)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) contextValidateMessage(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "message", "body", string(o.Message)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "type", "body", string(o.Type)); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentFailedDependencyBodyItems0) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -338,8 +622,8 @@ func (o *DeletePaymentInstrumentFailedDependencyBodyItems0) MarshalBinary() ([]b
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentFailedDependencyBodyItems0) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentFailedDependencyBodyItems0
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentFailedDependencyBodyErrorsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -347,25 +631,63 @@ func (o *DeletePaymentInstrumentFailedDependencyBodyItems0) UnmarshalBinary(b []
 	return nil
 }
 
-/*DeletePaymentInstrumentFailedDependencyBodyItems0Details delete payment instrument failed dependency body items0 details
-swagger:model DeletePaymentInstrumentFailedDependencyBodyItems0Details
+/*DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0 delete payment instrument failed dependency body errors items0 details items0
+swagger:model DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0
 */
-type DeletePaymentInstrumentFailedDependencyBodyItems0Details struct {
+type DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0 struct {
 
-	// The location of the field that threw the error.
+	// The location of the field that caused the error.
+	// Read Only: true
 	Location string `json:"location,omitempty"`
 
-	// The name of the field that threw the error.
+	// The name of the field that caused the error.
+	// Read Only: true
 	Name string `json:"name,omitempty"`
 }
 
-// Validate validates this delete payment instrument failed dependency body items0 details
-func (o *DeletePaymentInstrumentFailedDependencyBodyItems0Details) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument failed dependency body errors items0 details items0
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument failed dependency body errors items0 details items0 based on the context it is used
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0) contextValidateLocation(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "location", "body", string(o.Location)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "name", "body", string(o.Name)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentFailedDependencyBodyItems0Details) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -373,8 +695,8 @@ func (o *DeletePaymentInstrumentFailedDependencyBodyItems0Details) MarshalBinary
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentFailedDependencyBodyItems0Details) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentFailedDependencyBodyItems0Details
+func (o *DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentFailedDependencyBodyErrorsItems0DetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -382,23 +704,132 @@ func (o *DeletePaymentInstrumentFailedDependencyBodyItems0Details) UnmarshalBina
 	return nil
 }
 
-/*DeletePaymentInstrumentForbiddenBodyItems0 delete payment instrument forbidden body items0
-swagger:model DeletePaymentInstrumentForbiddenBodyItems0
+/*DeletePaymentInstrumentForbiddenBody delete payment instrument forbidden body
+swagger:model DeletePaymentInstrumentForbiddenBody
 */
-type DeletePaymentInstrumentForbiddenBodyItems0 struct {
+type DeletePaymentInstrumentForbiddenBody struct {
+
+	// errors
+	// Read Only: true
+	Errors []*DeletePaymentInstrumentForbiddenBodyErrorsItems0 `json:"errors"`
+}
+
+// Validate validates this delete payment instrument forbidden body
+func (o *DeletePaymentInstrumentForbiddenBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateErrors(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentForbiddenBody) validateErrors(formats strfmt.Registry) error {
+	if swag.IsZero(o.Errors) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+		if swag.IsZero(o.Errors[i]) { // not required
+			continue
+		}
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentForbidden" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentForbidden" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument forbidden body based on the context it is used
+func (o *DeletePaymentInstrumentForbiddenBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentForbiddenBody) contextValidateErrors(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "deletePaymentInstrumentForbidden"+"."+"errors", "body", []*DeletePaymentInstrumentForbiddenBodyErrorsItems0(o.Errors)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentForbidden" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentForbidden" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeletePaymentInstrumentForbiddenBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeletePaymentInstrumentForbiddenBody) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentForbiddenBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*DeletePaymentInstrumentForbiddenBodyErrorsItems0 delete payment instrument forbidden body errors items0
+swagger:model DeletePaymentInstrumentForbiddenBodyErrorsItems0
+*/
+type DeletePaymentInstrumentForbiddenBodyErrorsItems0 struct {
 
 	// details
-	Details *DeletePaymentInstrumentForbiddenBodyItems0Details `json:"details,omitempty"`
+	// Read Only: true
+	Details []*DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0 `json:"details"`
 
 	// The detailed message related to the type stated above.
+	// Read Only: true
 	Message string `json:"message,omitempty"`
 
-	// type
+	// The type of error.
+	// Read Only: true
 	Type string `json:"type,omitempty"`
 }
 
-// Validate validates this delete payment instrument forbidden body items0
-func (o *DeletePaymentInstrumentForbiddenBodyItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument forbidden body errors items0
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateDetails(formats); err != nil {
@@ -411,26 +842,98 @@ func (o *DeletePaymentInstrumentForbiddenBodyItems0) Validate(formats strfmt.Reg
 	return nil
 }
 
-func (o *DeletePaymentInstrumentForbiddenBodyItems0) validateDetails(formats strfmt.Registry) error {
-
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) validateDetails(formats strfmt.Registry) error {
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
 
-	if o.Details != nil {
-		if err := o.Details.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("details")
-			}
-			return err
+	for i := 0; i < len(o.Details); i++ {
+		if swag.IsZero(o.Details[i]) { // not required
+			continue
 		}
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument forbidden body errors items0 based on the context it is used
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMessage(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "details", "body", []*DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0(o.Details)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) contextValidateMessage(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "message", "body", string(o.Message)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "type", "body", string(o.Type)); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentForbiddenBodyItems0) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -438,8 +941,8 @@ func (o *DeletePaymentInstrumentForbiddenBodyItems0) MarshalBinary() ([]byte, er
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentForbiddenBodyItems0) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentForbiddenBodyItems0
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentForbiddenBodyErrorsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -447,25 +950,63 @@ func (o *DeletePaymentInstrumentForbiddenBodyItems0) UnmarshalBinary(b []byte) e
 	return nil
 }
 
-/*DeletePaymentInstrumentForbiddenBodyItems0Details delete payment instrument forbidden body items0 details
-swagger:model DeletePaymentInstrumentForbiddenBodyItems0Details
+/*DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0 delete payment instrument forbidden body errors items0 details items0
+swagger:model DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0
 */
-type DeletePaymentInstrumentForbiddenBodyItems0Details struct {
+type DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0 struct {
 
-	// The location of the field that threw the error.
+	// The location of the field that caused the error.
+	// Read Only: true
 	Location string `json:"location,omitempty"`
 
-	// The name of the field that threw the error.
+	// The name of the field that caused the error.
+	// Read Only: true
 	Name string `json:"name,omitempty"`
 }
 
-// Validate validates this delete payment instrument forbidden body items0 details
-func (o *DeletePaymentInstrumentForbiddenBodyItems0Details) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument forbidden body errors items0 details items0
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument forbidden body errors items0 details items0 based on the context it is used
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0) contextValidateLocation(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "location", "body", string(o.Location)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "name", "body", string(o.Name)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentForbiddenBodyItems0Details) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -473,8 +1014,8 @@ func (o *DeletePaymentInstrumentForbiddenBodyItems0Details) MarshalBinary() ([]b
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentForbiddenBodyItems0Details) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentForbiddenBodyItems0Details
+func (o *DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentForbiddenBodyErrorsItems0DetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -482,23 +1023,132 @@ func (o *DeletePaymentInstrumentForbiddenBodyItems0Details) UnmarshalBinary(b []
 	return nil
 }
 
-/*DeletePaymentInstrumentGoneBodyItems0 delete payment instrument gone body items0
-swagger:model DeletePaymentInstrumentGoneBodyItems0
+/*DeletePaymentInstrumentGoneBody delete payment instrument gone body
+swagger:model DeletePaymentInstrumentGoneBody
 */
-type DeletePaymentInstrumentGoneBodyItems0 struct {
+type DeletePaymentInstrumentGoneBody struct {
+
+	// errors
+	// Read Only: true
+	Errors []*DeletePaymentInstrumentGoneBodyErrorsItems0 `json:"errors"`
+}
+
+// Validate validates this delete payment instrument gone body
+func (o *DeletePaymentInstrumentGoneBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateErrors(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentGoneBody) validateErrors(formats strfmt.Registry) error {
+	if swag.IsZero(o.Errors) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+		if swag.IsZero(o.Errors[i]) { // not required
+			continue
+		}
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentGone" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentGone" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument gone body based on the context it is used
+func (o *DeletePaymentInstrumentGoneBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentGoneBody) contextValidateErrors(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "deletePaymentInstrumentGone"+"."+"errors", "body", []*DeletePaymentInstrumentGoneBodyErrorsItems0(o.Errors)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentGone" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentGone" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeletePaymentInstrumentGoneBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeletePaymentInstrumentGoneBody) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentGoneBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*DeletePaymentInstrumentGoneBodyErrorsItems0 delete payment instrument gone body errors items0
+swagger:model DeletePaymentInstrumentGoneBodyErrorsItems0
+*/
+type DeletePaymentInstrumentGoneBodyErrorsItems0 struct {
 
 	// details
-	Details *DeletePaymentInstrumentGoneBodyItems0Details `json:"details,omitempty"`
+	// Read Only: true
+	Details []*DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0 `json:"details"`
 
 	// The detailed message related to the type stated above.
+	// Read Only: true
 	Message string `json:"message,omitempty"`
 
-	// type
+	// The type of error.
+	// Read Only: true
 	Type string `json:"type,omitempty"`
 }
 
-// Validate validates this delete payment instrument gone body items0
-func (o *DeletePaymentInstrumentGoneBodyItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument gone body errors items0
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateDetails(formats); err != nil {
@@ -511,26 +1161,98 @@ func (o *DeletePaymentInstrumentGoneBodyItems0) Validate(formats strfmt.Registry
 	return nil
 }
 
-func (o *DeletePaymentInstrumentGoneBodyItems0) validateDetails(formats strfmt.Registry) error {
-
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) validateDetails(formats strfmt.Registry) error {
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
 
-	if o.Details != nil {
-		if err := o.Details.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("details")
-			}
-			return err
+	for i := 0; i < len(o.Details); i++ {
+		if swag.IsZero(o.Details[i]) { // not required
+			continue
 		}
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument gone body errors items0 based on the context it is used
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMessage(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "details", "body", []*DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0(o.Details)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) contextValidateMessage(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "message", "body", string(o.Message)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "type", "body", string(o.Type)); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentGoneBodyItems0) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -538,8 +1260,8 @@ func (o *DeletePaymentInstrumentGoneBodyItems0) MarshalBinary() ([]byte, error) 
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentGoneBodyItems0) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentGoneBodyItems0
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentGoneBodyErrorsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -547,25 +1269,63 @@ func (o *DeletePaymentInstrumentGoneBodyItems0) UnmarshalBinary(b []byte) error 
 	return nil
 }
 
-/*DeletePaymentInstrumentGoneBodyItems0Details delete payment instrument gone body items0 details
-swagger:model DeletePaymentInstrumentGoneBodyItems0Details
+/*DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0 delete payment instrument gone body errors items0 details items0
+swagger:model DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0
 */
-type DeletePaymentInstrumentGoneBodyItems0Details struct {
+type DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0 struct {
 
-	// The location of the field that threw the error.
+	// The location of the field that caused the error.
+	// Read Only: true
 	Location string `json:"location,omitempty"`
 
-	// The name of the field that threw the error.
+	// The name of the field that caused the error.
+	// Read Only: true
 	Name string `json:"name,omitempty"`
 }
 
-// Validate validates this delete payment instrument gone body items0 details
-func (o *DeletePaymentInstrumentGoneBodyItems0Details) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument gone body errors items0 details items0
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument gone body errors items0 details items0 based on the context it is used
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0) contextValidateLocation(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "location", "body", string(o.Location)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "name", "body", string(o.Name)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentGoneBodyItems0Details) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -573,8 +1333,8 @@ func (o *DeletePaymentInstrumentGoneBodyItems0Details) MarshalBinary() ([]byte, 
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentGoneBodyItems0Details) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentGoneBodyItems0Details
+func (o *DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentGoneBodyErrorsItems0DetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -582,23 +1342,132 @@ func (o *DeletePaymentInstrumentGoneBodyItems0Details) UnmarshalBinary(b []byte)
 	return nil
 }
 
-/*DeletePaymentInstrumentInternalServerErrorBodyItems0 delete payment instrument internal server error body items0
-swagger:model DeletePaymentInstrumentInternalServerErrorBodyItems0
+/*DeletePaymentInstrumentInternalServerErrorBody delete payment instrument internal server error body
+swagger:model DeletePaymentInstrumentInternalServerErrorBody
 */
-type DeletePaymentInstrumentInternalServerErrorBodyItems0 struct {
+type DeletePaymentInstrumentInternalServerErrorBody struct {
+
+	// errors
+	// Read Only: true
+	Errors []*DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0 `json:"errors"`
+}
+
+// Validate validates this delete payment instrument internal server error body
+func (o *DeletePaymentInstrumentInternalServerErrorBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateErrors(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentInternalServerErrorBody) validateErrors(formats strfmt.Registry) error {
+	if swag.IsZero(o.Errors) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+		if swag.IsZero(o.Errors[i]) { // not required
+			continue
+		}
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentInternalServerError" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentInternalServerError" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument internal server error body based on the context it is used
+func (o *DeletePaymentInstrumentInternalServerErrorBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentInternalServerErrorBody) contextValidateErrors(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "deletePaymentInstrumentInternalServerError"+"."+"errors", "body", []*DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0(o.Errors)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentInternalServerError" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentInternalServerError" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeletePaymentInstrumentInternalServerErrorBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeletePaymentInstrumentInternalServerErrorBody) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentInternalServerErrorBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0 delete payment instrument internal server error body errors items0
+swagger:model DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0
+*/
+type DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0 struct {
 
 	// details
-	Details *DeletePaymentInstrumentInternalServerErrorBodyItems0Details `json:"details,omitempty"`
+	// Read Only: true
+	Details []*DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0 `json:"details"`
 
 	// The detailed message related to the type stated above.
+	// Read Only: true
 	Message string `json:"message,omitempty"`
 
-	// type
+	// The type of error.
+	// Read Only: true
 	Type string `json:"type,omitempty"`
 }
 
-// Validate validates this delete payment instrument internal server error body items0
-func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument internal server error body errors items0
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateDetails(formats); err != nil {
@@ -611,26 +1480,98 @@ func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0) Validate(formats 
 	return nil
 }
 
-func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0) validateDetails(formats strfmt.Registry) error {
-
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) validateDetails(formats strfmt.Registry) error {
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
 
-	if o.Details != nil {
-		if err := o.Details.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("details")
-			}
-			return err
+	for i := 0; i < len(o.Details); i++ {
+		if swag.IsZero(o.Details[i]) { // not required
+			continue
 		}
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument internal server error body errors items0 based on the context it is used
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMessage(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "details", "body", []*DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0(o.Details)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) contextValidateMessage(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "message", "body", string(o.Message)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "type", "body", string(o.Type)); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -638,8 +1579,8 @@ func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0) MarshalBinary() (
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentInternalServerErrorBodyItems0
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -647,25 +1588,63 @@ func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0) UnmarshalBinary(b
 	return nil
 }
 
-/*DeletePaymentInstrumentInternalServerErrorBodyItems0Details delete payment instrument internal server error body items0 details
-swagger:model DeletePaymentInstrumentInternalServerErrorBodyItems0Details
+/*DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0 delete payment instrument internal server error body errors items0 details items0
+swagger:model DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0
 */
-type DeletePaymentInstrumentInternalServerErrorBodyItems0Details struct {
+type DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0 struct {
 
-	// The location of the field that threw the error.
+	// The location of the field that caused the error.
+	// Read Only: true
 	Location string `json:"location,omitempty"`
 
-	// The name of the field that threw the error.
+	// The name of the field that caused the error.
+	// Read Only: true
 	Name string `json:"name,omitempty"`
 }
 
-// Validate validates this delete payment instrument internal server error body items0 details
-func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0Details) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument internal server error body errors items0 details items0
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument internal server error body errors items0 details items0 based on the context it is used
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0) contextValidateLocation(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "location", "body", string(o.Location)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "name", "body", string(o.Name)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0Details) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -673,8 +1652,8 @@ func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0Details) MarshalBin
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0Details) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentInternalServerErrorBodyItems0Details
+func (o *DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentInternalServerErrorBodyErrorsItems0DetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -682,23 +1661,132 @@ func (o *DeletePaymentInstrumentInternalServerErrorBodyItems0Details) UnmarshalB
 	return nil
 }
 
-/*DeletePaymentInstrumentNotFoundBodyItems0 delete payment instrument not found body items0
-swagger:model DeletePaymentInstrumentNotFoundBodyItems0
+/*DeletePaymentInstrumentNotFoundBody delete payment instrument not found body
+swagger:model DeletePaymentInstrumentNotFoundBody
 */
-type DeletePaymentInstrumentNotFoundBodyItems0 struct {
+type DeletePaymentInstrumentNotFoundBody struct {
+
+	// errors
+	// Read Only: true
+	Errors []*DeletePaymentInstrumentNotFoundBodyErrorsItems0 `json:"errors"`
+}
+
+// Validate validates this delete payment instrument not found body
+func (o *DeletePaymentInstrumentNotFoundBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateErrors(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentNotFoundBody) validateErrors(formats strfmt.Registry) error {
+	if swag.IsZero(o.Errors) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+		if swag.IsZero(o.Errors[i]) { // not required
+			continue
+		}
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentNotFound" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentNotFound" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument not found body based on the context it is used
+func (o *DeletePaymentInstrumentNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateErrors(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentNotFoundBody) contextValidateErrors(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "deletePaymentInstrumentNotFound"+"."+"errors", "body", []*DeletePaymentInstrumentNotFoundBodyErrorsItems0(o.Errors)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Errors); i++ {
+
+		if o.Errors[i] != nil {
+			if err := o.Errors[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("deletePaymentInstrumentNotFound" + "." + "errors" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deletePaymentInstrumentNotFound" + "." + "errors" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DeletePaymentInstrumentNotFoundBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DeletePaymentInstrumentNotFoundBody) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentNotFoundBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*DeletePaymentInstrumentNotFoundBodyErrorsItems0 delete payment instrument not found body errors items0
+swagger:model DeletePaymentInstrumentNotFoundBodyErrorsItems0
+*/
+type DeletePaymentInstrumentNotFoundBodyErrorsItems0 struct {
 
 	// details
-	Details *DeletePaymentInstrumentNotFoundBodyItems0Details `json:"details,omitempty"`
+	// Read Only: true
+	Details []*DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0 `json:"details"`
 
 	// The detailed message related to the type stated above.
+	// Read Only: true
 	Message string `json:"message,omitempty"`
 
-	// type
+	// The type of error.
+	// Read Only: true
 	Type string `json:"type,omitempty"`
 }
 
-// Validate validates this delete payment instrument not found body items0
-func (o *DeletePaymentInstrumentNotFoundBodyItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument not found body errors items0
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateDetails(formats); err != nil {
@@ -711,26 +1799,98 @@ func (o *DeletePaymentInstrumentNotFoundBodyItems0) Validate(formats strfmt.Regi
 	return nil
 }
 
-func (o *DeletePaymentInstrumentNotFoundBodyItems0) validateDetails(formats strfmt.Registry) error {
-
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) validateDetails(formats strfmt.Registry) error {
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
 
-	if o.Details != nil {
-		if err := o.Details.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("details")
-			}
-			return err
+	for i := 0; i < len(o.Details); i++ {
+		if swag.IsZero(o.Details[i]) { // not required
+			continue
 		}
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument not found body errors items0 based on the context it is used
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMessage(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "details", "body", []*DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0(o.Details)); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) contextValidateMessage(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "message", "body", string(o.Message)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "type", "body", string(o.Type)); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentNotFoundBodyItems0) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -738,8 +1898,8 @@ func (o *DeletePaymentInstrumentNotFoundBodyItems0) MarshalBinary() ([]byte, err
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentNotFoundBodyItems0) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentNotFoundBodyItems0
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentNotFoundBodyErrorsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -747,25 +1907,63 @@ func (o *DeletePaymentInstrumentNotFoundBodyItems0) UnmarshalBinary(b []byte) er
 	return nil
 }
 
-/*DeletePaymentInstrumentNotFoundBodyItems0Details delete payment instrument not found body items0 details
-swagger:model DeletePaymentInstrumentNotFoundBodyItems0Details
+/*DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0 delete payment instrument not found body errors items0 details items0
+swagger:model DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0
 */
-type DeletePaymentInstrumentNotFoundBodyItems0Details struct {
+type DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0 struct {
 
-	// The location of the field that threw the error.
+	// The location of the field that caused the error.
+	// Read Only: true
 	Location string `json:"location,omitempty"`
 
-	// The name of the field that threw the error.
+	// The name of the field that caused the error.
+	// Read Only: true
 	Name string `json:"name,omitempty"`
 }
 
-// Validate validates this delete payment instrument not found body items0 details
-func (o *DeletePaymentInstrumentNotFoundBodyItems0Details) Validate(formats strfmt.Registry) error {
+// Validate validates this delete payment instrument not found body errors items0 details items0
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validate this delete payment instrument not found body errors items0 details items0 based on the context it is used
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0) contextValidateLocation(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "location", "body", string(o.Location)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "name", "body", string(o.Name)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *DeletePaymentInstrumentNotFoundBodyItems0Details) MarshalBinary() ([]byte, error) {
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -773,8 +1971,8 @@ func (o *DeletePaymentInstrumentNotFoundBodyItems0Details) MarshalBinary() ([]by
 }
 
 // UnmarshalBinary interface implementation
-func (o *DeletePaymentInstrumentNotFoundBodyItems0Details) UnmarshalBinary(b []byte) error {
-	var res DeletePaymentInstrumentNotFoundBodyItems0Details
+func (o *DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0) UnmarshalBinary(b []byte) error {
+	var res DeletePaymentInstrumentNotFoundBodyErrorsItems0DetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

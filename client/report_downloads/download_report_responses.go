@@ -6,6 +6,7 @@ package report_downloads
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *DownloadReportReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewDownloadReportOK() *DownloadReportOK {
 	return &DownloadReportOK{}
 }
 
-/*DownloadReportOK handles this case with default header values.
+/* DownloadReportOK describes a response with status code 200, with default header values.
 
 OK
 */
@@ -75,7 +75,7 @@ func NewDownloadReportBadRequest() *DownloadReportBadRequest {
 	return &DownloadReportBadRequest{}
 }
 
-/*DownloadReportBadRequest handles this case with default header values.
+/* DownloadReportBadRequest describes a response with status code 400, with default header values.
 
 Invalid Request
 */
@@ -86,7 +86,6 @@ type DownloadReportBadRequest struct {
 func (o *DownloadReportBadRequest) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/report-downloads][%d] downloadReportBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *DownloadReportBadRequest) GetPayload() *DownloadReportBadRequestBody {
 	return o.Payload
 }
@@ -108,7 +107,7 @@ func NewDownloadReportNotFound() *DownloadReportNotFound {
 	return &DownloadReportNotFound{}
 }
 
-/*DownloadReportNotFound handles this case with default header values.
+/* DownloadReportNotFound describes a response with status code 404, with default header values.
 
 No Reports Found
 */
@@ -124,44 +123,6 @@ func (o *DownloadReportNotFound) readResponse(response runtime.ClientResponse, c
 	return nil
 }
 
-/*DetailsItems0 Provides failed validation input field detail
-//
-swagger:model DetailsItems0
-*/
-type DetailsItems0 struct {
-
-	// Field in request that caused an error
-	//
-	Field string `json:"field,omitempty"`
-
-	// Documented reason code
-	//
-	Reason string `json:"reason,omitempty"`
-}
-
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
 /*DownloadReportBadRequestBody reportingv3ReportDownloadsGet400Response
 //
 // HTTP status code for client application
@@ -172,20 +133,23 @@ type DownloadReportBadRequestBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*DownloadReportBadRequestBodyDetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
+	// Example: One or more fields contains invalid data
 	// Required: true
 	Message *string `json:"message"`
 
 	// Documented reason code
 	//
+	// Example: INVALID_DATA
 	// Required: true
 	Reason *string `json:"reason"`
 
 	// Time of request in UTC.
 	//
+	// Example: 2016-08-11T22:47:57Z
 	// Required: true
 	// Format: date-time
 	SubmitTimeUtc *strfmt.DateTime `json:"submitTimeUtc"`
@@ -232,6 +196,8 @@ func (o *DownloadReportBadRequestBody) validateDetails(formats strfmt.Registry) 
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("downloadReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("downloadReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -273,6 +239,40 @@ func (o *DownloadReportBadRequestBody) validateSubmitTimeUtc(formats strfmt.Regi
 	return nil
 }
 
+// ContextValidate validate this download report bad request body based on the context it is used
+func (o *DownloadReportBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *DownloadReportBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("downloadReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("downloadReportBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *DownloadReportBadRequestBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -284,6 +284,49 @@ func (o *DownloadReportBadRequestBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *DownloadReportBadRequestBody) UnmarshalBinary(b []byte) error {
 	var res DownloadReportBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*DownloadReportBadRequestBodyDetailsItems0 Provides failed validation input field detail
+//
+swagger:model DownloadReportBadRequestBodyDetailsItems0
+*/
+type DownloadReportBadRequestBodyDetailsItems0 struct {
+
+	// Field in request that caused an error
+	//
+	Field string `json:"field,omitempty"`
+
+	// Documented reason code
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this download report bad request body details items0
+func (o *DownloadReportBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this download report bad request body details items0 based on context it is used
+func (o *DownloadReportBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *DownloadReportBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *DownloadReportBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res DownloadReportBadRequestBodyDetailsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ package tokenization
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -48,7 +49,7 @@ func NewTokenizeOK() *TokenizeOK {
 	return &TokenizeOK{}
 }
 
-/*TokenizeOK handles this case with default header values.
+/* TokenizeOK describes a response with status code 200, with default header values.
 
 Created payment token.
 */
@@ -59,7 +60,6 @@ type TokenizeOK struct {
 func (o *TokenizeOK) Error() string {
 	return fmt.Sprintf("[POST /flex/v1/tokens][%d] tokenizeOK  %+v", 200, o.Payload)
 }
-
 func (o *TokenizeOK) GetPayload() *TokenizeOKBody {
 	return o.Payload
 }
@@ -83,7 +83,7 @@ func NewTokenizeDefault(code int) *TokenizeDefault {
 	}
 }
 
-/*TokenizeDefault handles this case with default header values.
+/* TokenizeDefault describes a response with status code -1, with default header values.
 
 Error creating token.
 */
@@ -101,7 +101,6 @@ func (o *TokenizeDefault) Code() int {
 func (o *TokenizeDefault) Error() string {
 	return fmt.Sprintf("[POST /flex/v1/tokens][%d] tokenize default  %+v", o._statusCode, o.Payload)
 }
-
 func (o *TokenizeDefault) GetPayload() *TokenizeDefaultBody {
 	return o.Payload
 }
@@ -150,7 +149,6 @@ func (o *TokenizeBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *TokenizeBody) validateCardInfo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CardInfo) { // not required
 		return nil
 	}
@@ -159,6 +157,8 @@ func (o *TokenizeBody) validateCardInfo(formats strfmt.Registry) error {
 		if err := o.CardInfo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tokenizeRequest" + "." + "cardInfo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenizeRequest" + "." + "cardInfo")
 			}
 			return err
 		}
@@ -171,6 +171,36 @@ func (o *TokenizeBody) validateKeyID(formats strfmt.Registry) error {
 
 	if err := validate.Required("tokenizeRequest"+"."+"keyId", "body", o.KeyID); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this tokenize body based on the context it is used
+func (o *TokenizeBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCardInfo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TokenizeBody) contextValidateCardInfo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.CardInfo != nil {
+		if err := o.CardInfo.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tokenizeRequest" + "." + "cardInfo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenizeRequest" + "." + "cardInfo")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -225,7 +255,6 @@ func (o *TokenizeDefaultBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *TokenizeDefaultBody) validateLinks(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Links) { // not required
 		return nil
 	}
@@ -234,6 +263,8 @@ func (o *TokenizeDefaultBody) validateLinks(formats strfmt.Registry) error {
 		if err := o.Links.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tokenize default" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenize default" + "." + "_links")
 			}
 			return err
 		}
@@ -243,7 +274,6 @@ func (o *TokenizeDefaultBody) validateLinks(formats strfmt.Registry) error {
 }
 
 func (o *TokenizeDefaultBody) validateResponseStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ResponseStatus) { // not required
 		return nil
 	}
@@ -252,6 +282,58 @@ func (o *TokenizeDefaultBody) validateResponseStatus(formats strfmt.Registry) er
 		if err := o.ResponseStatus.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tokenize default" + "." + "responseStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenize default" + "." + "responseStatus")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this tokenize default body based on the context it is used
+func (o *TokenizeDefaultBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateResponseStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TokenizeDefaultBody) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Links != nil {
+		if err := o.Links.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tokenize default" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenize default" + "." + "_links")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *TokenizeDefaultBody) contextValidateResponseStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ResponseStatus != nil {
+		if err := o.ResponseStatus.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tokenize default" + "." + "responseStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenize default" + "." + "responseStatus")
 			}
 			return err
 		}
@@ -316,7 +398,6 @@ func (o *TokenizeDefaultBodyLinks) Validate(formats strfmt.Registry) error {
 }
 
 func (o *TokenizeDefaultBodyLinks) validateDocumentation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Documentation) { // not required
 		return nil
 	}
@@ -330,6 +411,8 @@ func (o *TokenizeDefaultBodyLinks) validateDocumentation(formats strfmt.Registry
 			if err := o.Documentation[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("tokenize default" + "." + "_links" + "." + "documentation" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tokenize default" + "." + "_links" + "." + "documentation" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -341,7 +424,6 @@ func (o *TokenizeDefaultBodyLinks) validateDocumentation(formats strfmt.Registry
 }
 
 func (o *TokenizeDefaultBodyLinks) validateNext(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Next) { // not required
 		return nil
 	}
@@ -355,6 +437,8 @@ func (o *TokenizeDefaultBodyLinks) validateNext(formats strfmt.Registry) error {
 			if err := o.Next[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("tokenize default" + "." + "_links" + "." + "next" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tokenize default" + "." + "_links" + "." + "next" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -366,7 +450,6 @@ func (o *TokenizeDefaultBodyLinks) validateNext(formats strfmt.Registry) error {
 }
 
 func (o *TokenizeDefaultBodyLinks) validateSelf(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Self) { // not required
 		return nil
 	}
@@ -375,6 +458,86 @@ func (o *TokenizeDefaultBodyLinks) validateSelf(formats strfmt.Registry) error {
 		if err := o.Self.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("tokenize default" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenize default" + "." + "_links" + "." + "self")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this tokenize default body links based on the context it is used
+func (o *TokenizeDefaultBodyLinks) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDocumentation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateNext(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateSelf(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TokenizeDefaultBodyLinks) contextValidateDocumentation(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Documentation); i++ {
+
+		if o.Documentation[i] != nil {
+			if err := o.Documentation[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tokenize default" + "." + "_links" + "." + "documentation" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tokenize default" + "." + "_links" + "." + "documentation" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *TokenizeDefaultBodyLinks) contextValidateNext(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Next); i++ {
+
+		if o.Next[i] != nil {
+			if err := o.Next[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tokenize default" + "." + "_links" + "." + "next" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tokenize default" + "." + "_links" + "." + "next" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *TokenizeDefaultBodyLinks) contextValidateSelf(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Self != nil {
+		if err := o.Self.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tokenize default" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tokenize default" + "." + "_links" + "." + "self")
 			}
 			return err
 		}
@@ -421,6 +584,11 @@ func (o *TokenizeDefaultBodyLinksDocumentationItems0) Validate(formats strfmt.Re
 	return nil
 }
 
+// ContextValidate validates this tokenize default body links documentation items0 based on context it is used
+func (o *TokenizeDefaultBodyLinksDocumentationItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *TokenizeDefaultBodyLinksDocumentationItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -459,6 +627,11 @@ func (o *TokenizeDefaultBodyLinksNextItems0) Validate(formats strfmt.Registry) e
 	return nil
 }
 
+// ContextValidate validates this tokenize default body links next items0 based on context it is used
+func (o *TokenizeDefaultBodyLinksNextItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *TokenizeDefaultBodyLinksNextItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -494,6 +667,11 @@ type TokenizeDefaultBodyLinksSelf struct {
 
 // Validate validates this tokenize default body links self
 func (o *TokenizeDefaultBodyLinksSelf) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this tokenize default body links self based on context it is used
+func (o *TokenizeDefaultBodyLinksSelf) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -551,7 +729,6 @@ func (o *TokenizeDefaultBodyResponseStatus) Validate(formats strfmt.Registry) er
 }
 
 func (o *TokenizeDefaultBodyResponseStatus) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -565,6 +742,42 @@ func (o *TokenizeDefaultBodyResponseStatus) validateDetails(formats strfmt.Regis
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("tokenize default" + "." + "responseStatus" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tokenize default" + "." + "responseStatus" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this tokenize default body response status based on the context it is used
+func (o *TokenizeDefaultBodyResponseStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TokenizeDefaultBodyResponseStatus) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tokenize default" + "." + "responseStatus" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tokenize default" + "." + "responseStatus" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -607,6 +820,11 @@ type TokenizeDefaultBodyResponseStatusDetailsItems0 struct {
 
 // Validate validates this tokenize default body response status details items0
 func (o *TokenizeDefaultBodyResponseStatusDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this tokenize default body response status details items0 based on context it is used
+func (o *TokenizeDefaultBodyResponseStatusDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -660,6 +878,11 @@ type TokenizeOKBody struct {
 
 // Validate validates this tokenize o k body
 func (o *TokenizeOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this tokenize o k body based on context it is used
+func (o *TokenizeOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -734,6 +957,11 @@ func (o *TokenizeParamsBodyCardInfo) validateCardType(formats strfmt.Registry) e
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this tokenize params body card info based on context it is used
+func (o *TokenizeParamsBodyCardInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -25,9 +25,12 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CapturePayment(params *CapturePaymentParams) (*CapturePaymentCreated, error)
+	CapturePayment(params *CapturePaymentParams, opts ...ClientOption) (*CapturePaymentCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -37,24 +40,28 @@ type ClientService interface {
 
   Include the payment ID in the POST request to capture the payment amount.
 */
-func (a *Client) CapturePayment(params *CapturePaymentParams) (*CapturePaymentCreated, error) {
+func (a *Client) CapturePayment(params *CapturePaymentParams, opts ...ClientOption) (*CapturePaymentCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCapturePaymentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "capturePayment",
 		Method:             "POST",
 		PathPattern:        "/pts/v2/payments/{id}/captures",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ProducesMediaTypes: []string{"application/hal+json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &CapturePaymentReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

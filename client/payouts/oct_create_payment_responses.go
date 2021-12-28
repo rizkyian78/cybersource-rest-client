@@ -6,6 +6,7 @@ package payouts
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *OctCreatePaymentReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewOctCreatePaymentCreated() *OctCreatePaymentCreated {
 	return &OctCreatePaymentCreated{}
 }
 
-/*OctCreatePaymentCreated handles this case with default header values.
+/* OctCreatePaymentCreated describes a response with status code 201, with default header values.
 
 Successful response.
 */
@@ -65,7 +65,6 @@ type OctCreatePaymentCreated struct {
 func (o *OctCreatePaymentCreated) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/payouts][%d] octCreatePaymentCreated  %+v", 201, o.Payload)
 }
-
 func (o *OctCreatePaymentCreated) GetPayload() *OctCreatePaymentCreatedBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewOctCreatePaymentBadRequest() *OctCreatePaymentBadRequest {
 	return &OctCreatePaymentBadRequest{}
 }
 
-/*OctCreatePaymentBadRequest handles this case with default header values.
+/* OctCreatePaymentBadRequest describes a response with status code 400, with default header values.
 
 Invalid request.
 */
@@ -98,7 +97,6 @@ type OctCreatePaymentBadRequest struct {
 func (o *OctCreatePaymentBadRequest) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/payouts][%d] octCreatePaymentBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *OctCreatePaymentBadRequest) GetPayload() *OctCreatePaymentBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewOctCreatePaymentBadGateway() *OctCreatePaymentBadGateway {
 	return &OctCreatePaymentBadGateway{}
 }
 
-/*OctCreatePaymentBadGateway handles this case with default header values.
+/* OctCreatePaymentBadGateway describes a response with status code 502, with default header values.
 
 Unexpected system error or system timeout.
 */
@@ -131,7 +129,6 @@ type OctCreatePaymentBadGateway struct {
 func (o *OctCreatePaymentBadGateway) Error() string {
 	return fmt.Sprintf("[POST /pts/v2/payouts][%d] octCreatePaymentBadGateway  %+v", 502, o.Payload)
 }
-
 func (o *OctCreatePaymentBadGateway) GetPayload() *OctCreatePaymentBadGatewayBody {
 	return o.Payload
 }
@@ -145,46 +142,6 @@ func (o *OctCreatePaymentBadGateway) readResponse(response runtime.ClientRespons
 		return err
 	}
 
-	return nil
-}
-
-/*DetailsItems0 details items0
-swagger:model DetailsItems0
-*/
-type DetailsItems0 struct {
-
-	// This is the flattened JSON object field name/path that is either missing or invalid.
-	Field string `json:"field,omitempty"`
-
-	// Possible reasons for the error.
-	//
-	// Possible values:
-	//  - MISSING_FIELD
-	//  - INVALID_DATA
-	//
-	Reason string `json:"reason,omitempty"`
-}
-
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
 	return nil
 }
 
@@ -202,7 +159,6 @@ type OctCreatePaymentBadGatewayBody struct {
 	//  - SYSTEM_ERROR
 	//  - SERVER_TIMEOUT
 	//  - SERVICE_TIMEOUT
-	//  - INVALID_OR_MISSING_CONFIG
 	//
 	Reason string `json:"reason,omitempty"`
 
@@ -214,14 +170,21 @@ type OctCreatePaymentBadGatewayBody struct {
 	Status string `json:"status,omitempty"`
 
 	// Time of request in UTC. Format: `YYYY-MM-DDThh:mm:ssZ`
-	// Example `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.). The `T` separates the date and the
-	// time. The `Z` indicates UTC.
+	// **Example** `2016-08-11T22:47:57Z` equals August 11, 2016, at 22:47:57 (10:47:57 p.m.).
+	// The `T` separates the date and the time. The `Z` indicates UTC.
+	//
+	// Returned by Cybersource for all services.
 	//
 	SubmitTimeUtc string `json:"submitTimeUtc,omitempty"`
 }
 
 // Validate validates this oct create payment bad gateway body
 func (o *OctCreatePaymentBadGatewayBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this oct create payment bad gateway body based on context it is used
+func (o *OctCreatePaymentBadGatewayBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -249,7 +212,7 @@ swagger:model OctCreatePaymentBadRequestBody
 type OctCreatePaymentBadRequestBody struct {
 
 	// details
-	Details []*DetailsItems0 `json:"details"`
+	Details []*OctCreatePaymentBadRequestBodyDetailsItems0 `json:"details"`
 
 	// The detail message related to the status and reason listed above.
 	Message string `json:"message,omitempty"`
@@ -263,7 +226,6 @@ type OctCreatePaymentBadRequestBody struct {
 	//  - INVALID_CARD
 	//  - INVALID_MERCHANT_CONFIGURATION
 	//  - INVALID_AMOUNT
-	//  - DEBIT_CARD_USEAGE_EXCEEDD_LIMIT
 	//
 	Reason string `json:"reason,omitempty"`
 
@@ -293,7 +255,6 @@ func (o *OctCreatePaymentBadRequestBody) Validate(formats strfmt.Registry) error
 }
 
 func (o *OctCreatePaymentBadRequestBody) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -307,6 +268,42 @@ func (o *OctCreatePaymentBadRequestBody) validateDetails(formats strfmt.Registry
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("octCreatePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("octCreatePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment bad request body based on the context it is used
+func (o *OctCreatePaymentBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("octCreatePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("octCreatePaymentBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -335,7 +332,53 @@ func (o *OctCreatePaymentBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*OctCreatePaymentBadRequestBodyDetailsItems0 oct create payment bad request body details items0
+swagger:model OctCreatePaymentBadRequestBodyDetailsItems0
+*/
+type OctCreatePaymentBadRequestBodyDetailsItems0 struct {
+
+	// This is the flattened JSON object field name/path that is either missing or invalid.
+	Field string `json:"field,omitempty"`
+
+	// Possible reasons for the error.
+	//
+	// Possible values:
+	//  - MISSING_FIELD
+	//  - INVALID_DATA
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this oct create payment bad request body details items0
+func (o *OctCreatePaymentBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this oct create payment bad request body details items0 based on context it is used
+func (o *OctCreatePaymentBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *OctCreatePaymentBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *OctCreatePaymentBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res OctCreatePaymentBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*OctCreatePaymentBody oct create payment body
+// Example: {"clientReferenceInformation":{"code":"33557799"},"merchantInformation":{"merchantCategoryCode":"123","merchantDescriptor":{"administrativeArea":"CA","country":"US","locality":"FC","name":"Thomas","postalCode":"94440"}},"orderInformation":{"amountDetails":{"currency":"USD","totalAmount":"100.00"}},"paymentInformation":{"card":{"expirationMonth":"12","expirationYear":"2025","number":"4111111111111111","sourceAccountType":"CH","type":"001"}},"payoutsOptions":{"acquirerBin":"567890124","retrievalReferenceNumber":"123456789012"},"processingInformation":{"businessApplicationId":"FD","commerceIndicator":"internet","networkRoutingOrder":"ECG"},"recipientInformation":{"address1":"Paseo Padre Boulevard","administrativeArea":"CA","country":"US","dateOfBirth":"19801009","firstName":"John","lastName":"Doe","locality":"Foster City","phoneNumber":"6504320556","postalCode":"94400"},"reconciliationId":"1087488702VIAQNSPQ","senderInformation":{"account":{"fundsSource":"01","number":"1234567890123456789012345678901234"},"address1":"900 Metro Center Blvd.900","administrativeArea":"CA","countryCode":"US","locality":"Foster City","name":"Thomas Jefferson","referenceNumber":"1234567890"}}
 swagger:model OctCreatePaymentBody
 */
 type OctCreatePaymentBody struct {
@@ -401,7 +444,6 @@ func (o *OctCreatePaymentBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *OctCreatePaymentBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -410,6 +452,8 @@ func (o *OctCreatePaymentBody) validateClientReferenceInformation(formats strfmt
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -419,7 +463,6 @@ func (o *OctCreatePaymentBody) validateClientReferenceInformation(formats strfmt
 }
 
 func (o *OctCreatePaymentBody) validateMerchantInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantInformation) { // not required
 		return nil
 	}
@@ -428,6 +471,8 @@ func (o *OctCreatePaymentBody) validateMerchantInformation(formats strfmt.Regist
 		if err := o.MerchantInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation")
 			}
 			return err
 		}
@@ -437,7 +482,6 @@ func (o *OctCreatePaymentBody) validateMerchantInformation(formats strfmt.Regist
 }
 
 func (o *OctCreatePaymentBody) validateOrderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrderInformation) { // not required
 		return nil
 	}
@@ -446,6 +490,8 @@ func (o *OctCreatePaymentBody) validateOrderInformation(formats strfmt.Registry)
 		if err := o.OrderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation")
 			}
 			return err
 		}
@@ -455,7 +501,6 @@ func (o *OctCreatePaymentBody) validateOrderInformation(formats strfmt.Registry)
 }
 
 func (o *OctCreatePaymentBody) validatePaymentInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentInformation) { // not required
 		return nil
 	}
@@ -464,6 +509,8 @@ func (o *OctCreatePaymentBody) validatePaymentInformation(formats strfmt.Registr
 		if err := o.PaymentInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation")
 			}
 			return err
 		}
@@ -473,7 +520,6 @@ func (o *OctCreatePaymentBody) validatePaymentInformation(formats strfmt.Registr
 }
 
 func (o *OctCreatePaymentBody) validateProcessingInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProcessingInformation) { // not required
 		return nil
 	}
@@ -482,6 +528,8 @@ func (o *OctCreatePaymentBody) validateProcessingInformation(formats strfmt.Regi
 		if err := o.ProcessingInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "processingInformation")
 			}
 			return err
 		}
@@ -491,7 +539,6 @@ func (o *OctCreatePaymentBody) validateProcessingInformation(formats strfmt.Regi
 }
 
 func (o *OctCreatePaymentBody) validateRecipientInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RecipientInformation) { // not required
 		return nil
 	}
@@ -500,6 +547,8 @@ func (o *OctCreatePaymentBody) validateRecipientInformation(formats strfmt.Regis
 		if err := o.RecipientInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "recipientInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "recipientInformation")
 			}
 			return err
 		}
@@ -509,7 +558,6 @@ func (o *OctCreatePaymentBody) validateRecipientInformation(formats strfmt.Regis
 }
 
 func (o *OctCreatePaymentBody) validateSenderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SenderInformation) { // not required
 		return nil
 	}
@@ -518,6 +566,158 @@ func (o *OctCreatePaymentBody) validateSenderInformation(formats strfmt.Registry
 		if err := o.SenderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "senderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "senderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment body based on the context it is used
+func (o *OctCreatePaymentBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMerchantInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidatePaymentInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessingInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateRecipientInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateSenderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentBody) contextValidateMerchantInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantInformation != nil {
+		if err := o.MerchantInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentBody) contextValidateOrderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrderInformation != nil {
+		if err := o.OrderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentBody) contextValidatePaymentInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PaymentInformation != nil {
+		if err := o.PaymentInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentBody) contextValidateProcessingInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessingInformation != nil {
+		if err := o.ProcessingInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "processingInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "processingInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentBody) contextValidateRecipientInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.RecipientInformation != nil {
+		if err := o.RecipientInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "recipientInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "recipientInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentBody) contextValidateSenderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.SenderInformation != nil {
+		if err := o.SenderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "senderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "senderInformation")
 			}
 			return err
 		}
@@ -545,6 +745,7 @@ func (o *OctCreatePaymentBody) UnmarshalBinary(b []byte) error {
 }
 
 /*OctCreatePaymentCreatedBody ptsV2PayoutsPost201Response
+// Example: {"_links":{"self":{"href":"/pts/v2/payouts/5287556536256000401540","method":"GET"}},"clientReferenceInformation":{"code":"1528755653559"},"id":"5287556536256000401540","orderInformation":{"amountDetails":{"currency":"USD","totalAmount":"100.00"}},"processorInformation":{"approvalCode":"831000","responseCode":"00","responseCodeSource":"5","systemTraceAuditNumber":"897596","transactionId":"016153570198200"},"reconciliationId":"1087488702VIAQNSPQ","status":"ACCEPTED","submitTimeUtc":"2018-06-11T222054Z"}
 swagger:model OctCreatePaymentCreatedBody
 */
 type OctCreatePaymentCreatedBody struct {
@@ -558,7 +759,10 @@ type OctCreatePaymentCreatedBody struct {
 	// error information
 	ErrorInformation *OctCreatePaymentCreatedBodyErrorInformation `json:"errorInformation,omitempty"`
 
-	// An unique identification number assigned by CyberSource to identify the submitted request. It is also appended to the endpoint of the resource.
+	// An unique identification number generated by Cybersource to identify the submitted request. Returned by all services.
+	// It is also appended to the endpoint of the resource.
+	// On incremental authorizations, this value with be the same as the identification number returned in the original authorization response.
+	//
 	// Max Length: 26
 	ID string `json:"id,omitempty"`
 
@@ -644,7 +848,6 @@ func (o *OctCreatePaymentCreatedBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *OctCreatePaymentCreatedBody) validateLinks(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Links) { // not required
 		return nil
 	}
@@ -653,6 +856,8 @@ func (o *OctCreatePaymentCreatedBody) validateLinks(formats strfmt.Registry) err
 		if err := o.Links.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "_links")
 			}
 			return err
 		}
@@ -662,7 +867,6 @@ func (o *OctCreatePaymentCreatedBody) validateLinks(formats strfmt.Registry) err
 }
 
 func (o *OctCreatePaymentCreatedBody) validateClientReferenceInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ClientReferenceInformation) { // not required
 		return nil
 	}
@@ -671,6 +875,8 @@ func (o *OctCreatePaymentCreatedBody) validateClientReferenceInformation(formats
 		if err := o.ClientReferenceInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "clientReferenceInformation")
 			}
 			return err
 		}
@@ -680,7 +886,6 @@ func (o *OctCreatePaymentCreatedBody) validateClientReferenceInformation(formats
 }
 
 func (o *OctCreatePaymentCreatedBody) validateErrorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ErrorInformation) { // not required
 		return nil
 	}
@@ -689,6 +894,8 @@ func (o *OctCreatePaymentCreatedBody) validateErrorInformation(formats strfmt.Re
 		if err := o.ErrorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "errorInformation")
 			}
 			return err
 		}
@@ -698,12 +905,11 @@ func (o *OctCreatePaymentCreatedBody) validateErrorInformation(formats strfmt.Re
 }
 
 func (o *OctCreatePaymentCreatedBody) validateID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"id", "body", string(o.ID), 26); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"id", "body", o.ID, 26); err != nil {
 		return err
 	}
 
@@ -711,7 +917,6 @@ func (o *OctCreatePaymentCreatedBody) validateID(formats strfmt.Registry) error 
 }
 
 func (o *OctCreatePaymentCreatedBody) validateMerchantInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantInformation) { // not required
 		return nil
 	}
@@ -720,6 +925,8 @@ func (o *OctCreatePaymentCreatedBody) validateMerchantInformation(formats strfmt
 		if err := o.MerchantInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation")
 			}
 			return err
 		}
@@ -729,7 +936,6 @@ func (o *OctCreatePaymentCreatedBody) validateMerchantInformation(formats strfmt
 }
 
 func (o *OctCreatePaymentCreatedBody) validateOrderInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.OrderInformation) { // not required
 		return nil
 	}
@@ -738,6 +944,8 @@ func (o *OctCreatePaymentCreatedBody) validateOrderInformation(formats strfmt.Re
 		if err := o.OrderInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "orderInformation")
 			}
 			return err
 		}
@@ -747,7 +955,6 @@ func (o *OctCreatePaymentCreatedBody) validateOrderInformation(formats strfmt.Re
 }
 
 func (o *OctCreatePaymentCreatedBody) validateProcessorInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ProcessorInformation) { // not required
 		return nil
 	}
@@ -756,6 +963,8 @@ func (o *OctCreatePaymentCreatedBody) validateProcessorInformation(formats strfm
 		if err := o.ProcessorInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "processorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "processorInformation")
 			}
 			return err
 		}
@@ -765,7 +974,6 @@ func (o *OctCreatePaymentCreatedBody) validateProcessorInformation(formats strfm
 }
 
 func (o *OctCreatePaymentCreatedBody) validateRecipientInformation(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RecipientInformation) { // not required
 		return nil
 	}
@@ -774,6 +982,8 @@ func (o *OctCreatePaymentCreatedBody) validateRecipientInformation(formats strfm
 		if err := o.RecipientInformation.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation")
 			}
 			return err
 		}
@@ -783,13 +993,162 @@ func (o *OctCreatePaymentCreatedBody) validateRecipientInformation(formats strfm
 }
 
 func (o *OctCreatePaymentCreatedBody) validateReconciliationID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReconciliationID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"reconciliationId", "body", string(o.ReconciliationID), 25); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"reconciliationId", "body", o.ReconciliationID, 25); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment created body based on the context it is used
+func (o *OctCreatePaymentCreatedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateLinks(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateClientReferenceInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateErrorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateMerchantInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOrderInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateProcessorInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateRecipientInformation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBody) contextValidateLinks(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Links != nil {
+		if err := o.Links.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "_links")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "_links")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBody) contextValidateClientReferenceInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ClientReferenceInformation != nil {
+		if err := o.ClientReferenceInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "clientReferenceInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "clientReferenceInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBody) contextValidateErrorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ErrorInformation != nil {
+		if err := o.ErrorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "errorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "errorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBody) contextValidateMerchantInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantInformation != nil {
+		if err := o.MerchantInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBody) contextValidateOrderInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.OrderInformation != nil {
+		if err := o.OrderInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "orderInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "orderInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBody) contextValidateProcessorInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ProcessorInformation != nil {
+		if err := o.ProcessorInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "processorInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "processorInformation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBody) contextValidateRecipientInformation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.RecipientInformation != nil {
+		if err := o.RecipientInformation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -818,10 +1177,18 @@ swagger:model OctCreatePaymentCreatedBodyClientReferenceInformation
 */
 type OctCreatePaymentCreatedBodyClientReferenceInformation struct {
 
-	// Client-generated order reference or tracking number. CyberSource recommends that you send a unique value for each
+	// Merchant-generated order reference or tracking number. It is recommended that you send a unique value for each
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
-	// For information about tracking orders, see "Tracking and Reconciling Your Orders" in [Getting Started with CyberSource Advanced for the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Getting_Started_SCMP/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -837,13 +1204,14 @@ type OctCreatePaymentCreatedBodyClientReferenceInformation struct {
 	// If your CyberSource account is enabled for Payment Tokenization, this field is returned only if you are using
 	// profile sharing and if your merchant ID is in the same merchant ID pool as the owner merchant ID.
 	//
-	// For details about how this field is used for Recurring Billing or Payment Tokenization, see the `ecp_debit_owner_merchant_id` field description in the [Electronic Check Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/EChecks_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
 	OwnerMerchantID string `json:"ownerMerchantId,omitempty"`
 
 	// Date and time at your physical location.
 	//
 	// Format: `YYYYMMDDhhmmss`, where YYYY = year, MM = month, DD = day, hh = hour, mm = minutes ss = seconds
+	//
+	// #### PIN Debit
+	// Optional field for PIN Debit purchase and credit requests.
 	//
 	// Max Length: 14
 	SubmitLocalDateTime string `json:"submitLocalDateTime,omitempty"`
@@ -868,12 +1236,11 @@ func (o *OctCreatePaymentCreatedBodyClientReferenceInformation) Validate(formats
 }
 
 func (o *OctCreatePaymentCreatedBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
 	}
 
@@ -881,15 +1248,19 @@ func (o *OctCreatePaymentCreatedBodyClientReferenceInformation) validateCode(for
 }
 
 func (o *OctCreatePaymentCreatedBodyClientReferenceInformation) validateSubmitLocalDateTime(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SubmitLocalDateTime) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"clientReferenceInformation"+"."+"submitLocalDateTime", "body", string(o.SubmitLocalDateTime), 14); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"clientReferenceInformation"+"."+"submitLocalDateTime", "body", o.SubmitLocalDateTime, 14); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment created body client reference information based on context it is used
+func (o *OctCreatePaymentCreatedBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -936,6 +1307,8 @@ type OctCreatePaymentCreatedBodyErrorInformation struct {
 	//  - GENERAL_DECLINE
 	//  - RISK_CONTROL_DECLINE
 	//  - PROCESSOR_RISK_CONTROL_DECLINE
+	//  - ALLOWABLE_PIN_RETRIES_EXCEEDED
+	//  - PROCESSOR_ERROR
 	//
 	Reason string `json:"reason,omitempty"`
 }
@@ -955,7 +1328,6 @@ func (o *OctCreatePaymentCreatedBodyErrorInformation) Validate(formats strfmt.Re
 }
 
 func (o *OctCreatePaymentCreatedBodyErrorInformation) validateDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Details) { // not required
 		return nil
 	}
@@ -969,6 +1341,42 @@ func (o *OctCreatePaymentCreatedBodyErrorInformation) validateDetails(formats st
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("octCreatePaymentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("octCreatePaymentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment created body error information based on the context it is used
+func (o *OctCreatePaymentCreatedBodyErrorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBodyErrorInformation) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("octCreatePaymentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("octCreatePaymentCreated" + "." + "errorInformation" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -1019,6 +1427,11 @@ func (o *OctCreatePaymentCreatedBodyErrorInformationDetailsItems0) Validate(form
 	return nil
 }
 
+// ContextValidate validates this oct create payment created body error information details items0 based on context it is used
+func (o *OctCreatePaymentCreatedBodyErrorInformationDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *OctCreatePaymentCreatedBodyErrorInformationDetailsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -1061,7 +1474,6 @@ func (o *OctCreatePaymentCreatedBodyLinks) Validate(formats strfmt.Registry) err
 }
 
 func (o *OctCreatePaymentCreatedBodyLinks) validateSelf(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Self) { // not required
 		return nil
 	}
@@ -1070,6 +1482,38 @@ func (o *OctCreatePaymentCreatedBodyLinks) validateSelf(formats strfmt.Registry)
 		if err := o.Self.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "_links" + "." + "self")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment created body links based on the context it is used
+func (o *OctCreatePaymentCreatedBodyLinks) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateSelf(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBodyLinks) contextValidateSelf(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Self != nil {
+		if err := o.Self.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "_links" + "." + "self")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "_links" + "." + "self")
 			}
 			return err
 		}
@@ -1110,6 +1554,11 @@ type OctCreatePaymentCreatedBodyLinksSelf struct {
 
 // Validate validates this oct create payment created body links self
 func (o *OctCreatePaymentCreatedBodyLinksSelf) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this oct create payment created body links self based on context it is used
+func (o *OctCreatePaymentCreatedBodyLinksSelf) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1155,7 +1604,6 @@ func (o *OctCreatePaymentCreatedBodyMerchantInformation) Validate(formats strfmt
 }
 
 func (o *OctCreatePaymentCreatedBodyMerchantInformation) validateMerchantDescriptor(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantDescriptor) { // not required
 		return nil
 	}
@@ -1164,6 +1612,38 @@ func (o *OctCreatePaymentCreatedBodyMerchantInformation) validateMerchantDescrip
 		if err := o.MerchantDescriptor.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment created body merchant information based on the context it is used
+func (o *OctCreatePaymentCreatedBodyMerchantInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateMerchantDescriptor(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBodyMerchantInformation) contextValidateMerchantDescriptor(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantDescriptor != nil {
+		if err := o.MerchantDescriptor.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "merchantInformation" + "." + "merchantDescriptor")
 			}
 			return err
 		}
@@ -1197,25 +1677,54 @@ type OctCreatePaymentCreatedBodyMerchantInformationMerchantDescriptor struct {
 
 	// Merchant's country.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_country` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// Country code for your business location. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)
+	// This value might be displayed on the cardholder’s statement.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	// **Note** If your business is located in the U.S. or Canada and you include this field in a
+	// request, you must also include `merchantInformation.merchantDescriptor.administrativeArea`.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase.
 	//
 	// Max Length: 2
 	Country string `json:"country,omitempty"`
 
 	// Merchant's City.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_city` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// City for your business location. This value might be displayed on the cardholder’s statement.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase requests.
 	//
 	// Max Length: 13
 	Locality string `json:"locality,omitempty"`
 
-	// Merchant's name.
-	//
-	// For more details about the merchant-related fields, see the `merchant_descriptor` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// Your merchant name.
 	//
 	// **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.
+	//
+	// #### PIN debit
+	// Your business name. This name is displayed on the cardholder’s statement. When you
+	// include more than one consecutive space, extra spaces are removed.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase requests.
+	//
+	// #### Airline processing
+	// Your merchant name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.
+	//
+	// **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.
+	//
+	// **Important** This value must consist of English characters.
+	//
+	// Required for captures and credits.
 	//
 	Name string `json:"name,omitempty"`
 }
@@ -1239,12 +1748,11 @@ func (o *OctCreatePaymentCreatedBodyMerchantInformationMerchantDescriptor) Valid
 }
 
 func (o *OctCreatePaymentCreatedBodyMerchantInformationMerchantDescriptor) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -1252,15 +1760,19 @@ func (o *OctCreatePaymentCreatedBodyMerchantInformationMerchantDescriptor) valid
 }
 
 func (o *OctCreatePaymentCreatedBodyMerchantInformationMerchantDescriptor) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"locality", "body", string(o.Locality), 13); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"locality", "body", o.Locality, 13); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment created body merchant information merchant descriptor based on context it is used
+func (o *OctCreatePaymentCreatedBodyMerchantInformationMerchantDescriptor) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1306,7 +1818,6 @@ func (o *OctCreatePaymentCreatedBodyOrderInformation) Validate(formats strfmt.Re
 }
 
 func (o *OctCreatePaymentCreatedBodyOrderInformation) validateAmountDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountDetails) { // not required
 		return nil
 	}
@@ -1315,6 +1826,38 @@ func (o *OctCreatePaymentCreatedBodyOrderInformation) validateAmountDetails(form
 		if err := o.AmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment created body order information based on the context it is used
+func (o *OctCreatePaymentCreatedBodyOrderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBodyOrderInformation) contextValidateAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AmountDetails != nil {
+		if err := o.AmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "orderInformation" + "." + "amountDetails")
 			}
 			return err
 		}
@@ -1346,50 +1889,86 @@ swagger:model OctCreatePaymentCreatedBodyOrderInformationAmountDetails
 */
 type OctCreatePaymentCreatedBodyOrderInformationAmountDetails struct {
 
-	// Currency used for the order. Use the three-character I[ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
+	// Currency used for the order. Use the three-character [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
 	//
-	// For details about currency as used in partial authorizations, see "Features for Debit Cards and Prepaid Cards" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
 	//
+	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
+	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
 	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
+	// Your local currency.
 	//
 	// Max Length: 3
 	Currency string `json:"currency,omitempty"`
 
 	// This is a multicurrency field. It contains the transaction amount (field 4), converted to the Currency used to bill the cardholder’s account.
+	// This field is returned for OCT transactions.
 	//
 	// Max Length: 12
 	SettlementAmount string `json:"settlementAmount,omitempty"`
 
 	// This is a multicurrency-only field. It contains a 3-digit numeric code that identifies the currency used by the issuer to bill the cardholder's account.
+	// This field is returned for OCT transactions.
 	//
 	// Max Length: 3
 	SettlementCurrency string `json:"settlementCurrency,omitempty"`
 
-	// Grand total for the order. This value cannot be negative. You can include a decimal point (.), but no other special characters. CyberSource truncates the amount to the correct number of decimal places.
+	// Grand total for the order. This value cannot be negative. You can include a decimal point (.), but no other special characters.
+	// CyberSource truncates the amount to the correct number of decimal places.
 	//
 	// **Note** For CTV, FDCCompass, Paymentech processors, the maximum length for this field is 12.
 	//
 	// **Important** Some processors have specific requirements and limitations, such as maximum amounts and maximum field lengths. For details, see:
-	// - "Authorization Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
-	// - "Capture Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
-	// - "Credit Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
+	// - "Authorization Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
+	// - "Capture Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
+	// - "Credit Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
 	//
-	// If your processor supports zero amount authorizations, you can set this field to 0 for the authorization to check if the card is lost or stolen. For details, see "Zero Amount Authorizations," "Credit Information for Specific Processors" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// If your processor supports zero amount authorizations, you can set this field to 0 for the authorization to check if the card is lost or stolen. For details, see "Zero Amount Authorizations," "Credit Information for Specific Processors" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// #### Card Present
+	// Required to include either this field or `orderInformation.lineItems[].unitPrice` for the order.
+	//
+	// #### Invoicing
+	// Required for creating a new invoice.
+	//
+	// #### PIN Debit
+	// Amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount.
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit; however, for all other processors, these fields are required.
 	//
 	// #### DCC with a Third-Party Provider
 	// Set this field to the converted amount that was returned by the DCC provider. You must include either this field or the 1st line item in the order and the specific line-order amount in your request. For details, see `grand_total_amount` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
 	//
 	// #### FDMS South
-	// If you accept IDR or CLP currencies, see the entry for FDMS South in "Authorization Information for Specific Processors" of the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// If you accept IDR or CLP currencies, see the entry for FDMS South in "Authorization Information for Specific Processors" of the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### DCC for First Data
 	// Not used.
-	//
-	// #### Invoicing
-	// Grand total for the order, this is required for creating a new invoice.
 	//
 	// Max Length: 19
 	TotalAmount string `json:"totalAmount,omitempty"`
@@ -1422,12 +2001,11 @@ func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) Validate(form
 }
 
 func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) validateCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Currency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", string(o.Currency), 3); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
@@ -1435,12 +2013,11 @@ func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) validateCurre
 }
 
 func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) validateSettlementAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SettlementAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"settlementAmount", "body", string(o.SettlementAmount), 12); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"settlementAmount", "body", o.SettlementAmount, 12); err != nil {
 		return err
 	}
 
@@ -1448,12 +2025,11 @@ func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) validateSettl
 }
 
 func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) validateSettlementCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SettlementCurrency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"settlementCurrency", "body", string(o.SettlementCurrency), 3); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"settlementCurrency", "body", o.SettlementCurrency, 3); err != nil {
 		return err
 	}
 
@@ -1461,15 +2037,19 @@ func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) validateSettl
 }
 
 func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) validateTotalAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", string(o.TotalAmount), 19); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", o.TotalAmount, 19); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment created body order information amount details based on context it is used
+func (o *OctCreatePaymentCreatedBodyOrderInformationAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1510,6 +2090,7 @@ type OctCreatePaymentCreatedBodyProcessorInformation struct {
 	ResponseCodeSource string `json:"responseCodeSource,omitempty"`
 
 	// This field is returned only for **American Express Direct** and **CyberSource through VisaNet**.
+	// Returned by authorization and incremental authorization services.
 	//
 	// #### American Express Direct
 	//
@@ -1519,8 +2100,6 @@ type OctCreatePaymentCreatedBodyProcessorInformation struct {
 	// #### CyberSource through VisaNet
 	//
 	// System trace number that must be printed on the customer’s receipt.
-	//
-	// For details, see `receipt_number` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
 	//
 	// Max Length: 6
 	SystemTraceAuditNumber string `json:"systemTraceAuditNumber,omitempty"`
@@ -1563,12 +2142,11 @@ func (o *OctCreatePaymentCreatedBodyProcessorInformation) Validate(formats strfm
 }
 
 func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateApprovalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ApprovalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"approvalCode", "body", string(o.ApprovalCode), 6); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"approvalCode", "body", o.ApprovalCode, 6); err != nil {
 		return err
 	}
 
@@ -1576,12 +2154,11 @@ func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateApprovalCode(f
 }
 
 func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateResponseCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ResponseCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"responseCode", "body", string(o.ResponseCode), 10); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"responseCode", "body", o.ResponseCode, 10); err != nil {
 		return err
 	}
 
@@ -1589,12 +2166,11 @@ func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateResponseCode(f
 }
 
 func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateResponseCodeSource(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ResponseCodeSource) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"responseCodeSource", "body", string(o.ResponseCodeSource), 1); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"responseCodeSource", "body", o.ResponseCodeSource, 1); err != nil {
 		return err
 	}
 
@@ -1602,12 +2178,11 @@ func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateResponseCodeSo
 }
 
 func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateSystemTraceAuditNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SystemTraceAuditNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"systemTraceAuditNumber", "body", string(o.SystemTraceAuditNumber), 6); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"systemTraceAuditNumber", "body", o.SystemTraceAuditNumber, 6); err != nil {
 		return err
 	}
 
@@ -1615,15 +2190,19 @@ func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateSystemTraceAud
 }
 
 func (o *OctCreatePaymentCreatedBodyProcessorInformation) validateTransactionID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TransactionID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"transactionId", "body", string(o.TransactionID), 15); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"processorInformation"+"."+"transactionId", "body", o.TransactionID, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment created body processor information based on context it is used
+func (o *OctCreatePaymentCreatedBodyProcessorInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1669,7 +2248,6 @@ func (o *OctCreatePaymentCreatedBodyRecipientInformation) Validate(formats strfm
 }
 
 func (o *OctCreatePaymentCreatedBodyRecipientInformation) validateCard(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Card) { // not required
 		return nil
 	}
@@ -1678,6 +2256,38 @@ func (o *OctCreatePaymentCreatedBodyRecipientInformation) validateCard(formats s
 		if err := o.Card.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment created body recipient information based on the context it is used
+func (o *OctCreatePaymentCreatedBodyRecipientInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentCreatedBodyRecipientInformation) contextValidateCard(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Card != nil {
+		if err := o.Card.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentCreated" + "." + "recipientInformation" + "." + "card")
 			}
 			return err
 		}
@@ -1740,12 +2350,11 @@ func (o *OctCreatePaymentCreatedBodyRecipientInformationCard) Validate(formats s
 }
 
 func (o *OctCreatePaymentCreatedBodyRecipientInformationCard) validateBalance(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Balance) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"recipientInformation"+"."+"card"+"."+"balance", "body", string(o.Balance), 12); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"recipientInformation"+"."+"card"+"."+"balance", "body", o.Balance, 12); err != nil {
 		return err
 	}
 
@@ -1753,15 +2362,19 @@ func (o *OctCreatePaymentCreatedBodyRecipientInformationCard) validateBalance(fo
 }
 
 func (o *OctCreatePaymentCreatedBodyRecipientInformationCard) validateCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Currency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"recipientInformation"+"."+"card"+"."+"currency", "body", string(o.Currency), 3); err != nil {
+	if err := validate.MaxLength("octCreatePaymentCreated"+"."+"recipientInformation"+"."+"card"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment created body recipient information card based on context it is used
+func (o *OctCreatePaymentCreatedBodyRecipientInformationCard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1788,10 +2401,30 @@ swagger:model OctCreatePaymentParamsBodyClientReferenceInformation
 */
 type OctCreatePaymentParamsBodyClientReferenceInformation struct {
 
-	// Client-generated order reference or tracking number. CyberSource recommends that you send a unique value for each
+	// The name of the Connection Method client (such as Virtual Terminal or SOAP Toolkit API) that the merchant uses to send a transaction request to CyberSource.
+	//
+	ApplicationName string `json:"applicationName,omitempty"`
+
+	// The entity that is responsible for running the transaction and submitting the processing request to CyberSource. This could be a person, a system, or a connection method.
+	//
+	ApplicationUser string `json:"applicationUser,omitempty"`
+
+	// Version of the CyberSource application or integration used for a transaction.
+	//
+	ApplicationVersion string `json:"applicationVersion,omitempty"`
+
+	// Merchant-generated order reference or tracking number. It is recommended that you send a unique value for each
 	// transaction so that you can perform meaningful searches for the transaction.
 	//
-	// For information about tracking orders, see "Tracking and Reconciling Your Orders" in [Getting Started with CyberSource Advanced for the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/Getting_Started_SCMP/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
+	//
+	// #### PIN Debit
+	// Requests for PIN debit reversals need to use the same merchant reference number that was used in the transaction that is being
+	// reversed.
+	//
+	// Required field for all PIN Debit requests (purchase, credit, and reversal).
 	//
 	// #### FDC Nashville Global
 	// Certain circumstances can cause the processor to truncate this value to 15 or 17 characters for Level II and Level III processing, which can cause a discrepancy between the value you submit and the value included in some processor reports.
@@ -1815,15 +2448,19 @@ func (o *OctCreatePaymentParamsBodyClientReferenceInformation) Validate(formats 
 }
 
 func (o *OctCreatePaymentParamsBodyClientReferenceInformation) validateCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Code) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"clientReferenceInformation"+"."+"code", "body", string(o.Code), 50); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"clientReferenceInformation"+"."+"code", "body", o.Code, 50); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body client reference information based on context it is used
+func (o *OctCreatePaymentParamsBodyClientReferenceInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -1876,6 +2513,10 @@ type OctCreatePaymentParamsBodyMerchantInformation struct {
 
 	// Your government-assigned tax identification number.
 	//
+	// #### Tax Calculation
+	// Required field for value added tax only. Not applicable to U.S. and Canadian taxes.
+	//
+	// #### CyberSource through VisaNet
 	// For CtV processors, the maximum length is 20.
 	//
 	// For other processor-specific information, see the `merchant_vat_registration_number` field description in
@@ -1908,12 +2549,11 @@ func (o *OctCreatePaymentParamsBodyMerchantInformation) Validate(formats strfmt.
 }
 
 func (o *OctCreatePaymentParamsBodyMerchantInformation) validateCategoryCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CategoryCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaximumInt("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"categoryCode", "body", int64(o.CategoryCode), 9999, false); err != nil {
+	if err := validate.MaximumInt("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"categoryCode", "body", o.CategoryCode, 9999, false); err != nil {
 		return err
 	}
 
@@ -1921,7 +2561,6 @@ func (o *OctCreatePaymentParamsBodyMerchantInformation) validateCategoryCode(for
 }
 
 func (o *OctCreatePaymentParamsBodyMerchantInformation) validateMerchantDescriptor(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MerchantDescriptor) { // not required
 		return nil
 	}
@@ -1930,6 +2569,8 @@ func (o *OctCreatePaymentParamsBodyMerchantInformation) validateMerchantDescript
 		if err := o.MerchantDescriptor.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
 			}
 			return err
 		}
@@ -1939,13 +2580,42 @@ func (o *OctCreatePaymentParamsBodyMerchantInformation) validateMerchantDescript
 }
 
 func (o *OctCreatePaymentParamsBodyMerchantInformation) validateVatRegistrationNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VatRegistrationNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"vatRegistrationNumber", "body", string(o.VatRegistrationNumber), 21); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"vatRegistrationNumber", "body", o.VatRegistrationNumber, 21); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment params body merchant information based on the context it is used
+func (o *OctCreatePaymentParamsBodyMerchantInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateMerchantDescriptor(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyMerchantInformation) contextValidateMerchantDescriptor(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.MerchantDescriptor != nil {
+		if err := o.MerchantDescriptor.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "merchantInformation" + "." + "merchantDescriptor")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -1976,13 +2646,16 @@ type OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor struct {
 
 	// The state where the merchant is located.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_state` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// State code or region code for your business. Use the Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf) This value might be displayed on the cardholder’s statement.
 	//
-	// Merchant State. For the descriptions, used-by information, data types, and lengths for these fields, see Merchant Descriptors
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
 	//
-	// Max Length: 3
+	// **Note** This field is supported only for businesses located in the U.S. or Canada.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase.
+	//
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
 	// For the descriptions, used-by information, data types, and lengths for these fields, see `merchant_descriptor_contact` field description
@@ -1998,32 +2671,79 @@ type OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor struct {
 
 	// Merchant's country.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_country` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// Country code for your business location. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf)
+	// This value might be displayed on the cardholder’s statement.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	// **Note** If your business is located in the U.S. or Canada and you include this field in a
+	// request, you must also include `merchantInformation.merchantDescriptor.administrativeArea`.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase.
 	//
 	// Max Length: 2
 	Country string `json:"country,omitempty"`
 
 	// Merchant's City.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_city` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// City for your business location. This value might be displayed on the cardholder’s statement.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase requests.
 	//
 	// Max Length: 13
 	Locality string `json:"locality,omitempty"`
 
-	// Merchant's name.
-	//
-	// For more details about the merchant-related fields, see the `merchant_descriptor` field description in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// Your merchant name.
 	//
 	// **Note** For Paymentech processor using Cybersource Payouts, the maximum data length is 22.
+	//
+	// #### PIN debit
+	// Your business name. This name is displayed on the cardholder’s statement. When you
+	// include more than one consecutive space, extra spaces are removed.
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase requests.
+	//
+	// #### Airline processing
+	// Your merchant name. This name is displayed on the cardholder’s statement. When you include more than one consecutive space, extra spaces are removed.
+	//
+	// **Note** Some airline fee programs may require the original ticket number (ticket identifier) or the ancillary service description in positions 13 through 23 of this field.
+	//
+	// **Important** This value must consist of English characters.
+	//
+	// Required for captures and credits.
 	//
 	Name string `json:"name,omitempty"`
 
 	// Merchant's postal code.
 	//
-	// For the descriptions, used-by information, data types, and lengths for these fields, see the `merchant_descriptor_postal_code` field description
-	// in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// Postal code for your business location. This value might be displayed on the cardholder’s statement.
+	//
+	// If your business is domiciled in the U.S., you can use a 5-digit or 9-digit postal code. A 9-digit postal code must follow this format:
+	// [5 digits][dash][4 digits]
+	// Example: `12345-6789`
+	//
+	// If your business is domiciled in Canada, you can use a 6-digit or 9-digit postal code. A 6-digit postal code must follow this format:
+	// [alpha][numeric][alpha][space]
+	// [numeric][alpha][numeric]
+	// Example: `A1B 2C3`
+	//
+	// When you do not include this value in your PIN debit request, the merchant name from your account is used.
+	// **Important** This value must consist of English characters.
+	//
+	// **Note** This field is supported only for businesses located in the U.S. or Canada.
+	// **Important** Mastercard requires a postal code for any country that uses postal codes.
+	// You can provide the postal code in your account or you can include this field in your request.
+	//
+	// Optional field for PIN debit credit or PIN debit purchase.
 	//
 	// Max Length: 14
 	PostalCode string `json:"postalCode,omitempty"`
@@ -2032,10 +2752,6 @@ type OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor struct {
 // Validate validates this oct create payment params body merchant information merchant descriptor
 func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := o.validateAdministrativeArea(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := o.validateContact(formats); err != nil {
 		res = append(res, err)
@@ -2059,26 +2775,12 @@ func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) Valida
 	return nil
 }
 
-func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) validateAdministrativeArea(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.AdministrativeArea) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 3); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) validateContact(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Contact) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"contact", "body", string(o.Contact), 14); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"contact", "body", o.Contact, 14); err != nil {
 		return err
 	}
 
@@ -2086,12 +2788,11 @@ func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) valida
 }
 
 func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -2099,12 +2800,11 @@ func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) valida
 }
 
 func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"locality", "body", string(o.Locality), 13); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"locality", "body", o.Locality, 13); err != nil {
 		return err
 	}
 
@@ -2112,15 +2812,19 @@ func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) valida
 }
 
 func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"postalCode", "body", string(o.PostalCode), 14); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"merchantInformation"+"."+"merchantDescriptor"+"."+"postalCode", "body", o.PostalCode, 14); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body merchant information merchant descriptor based on context it is used
+func (o *OctCreatePaymentParamsBodyMerchantInformationMerchantDescriptor) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2173,7 +2877,6 @@ func (o *OctCreatePaymentParamsBodyOrderInformation) Validate(formats strfmt.Reg
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformation) validateAmountDetails(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AmountDetails) { // not required
 		return nil
 	}
@@ -2182,6 +2885,8 @@ func (o *OctCreatePaymentParamsBodyOrderInformation) validateAmountDetails(forma
 		if err := o.AmountDetails.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
 			}
 			return err
 		}
@@ -2191,7 +2896,6 @@ func (o *OctCreatePaymentParamsBodyOrderInformation) validateAmountDetails(forma
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformation) validateBillTo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.BillTo) { // not required
 		return nil
 	}
@@ -2200,6 +2904,58 @@ func (o *OctCreatePaymentParamsBodyOrderInformation) validateBillTo(formats strf
 		if err := o.BillTo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "billTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "billTo")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment params body order information based on the context it is used
+func (o *OctCreatePaymentParamsBodyOrderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAmountDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateBillTo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyOrderInformation) contextValidateAmountDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AmountDetails != nil {
+		if err := o.AmountDetails.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyOrderInformation) contextValidateBillTo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.BillTo != nil {
+		if err := o.BillTo.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "billTo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "billTo")
 			}
 			return err
 		}
@@ -2231,14 +2987,35 @@ swagger:model OctCreatePaymentParamsBodyOrderInformationAmountDetails
 */
 type OctCreatePaymentParamsBodyOrderInformationAmountDetails struct {
 
-	// Currency used for the order. Use the three-character I[ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
+	// Currency used for the order. Use the three-character [ISO Standard Currency Codes.](http://apps.cybersource.com/library/documentation/sbc/quickref/currencies.pdf)
 	//
-	// For details about currency as used in partial authorizations, see "Features for Debit Cards and Prepaid Cards" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// #### Used by
+	// **Authorization**
+	// Required field.
 	//
+	// **Authorization Reversal**
 	// For an authorization reversal (`reversalInformation`) or a capture (`processingOptions.capture` is set to `true`), you must use the same currency that you used in your payment authorization request.
+	//
+	// #### PIN Debit
+	// Currency for the amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount. For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	// Returned by PIN debit purchase.
+	//
+	// For PIN debit reversal requests, you must use the same currency that was used for the PIN debit purchase or PIN debit credit that you are reversing.
+	// For the possible values, see the [ISO Standard Currency Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/currencies.pdf).
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit.
 	//
 	// #### DCC for First Data
 	// Your local currency. For details, see the `currency` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
+	//
+	// #### Tax Calculation
+	// Required for international tax and value added tax only.
+	// Optional for U.S. and Canadian taxes.
+	// Your local currency.
 	//
 	// Max Length: 3
 	Currency string `json:"currency,omitempty"`
@@ -2246,28 +3023,41 @@ type OctCreatePaymentParamsBodyOrderInformationAmountDetails struct {
 	// surcharge
 	Surcharge *OctCreatePaymentParamsBodyOrderInformationAmountDetailsSurcharge `json:"surcharge,omitempty"`
 
-	// Grand total for the order. This value cannot be negative. You can include a decimal point (.), but no other special characters. CyberSource truncates the amount to the correct number of decimal places.
+	// Grand total for the order. This value cannot be negative. You can include a decimal point (.), but no other special characters.
+	// CyberSource truncates the amount to the correct number of decimal places.
 	//
 	// **Note** For CTV, FDCCompass, Paymentech processors, the maximum length for this field is 12.
 	//
 	// **Important** Some processors have specific requirements and limitations, such as maximum amounts and maximum field lengths. For details, see:
-	// - "Authorization Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
-	// - "Capture Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
-	// - "Credit Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm).
+	// - "Authorization Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
+	// - "Capture Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
+	// - "Credit Information for Specific Processors" in the [Credit Card Services Using the SCMP API Guide](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/).
 	//
-	// If your processor supports zero amount authorizations, you can set this field to 0 for the authorization to check if the card is lost or stolen. For details, see "Zero Amount Authorizations," "Credit Information for Specific Processors" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// If your processor supports zero amount authorizations, you can set this field to 0 for the authorization to check if the card is lost or stolen. For details, see "Zero Amount Authorizations," "Credit Information for Specific Processors" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
+	//
+	// #### Card Present
+	// Required to include either this field or `orderInformation.lineItems[].unitPrice` for the order.
+	//
+	// #### Invoicing
+	// Required for creating a new invoice.
+	//
+	// #### PIN Debit
+	// Amount you requested for the PIN debit purchase. This value is returned for partial authorizations. The issuing bank can approve a partial amount if the balance on the debit card is less than the requested transaction amount.
+	//
+	// Required field for PIN Debit purchase and PIN Debit credit requests.
+	// Optional field for PIN Debit reversal requests.
+	//
+	// #### GPX
+	// This field is optional for reversing an authorization or credit; however, for all other processors, these fields are required.
 	//
 	// #### DCC with a Third-Party Provider
 	// Set this field to the converted amount that was returned by the DCC provider. You must include either this field or the 1st line item in the order and the specific line-order amount in your request. For details, see `grand_total_amount` field description in [Dynamic Currency Conversion For First Data Using the SCMP API](http://apps.cybersource.com/library/documentation/dev_guides/DCC_FirstData_SCMP/DCC_FirstData_SCMP_API.pdf).
 	//
 	// #### FDMS South
-	// If you accept IDR or CLP currencies, see the entry for FDMS South in "Authorization Information for Specific Processors" of the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// If you accept IDR or CLP currencies, see the entry for FDMS South in "Authorization Information for Specific Processors" of the [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	// #### DCC for First Data
 	// Not used.
-	//
-	// #### Invoicing
-	// Grand total for the order, this is required for creating a new invoice.
 	//
 	// Max Length: 19
 	TotalAmount string `json:"totalAmount,omitempty"`
@@ -2296,12 +3086,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) Validate(forma
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) validateCurrency(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Currency) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", string(o.Currency), 3); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"currency", "body", o.Currency, 3); err != nil {
 		return err
 	}
 
@@ -2309,7 +3098,6 @@ func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) validateCurren
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) validateSurcharge(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Surcharge) { // not required
 		return nil
 	}
@@ -2318,6 +3106,8 @@ func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) validateSurcha
 		if err := o.Surcharge.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "surcharge")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "surcharge")
 			}
 			return err
 		}
@@ -2327,13 +3117,42 @@ func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) validateSurcha
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) validateTotalAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.TotalAmount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", string(o.TotalAmount), 19); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"totalAmount", "body", o.TotalAmount, 19); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment params body order information amount details based on the context it is used
+func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateSurcharge(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetails) contextValidateSurcharge(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Surcharge != nil {
+		if err := o.Surcharge.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "surcharge")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "orderInformation" + "." + "amountDetails" + "." + "surcharge")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -2364,12 +3183,16 @@ type OctCreatePaymentParamsBodyOrderInformationAmountDetailsSurcharge struct {
 
 	// The surcharge amount is included in the total transaction amount but is passed in a separate field to the issuer and acquirer for tracking. The issuer can provide information about the surcharge amount to the customer.
 	//
-	// If the amount is positive, then it is a debit for the customer.\
+	// If the amount is positive, then it is a debit for the customer.
 	// If the amount is negative, then it is a credit for the customer.
 	//
 	// **NOTE**: This field is supported only for CyberSource through VisaNet (CtV) for Payouts. For CtV, the maximum string length is 8.
 	//
-	// For processor-specific information, see the surcharge_amount field in [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### PIN debit
+	// Surcharge amount that you are charging the customer for this transaction. If you include a surcharge amount
+	// in the request, you must also include the surcharge amount in the value for `orderInformation.amountDetails.totalAmount`.
+	//
+	// Optional field for transactions that use PIN debit credit or PIN debit purchase.
 	//
 	// Max Length: 15
 	Amount string `json:"amount,omitempty"`
@@ -2390,15 +3213,19 @@ func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetailsSurcharge) Valid
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetailsSurcharge) validateAmount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Amount) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"surcharge"+"."+"amount", "body", string(o.Amount), 15); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"amountDetails"+"."+"surcharge"+"."+"amount", "body", o.Amount, 15); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body order information amount details surcharge based on context it is used
+func (o *OctCreatePaymentParamsBodyOrderInformationAmountDetailsSurcharge) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2431,69 +3258,146 @@ type OctCreatePaymentParamsBodyOrderInformationBillTo struct {
 	// This field must not contain colons (:).
 	//
 	// #### CyberSource through VisaNet
-	// **Important** When you populate billing street address 1 and billing street address 2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// **Important** When you populate orderInformation.billTo.address1 and orderInformation.billTo.address2,
+	// CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters,
+	// CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank.
+	// Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless
+	// ASCII characters for transmission to the credit card networks.
 	//
-	// #### For Payouts: This field may be sent only for FDC Compass.
+	// #### FDMS Nashville
+	// When the street name is numeric, it must be sent in numeric format. For example, if the address is _One First Street_,
+	// it must be sent as _1 1st Street_.
+	//
+	// Required if keyed; not used if swiped.
+	//
+	// String (20)
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### All other processors:
+	// Optional.
+	// String (60)
+	//
+	// #### For Payouts
+	// This field may be sent only for FDC Compass.
 	//
 	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
-	//
-	// For processor-specific information, see the `bill_address1` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
 	//
 	// Max Length: 60
 	Address1 string `json:"address1,omitempty"`
 
-	// Additional address information.
+	// Used for additional address information. For example: _Attention: Accounts Payable_
+	// Optional field.
 	//
 	// For Payouts: This field may be sent only for FDC Compass.
 	//
 	// #### Atos
 	// This field must not contain colons (:).
 	//
+	// #### CyberSource through VisaNet
+	// **Important** When you populate `orderInformation.billTo.address1` and `orderInformation.billTo.address2`,
+	// CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters,
+	// CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank.
+	// Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless
+	// ASCII characters for transmission to the credit card networks.
+	//
 	// #### Chase Paymentech Solutions, FDC Compass, and TSYS Acquiring Solutions
 	// This value is used for AVS.
 	//
-	// #### CyberSource through VisaNet
-	// **Important** When you populate billing street address 1 and billing street address 2, CyberSource through VisaNet concatenates the two values. If the concatenated value exceeds 40 characters, CyberSource through VisaNet truncates the value at 40 characters before sending it to Visa and the issuing bank. Truncating this value affects AVS results and therefore might also affect risk decisions and chargebacks.
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// #### FDMS Nashville
+	// `orderInformation.billTo.address1` and `orderInformation.billTo.address2` together cannot exceed 20 characters.
+	// String (20)
 	//
-	// For processor-specific information, see the `bill_address2` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### All Other Processors
+	// String (60)
 	//
 	// Max Length: 60
 	Address2 string `json:"address2,omitempty"`
 
-	// State or province of the billing address. Use the State, Province, and Territory Codes for the United States
-	// and Canada.
+	// State or province of the billing address. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).
 	//
 	// For Payouts: This field may be sent only for FDC Compass.
 	//
 	// ##### CyberSource through VisaNet
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless
+	// ASCII characters for transmission to the credit card networks.
 	//
 	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
 	//
-	// For processor-specific information, see the `bill_state` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 20
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
-	// Payment card billing country. Use the two-character ISO Standard Country Codes.
+	// Payment card billing country. Use the two-character [ISO Standard Country Codes](http://apps.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
 	//
 	// #### CyberSource through VisaNet
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII
+	// characters for transmission to the credit card networks.
 	//
 	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
 	//
-	// For processor-specific information, see the `bill_country` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 2
 	Country string `json:"country,omitempty"`
 
 	// Customer’s first name. This name must be the same as the name on the card.
+	//
+	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
 	//
 	// #### CyberSource Latin American Processing
 	// **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\
@@ -2505,15 +3409,39 @@ type OctCreatePaymentParamsBodyOrderInformationBillTo struct {
 	// #### For Payouts:
 	// This field may be sent only for FDC Compass.
 	//
-	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+	// #### Chase Paymentech Solutions
+	// Optional field.
 	//
-	// For processor-specific information, see the `customer_firstname` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 60
 	FirstName string `json:"firstName,omitempty"`
 
 	// Customer’s last name. This name must be the same as the name on the card.
+	//
+	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+	//
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
 	//
 	// #### CyberSource Latin American Processing
 	// **Important** For an authorization request, CyberSource Latin American Processing concatenates `orderInformation.billTo.firstName` and `orderInformation.billTo.lastName`. If the concatenated value exceeds 30 characters, CyberSource Latin American Processing declines the authorization request.\
@@ -2522,13 +3450,26 @@ type OctCreatePaymentParamsBodyOrderInformationBillTo struct {
 	// #### CyberSource through VisaNet
 	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
 	//
-	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
-	//
 	// #### For Payouts:
 	// This field may be sent only for FDC Compass.
 	//
-	// For processor-specific information, see the `customer_lastname` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### RBS WorldPay Atlanta
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 60
 	LastName string `json:"lastName,omitempty"`
@@ -2544,24 +3485,60 @@ type OctCreatePaymentParamsBodyOrderInformationBillTo struct {
 	// #### For Payouts:
 	// This field may be sent only for FDC Compass.
 	//
-	// For processor-specific information, see the `bill_city` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### Chase Paymentech Solutions
+	// Optional field.
+	//
+	// ####  Credit Mutuel-CIC
+	// Optional field.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 50
 	Locality string `json:"locality,omitempty"`
 
 	// Customer’s phone number.
 	//
-	// #### For Payouts:
-	// This field may be sent only for FDC Compass.
+	// It is recommended that you include the country code when the order is from outside the U.S.
 	//
-	// CyberSource recommends that you include the country code when the order is from outside the U.S.
+	// #### Chase Paymentech Solutions
+	// Optional field.
 	//
-	// For processor-specific information, see the customer_phone field in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// ####  Credit Mutuel-CIC
+	// Optional field.
 	//
 	// #### CyberSource through VisaNet
 	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	//
+	// #### For Payouts:
+	// This field may be sent only for FDC Compass.
+	//
+	// #### OmniPay Direct
+	// Optional field.
+	//
+	// #### SIX
+	// Optional field.
+	//
+	// #### TSYS Acquiring Solutions
+	// Optional field.
+	//
+	// #### Worldpay VAP
+	// Optional field.
+	//
+	// #### All other processors
+	// Not used.
 	//
 	// Max Length: 15
 	PhoneNumber string `json:"phoneNumber,omitempty"`
@@ -2603,10 +3580,25 @@ type OctCreatePaymentParamsBodyOrderInformationBillTo struct {
 	// This field must not contain colons (:).
 	//
 	// #### CyberSource through VisaNet
-	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII characters for transmission to the credit card networks.
+	// Credit card networks cannot process transactions that contain non-ASCII characters. CyberSource through VisaNet
+	// accepts and stores non-ASCII characters correctly and displays them correctly in reports. However, the limitations
+	// of the credit card networks prevent CyberSource through VisaNet from transmitting non-ASCII characters to the
+	// credit card networks. Therefore, CyberSource through VisaNet replaces non-ASCII characters with meaningless ASCII
+	// characters for transmission to the credit card networks.
 	//
-	// For processor-specific information, see the `bill_zip` request-level field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### FDMS Nashville
+	// Required if `pointOfSaleInformation.entryMode=keyed` and the address is in the U.S. or Canada.
+	// Optional if `pointOfSaleInformation.entryMode=keyed` and the address is **not** in the U.S. or Canada.
+	// Not used if swiped.
+	//
+	// #### RBS WorldPay Atlanta:
+	// For best card-present keyed rates, send the postal code if `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### TSYS Acquiring Solutions
+	// Required when `processingInformation.billPaymentOptions.billPayment=true` and `pointOfSaleInformation.entryMode=keyed`.
+	//
+	// #### All other processors:
+	// Optional field.
 	//
 	// Max Length: 10
 	PostalCode string `json:"postalCode,omitempty"`
@@ -2659,12 +3651,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) Validate(formats strf
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateAddress1(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address1) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address1", "body", string(o.Address1), 60); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address1", "body", o.Address1, 60); err != nil {
 		return err
 	}
 
@@ -2672,12 +3663,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateAddress1(form
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateAddress2(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address2) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address2", "body", string(o.Address2), 60); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"address2", "body", o.Address2, 60); err != nil {
 		return err
 	}
 
@@ -2685,12 +3675,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateAddress2(form
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateAdministrativeArea(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdministrativeArea) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 20); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"administrativeArea", "body", o.AdministrativeArea, 20); err != nil {
 		return err
 	}
 
@@ -2698,12 +3687,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateAdministrativ
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -2711,12 +3699,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateCountry(forma
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"firstName", "body", string(o.FirstName), 60); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"firstName", "body", o.FirstName, 60); err != nil {
 		return err
 	}
 
@@ -2724,12 +3711,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateFirstName(for
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"lastName", "body", string(o.LastName), 60); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"lastName", "body", o.LastName, 60); err != nil {
 		return err
 	}
 
@@ -2737,12 +3723,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateLastName(form
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"locality", "body", string(o.Locality), 50); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"locality", "body", o.Locality, 50); err != nil {
 		return err
 	}
 
@@ -2750,12 +3735,11 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validateLocality(form
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validatePhoneNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PhoneNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"phoneNumber", "body", string(o.PhoneNumber), 15); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"phoneNumber", "body", o.PhoneNumber, 15); err != nil {
 		return err
 	}
 
@@ -2763,15 +3747,19 @@ func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validatePhoneNumber(f
 }
 
 func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"postalCode", "body", string(o.PostalCode), 10); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"orderInformation"+"."+"billTo"+"."+"postalCode", "body", o.PostalCode, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body order information bill to based on context it is used
+func (o *OctCreatePaymentParamsBodyOrderInformationBillTo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -2824,7 +3812,6 @@ func (o *OctCreatePaymentParamsBodyPaymentInformation) Validate(formats strfmt.R
 }
 
 func (o *OctCreatePaymentParamsBodyPaymentInformation) validateCard(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Card) { // not required
 		return nil
 	}
@@ -2833,6 +3820,8 @@ func (o *OctCreatePaymentParamsBodyPaymentInformation) validateCard(formats strf
 		if err := o.Card.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "card")
 			}
 			return err
 		}
@@ -2842,7 +3831,6 @@ func (o *OctCreatePaymentParamsBodyPaymentInformation) validateCard(formats strf
 }
 
 func (o *OctCreatePaymentParamsBodyPaymentInformation) validateCustomer(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Customer) { // not required
 		return nil
 	}
@@ -2851,6 +3839,58 @@ func (o *OctCreatePaymentParamsBodyPaymentInformation) validateCustomer(formats 
 		if err := o.Customer.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "customer")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment params body payment information based on the context it is used
+func (o *OctCreatePaymentParamsBodyPaymentInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateCard(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateCustomer(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyPaymentInformation) contextValidateCard(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Card != nil {
+		if err := o.Card.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "card")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "card")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyPaymentInformation) contextValidateCustomer(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Customer != nil {
+		if err := o.Customer.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "customer")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "paymentInformation" + "." + "customer")
 			}
 			return err
 		}
@@ -2886,23 +3926,32 @@ type OctCreatePaymentParamsBodyPaymentInformationCard struct {
 	//
 	// Format: `MM`.
 	//
-	// Valid values: `01` through `12`.
+	// Valid values: `01` through `12`. Leading 0 is required.
 	//
 	// #### Barclays and Streamline
-	// For Maestro (UK Domestic) and Maestro (International) cards on Barclays and Streamline, this must be a valid value (`01` through `12`) but is not required to be a valid expiration date. In other words, an expiration date that is in the past does not cause CyberSource to reject your request. However, an invalid expiration date might cause the issuer to reject your request.
+	// For Maestro (UK Domestic) and Maestro (International) cards on Barclays and Streamline, this must be a valid value
+	// (`01` through `12`) but is not required to be a valid expiration date. In other words, an expiration date that is
+	// in the past does not cause CyberSource to reject your request. However, an invalid expiration date might cause
+	// the issuer to reject your request.
 	//
 	// #### Encoded Account Numbers
 	// For encoded account numbers (_type_=039), if there is no expiration date on the card, use `12`.
 	//
-	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+	// #### FDMS Nashville
+	// Required field.
 	//
-	// For processor-specific information, see the `customer_cc_expmo` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### All other processors
+	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
+	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
+	// whether a field is required for the transaction you are requesting.
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// Max Length: 2
 	ExpirationMonth string `json:"expirationMonth,omitempty"`
 
-	// Four-digit year in which the credit card expires.
+	// Four-digit year in which the payment card expires.
 	//
 	// Format: `YYYY`.
 	//
@@ -2912,22 +3961,38 @@ type OctCreatePaymentParamsBodyPaymentInformationCard struct {
 	// #### Encoded Account Numbers
 	// For encoded account numbers (**_type_**`=039`), if there is no expiration date on the card, use `2021`.
 	//
+	// #### FDMS Nashville
+	// Required field.
+	//
 	// #### FDC Nashville Global and FDMS South
 	// You can send in 2 digits or 4 digits. If you send in 2 digits, they must be the last 2 digits of the year.
 	//
-	// **Important** It is your responsibility to determine whether a field is required for the transaction you are requesting.
+	// #### All other processors
+	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
+	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
+	// whether a field is required for the transaction you are requesting.
 	//
-	// For processor-specific information, see the `customer_cc_expyr` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
 	//
 	// Max Length: 4
 	ExpirationYear string `json:"expirationYear,omitempty"`
 
-	// The customer’s payment card number, also knows as the Primary Account Nunmber (PAN). You can also use this field
+	// The customer’s payment card number, also known as the Primary Account Number (PAN). You can also use this field
 	// for encoded account numbers.
 	//
-	// For processor-specific information, see the `customer_cc_number` field description in
-	// [Credit Card Services Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// #### FDMS Nashville
+	// Required. String (19)
+	//
+	// #### GPX
+	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
+	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
+	// whether a field is required for the transaction you are requesting.
+	//
+	// #### All other processors
+	// Required if `pointOfSaleInformation.entryMode=keyed`. However, this field is optional if your account is configured
+	// for relaxed requirements for address data and expiration date. **Important** It is your responsibility to determine
+	// whether a field is required for the transaction you are requesting.
 	//
 	// Max Length: 20
 	Number string `json:"number,omitempty"`
@@ -2959,18 +4024,69 @@ type OctCreatePaymentParamsBodyPaymentInformationCard struct {
 
 	// Three-digit value that indicates the card type.
 	//
-	// Type of card to authorize.
-	// - 001 Visa
-	// - 002 Mastercard
-	// - 003 Amex
-	// - 004 Discover
-	// - 005: Diners Club
-	// - 007: JCB
-	// - 024: Maestro (UK Domestic)
-	// - 039 Encoded account number
-	// - 042: Maestro (International)
+	// **IMPORTANT** It is strongly recommended that you include the card type field in request messages even if it is
+	// optional for your processor and card type. Omitting the card type can cause the transaction to be processed with the wrong card type.
 	//
-	// For the complete list of possible values, see `card_type` field description in the [Credit Card Services Using the SCMP API Guide.](http://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html)
+	// Possible values:
+	// - `001`: Visa. For card-present transactions on all processors except SIX, the Visa Electron card type is processed the same way that the Visa debit card is processed. Use card type value `001` for Visa Electron.
+	// - `002`: Mastercard, Eurocard[^1], which is a European regional brand of Mastercard.
+	// - `003`: American Express
+	// - `004`: Discover
+	// - `005`: Diners Club
+	// - `006`: Carte Blanche[^1]
+	// - `007`: JCB[^1]
+	// - `014`: Enroute[^1]
+	// - `021`: JAL[^1]
+	// - `024`: Maestro (UK Domestic)[^1]
+	// - `031`: Delta[^1]: Use this value only for Ingenico ePayments. For other processors, use `001` for all Visa card types.
+	// - `033`: Visa Electron[^1]. Use this value only for Ingenico ePayments and SIX. For other processors, use `001` for all Visa card types.
+	// - `034`: Dankort[^1]
+	// - `036`: Cartes Bancaires[^1,4]
+	// - `037`: Carta Si[^1]
+	// - `039`: Encoded account number[^1]
+	// - `040`: UATP[^1]
+	// - `042`: Maestro (International)[^1]
+	// - `050`: Hipercard[^2,3]
+	// - `051`: Aura
+	// - `054`: Elo[^3]
+	// - `062`: China UnionPay
+	//
+	// [^1]: For this card type, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in your request for an authorization or a stand-alone credit.
+	// [^2]: For this card type on Cielo 3.0, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit. This card type is not supported on Cielo 1.5.
+	// [^3]: For this card type on Getnet and Rede, you must include the `paymentInformation.card.type` or `paymentInformation.tokenizedCard.type` field in a request for an authorization or a stand-alone credit.
+	// [^4]: For this card type, you must include the `paymentInformation.card.type` in your request for any payer authentication services.
+	//
+	// #### Used by
+	// **Authorization**
+	// Required for Carte Blanche and JCB.
+	// Optional for all other card types.
+	//
+	// #### Card Present reply
+	// This field is included in the reply message when the client software that is installed on the POS terminal uses
+	// the token management service (TMS) to retrieve tokenized payment details. You must contact customer support to
+	// have your account enabled to receive these fields in the credit reply message.
+	//
+	// Returned by the Credit service.
+	//
+	// This reply field is only supported by the following processors:
+	// - American Express Direct
+	// - Credit Mutuel-CIC
+	// - FDC Nashville Global
+	// - OmniPay Direct
+	// - SIX
+	//
+	// #### Google Pay transactions
+	// For PAN-based Google Pay transactions, this field is returned in the API response.
+	//
+	// #### GPX
+	// This field only supports transactions from the following card types:
+	// - Visa
+	// - Mastercard
+	// - AMEX
+	// - Discover
+	// - Diners
+	// - JCB
+	// - Union Pay International
 	//
 	Type string `json:"type,omitempty"`
 }
@@ -3002,12 +4118,11 @@ func (o *OctCreatePaymentParamsBodyPaymentInformationCard) Validate(formats strf
 }
 
 func (o *OctCreatePaymentParamsBodyPaymentInformationCard) validateExpirationMonth(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExpirationMonth) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationMonth", "body", string(o.ExpirationMonth), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationMonth", "body", o.ExpirationMonth, 2); err != nil {
 		return err
 	}
 
@@ -3015,12 +4130,11 @@ func (o *OctCreatePaymentParamsBodyPaymentInformationCard) validateExpirationMon
 }
 
 func (o *OctCreatePaymentParamsBodyPaymentInformationCard) validateExpirationYear(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ExpirationYear) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationYear", "body", string(o.ExpirationYear), 4); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"expirationYear", "body", o.ExpirationYear, 4); err != nil {
 		return err
 	}
 
@@ -3028,12 +4142,11 @@ func (o *OctCreatePaymentParamsBodyPaymentInformationCard) validateExpirationYea
 }
 
 func (o *OctCreatePaymentParamsBodyPaymentInformationCard) validateNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Number) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"number", "body", string(o.Number), 20); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"number", "body", o.Number, 20); err != nil {
 		return err
 	}
 
@@ -3041,15 +4154,19 @@ func (o *OctCreatePaymentParamsBodyPaymentInformationCard) validateNumber(format
 }
 
 func (o *OctCreatePaymentParamsBodyPaymentInformationCard) validateSourceAccountType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.SourceAccountType) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"sourceAccountType", "body", string(o.SourceAccountType), 20); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"card"+"."+"sourceAccountType", "body", o.SourceAccountType, 20); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body payment information card based on context it is used
+func (o *OctCreatePaymentParamsBodyPaymentInformationCard) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3084,13 +4201,51 @@ type OctCreatePaymentParamsBodyPaymentInformationCustomer struct {
 	//
 	// **NOTE** When you use Payment Tokenization or Recurring Billing, the value for the Customer ID is actually the Cybersource payment token for a customer. This token stores information such as the consumer’s card number so it can be applied towards bill payments, recurring payments, or one-time payments. By using this token in a payment API request, the merchant doesn't need to pass in data such as the card number or expiration date in the request itself.
 	//
-	// For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see the `subscription_id` field description in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/)
 	//
 	CustomerID string `json:"customerId,omitempty"`
+
+	// Unique identifier for the Customer token used in the transaction.
+	// When you include this value in your request, many of the fields that are normally required for an authorization or credit
+	// become optional.
+	//
+	// Max Length: 32
+	// Min Length: 1
+	ID string `json:"id,omitempty"`
 }
 
 // Validate validates this oct create payment params body payment information customer
 func (o *OctCreatePaymentParamsBodyPaymentInformationCustomer) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyPaymentInformationCustomer) validateID(formats strfmt.Registry) error {
+	if swag.IsZero(o.ID) { // not required
+		return nil
+	}
+
+	if err := validate.MinLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"paymentInformation"+"."+"customer"+"."+"id", "body", o.ID, 32); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body payment information customer based on context it is used
+func (o *OctCreatePaymentParamsBodyPaymentInformationCustomer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3147,21 +4302,10 @@ type OctCreatePaymentParamsBodyProcessingInformation struct {
 
 	// Type of transaction.
 	//
-	// Some payment card companies use this information when determining discount rates. When you omit this field for Ingenico ePayments, the processor uses the default transaction type they have on file for you instead of the default value listed here.
+	// Value for an OCT transaction:
+	// - `internet`
 	//
-	// For details, see the `e_commerce_indicator` field description in the [Credit Card Services Using the SCMP API Guide.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
-	// Possible value for Payouts:
-	// - internet
-	//
-	// #### Ingenico ePayments
-	// Ingenico ePayments was previously called _Global Collect_.
-	//
-	// #### Payer Authentication Transactions
-	// For the possible values and requirements, see "Payer Authentication" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
-	//
-	// #### Other Types of Transactions
-	// For details, see "Commerce Indicators" in [Credit Card Services Using the SCMP API.](https://apps.cybersource.com/library/documentation/dev_guides/CC_Svcs_SCMP_API/html/wwhelp/wwhimpl/js/html/wwhelp.htm)
+	// For details, see the `e_commerce_indicator` field description in [Payouts Using the SCMP API.](http://apps.cybersource.com/library/documentation/dev_guides/payouts_SCMP/html/)
 	//
 	// Max Length: 13
 	CommerceIndicator string `json:"commerceIndicator,omitempty"`
@@ -3174,7 +4318,7 @@ type OctCreatePaymentParamsBodyProcessingInformation struct {
 	// If an issuer preference exists for one of the specified debit networks, VisaNet makes a routing selection based on the issuer’s preference.
 	// If an issuer preference exists for more than one of the specified debit networks, or if no issuer preference exists, VisaNet makes a selection based on the acquirer’s routing priorities.
 	//
-	// See https://developer.visa.com/request_response_codes#network_id_and_sharing_group_code , under section 'Network ID and Sharing Group Code' on the left panel for available values
+	// For details, see the `network_order` field description in [BIN Lookup Service Using the SCMP API.](http://apps.cybersource.com/library/documentation/BIN_Lookup/BIN_Lookup_SCMP_API/html/)
 	//
 	// Max Length: 30
 	NetworkRoutingOrder string `json:"networkRoutingOrder,omitempty"`
@@ -3182,12 +4326,22 @@ type OctCreatePaymentParamsBodyProcessingInformation struct {
 	// payouts options
 	PayoutsOptions *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions `json:"payoutsOptions,omitempty"`
 
+	// This will send purpose of funds code for original credit transactions (OCTs).
+	//
+	// Max Length: 12
+	PurposeOfPayment string `json:"purposeOfPayment,omitempty"`
+
 	// Please check with Cybersource customer support to see if your merchant account is configured correctly so you
 	// can include this field in your request.
 	// * For Payouts: max length for FDCCompass is String (22).
 	//
 	// Max Length: 60
 	ReconciliationID string `json:"reconciliationId,omitempty"`
+
+	// Transaction reason code.
+	//
+	// Max Length: 4
+	TransactionReason string `json:"transactionReason,omitempty"`
 }
 
 // Validate validates this oct create payment params body processing information
@@ -3210,7 +4364,15 @@ func (o *OctCreatePaymentParamsBodyProcessingInformation) Validate(formats strfm
 		res = append(res, err)
 	}
 
+	if err := o.validatePurposeOfPayment(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateReconciliationID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTransactionReason(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -3221,12 +4383,11 @@ func (o *OctCreatePaymentParamsBodyProcessingInformation) Validate(formats strfm
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformation) validateBusinessApplicationID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.BusinessApplicationID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"businessApplicationId", "body", string(o.BusinessApplicationID), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"businessApplicationId", "body", o.BusinessApplicationID, 2); err != nil {
 		return err
 	}
 
@@ -3234,12 +4395,11 @@ func (o *OctCreatePaymentParamsBodyProcessingInformation) validateBusinessApplic
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformation) validateCommerceIndicator(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CommerceIndicator) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"commerceIndicator", "body", string(o.CommerceIndicator), 13); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"commerceIndicator", "body", o.CommerceIndicator, 13); err != nil {
 		return err
 	}
 
@@ -3247,12 +4407,11 @@ func (o *OctCreatePaymentParamsBodyProcessingInformation) validateCommerceIndica
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformation) validateNetworkRoutingOrder(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.NetworkRoutingOrder) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"networkRoutingOrder", "body", string(o.NetworkRoutingOrder), 30); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"networkRoutingOrder", "body", o.NetworkRoutingOrder, 30); err != nil {
 		return err
 	}
 
@@ -3260,7 +4419,6 @@ func (o *OctCreatePaymentParamsBodyProcessingInformation) validateNetworkRouting
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformation) validatePayoutsOptions(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PayoutsOptions) { // not required
 		return nil
 	}
@@ -3269,6 +4427,8 @@ func (o *OctCreatePaymentParamsBodyProcessingInformation) validatePayoutsOptions
 		if err := o.PayoutsOptions.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "processingInformation" + "." + "payoutsOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "processingInformation" + "." + "payoutsOptions")
 			}
 			return err
 		}
@@ -3277,14 +4437,67 @@ func (o *OctCreatePaymentParamsBodyProcessingInformation) validatePayoutsOptions
 	return nil
 }
 
-func (o *OctCreatePaymentParamsBodyProcessingInformation) validateReconciliationID(formats strfmt.Registry) error {
+func (o *OctCreatePaymentParamsBodyProcessingInformation) validatePurposeOfPayment(formats strfmt.Registry) error {
+	if swag.IsZero(o.PurposeOfPayment) { // not required
+		return nil
+	}
 
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"purposeOfPayment", "body", o.PurposeOfPayment, 12); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyProcessingInformation) validateReconciliationID(formats strfmt.Registry) error {
 	if swag.IsZero(o.ReconciliationID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"reconciliationId", "body", string(o.ReconciliationID), 60); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"reconciliationId", "body", o.ReconciliationID, 60); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyProcessingInformation) validateTransactionReason(formats strfmt.Registry) error {
+	if swag.IsZero(o.TransactionReason) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"transactionReason", "body", o.TransactionReason, 4); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment params body processing information based on the context it is used
+func (o *OctCreatePaymentParamsBodyProcessingInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePayoutsOptions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyProcessingInformation) contextValidatePayoutsOptions(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.PayoutsOptions != nil {
+		if err := o.PayoutsOptions.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "processingInformation" + "." + "payoutsOptions")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "processingInformation" + "." + "payoutsOptions")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -3339,7 +4552,7 @@ type OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions struct {
 	// that is, to a given transaction set.
 	//
 	// Format:
-	//   Positions 1-4: The yddd equivalent of the date, where y = 0-9 and ddd = 001 – 366.
+	//   Positions 1-4: The `yddd` equivalent of the date, where `y` = 0-9 and `ddd` = 001 – 366.
 	//   Positions 5-12: A unique identification number generated by the merchant
 	//
 	// * Applicable only for CTV for Payouts.
@@ -3375,12 +4588,11 @@ func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) Validate
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) validateAccountFundingReferenceID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AccountFundingReferenceID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"accountFundingReferenceId", "body", string(o.AccountFundingReferenceID), 15); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"accountFundingReferenceId", "body", o.AccountFundingReferenceID, 15); err != nil {
 		return err
 	}
 
@@ -3388,12 +4600,11 @@ func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) validate
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) validateAcquirerBin(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcquirerBin) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"acquirerBin", "body", string(o.AcquirerBin), 11); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"acquirerBin", "body", o.AcquirerBin, 11); err != nil {
 		return err
 	}
 
@@ -3401,12 +4612,11 @@ func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) validate
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) validateAcquirerMerchantID(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AcquirerMerchantID) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"acquirerMerchantId", "body", string(o.AcquirerMerchantID), 15); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"acquirerMerchantId", "body", o.AcquirerMerchantID, 15); err != nil {
 		return err
 	}
 
@@ -3414,15 +4624,19 @@ func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) validate
 }
 
 func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) validateRetrievalReferenceNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.RetrievalReferenceNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"retrievalReferenceNumber", "body", string(o.RetrievalReferenceNumber), 12); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"processingInformation"+"."+"payoutsOptions"+"."+"retrievalReferenceNumber", "body", o.RetrievalReferenceNumber, 12); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body processing information payouts options based on context it is used
+func (o *OctCreatePaymentParamsBodyProcessingInformationPayoutsOptions) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3491,6 +4705,13 @@ type OctCreatePaymentParamsBodyRecipientInformation struct {
 	// Max Length: 1
 	MiddleInitial string `json:"middleInitial,omitempty"`
 
+	// Recipient’s middle name. This field is a _passthrough_, which means that CyberSource does not verify the value or
+	// modify it in any way before sending it to the processor. If the field is not required for the transaction,
+	// CyberSource does not forward it to the processor.
+	//
+	// Max Length: 35
+	MiddleName string `json:"middleName,omitempty"`
+
 	// Recipient phone number. Required only for FDCCompass.
 	// Max Length: 20
 	PhoneNumber string `json:"phoneNumber,omitempty"`
@@ -3536,6 +4757,10 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) Validate(formats strfmt
 		res = append(res, err)
 	}
 
+	if err := o.validateMiddleName(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validatePhoneNumber(formats); err != nil {
 		res = append(res, err)
 	}
@@ -3551,12 +4776,11 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) Validate(formats strfmt
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateAddress1(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address1) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"address1", "body", string(o.Address1), 50); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"address1", "body", o.Address1, 50); err != nil {
 		return err
 	}
 
@@ -3564,12 +4788,11 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateAddress1(format
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateAdministrativeArea(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdministrativeArea) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 3); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"administrativeArea", "body", o.AdministrativeArea, 3); err != nil {
 		return err
 	}
 
@@ -3577,12 +4800,11 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateAdministrativeA
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateCountry(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Country) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"country", "body", string(o.Country), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"country", "body", o.Country, 2); err != nil {
 		return err
 	}
 
@@ -3590,16 +4812,15 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateCountry(formats
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateDateOfBirth(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DateOfBirth) { // not required
 		return nil
 	}
 
-	if err := validate.MinLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"dateOfBirth", "body", string(o.DateOfBirth), 8); err != nil {
+	if err := validate.MinLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"dateOfBirth", "body", o.DateOfBirth, 8); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"dateOfBirth", "body", string(o.DateOfBirth), 8); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"dateOfBirth", "body", o.DateOfBirth, 8); err != nil {
 		return err
 	}
 
@@ -3607,12 +4828,11 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateDateOfBirth(for
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"firstName", "body", string(o.FirstName), 35); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"firstName", "body", o.FirstName, 35); err != nil {
 		return err
 	}
 
@@ -3620,12 +4840,11 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateFirstName(forma
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"lastName", "body", string(o.LastName), 35); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"lastName", "body", o.LastName, 35); err != nil {
 		return err
 	}
 
@@ -3633,12 +4852,11 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateLastName(format
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"locality", "body", string(o.Locality), 25); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"locality", "body", o.Locality, 25); err != nil {
 		return err
 	}
 
@@ -3646,12 +4864,23 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateLocality(format
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validateMiddleInitial(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MiddleInitial) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"middleInitial", "body", string(o.MiddleInitial), 1); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"middleInitial", "body", o.MiddleInitial, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodyRecipientInformation) validateMiddleName(formats strfmt.Registry) error {
+	if swag.IsZero(o.MiddleName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"middleName", "body", o.MiddleName, 35); err != nil {
 		return err
 	}
 
@@ -3659,12 +4888,11 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validateMiddleInitial(f
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validatePhoneNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PhoneNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"phoneNumber", "body", string(o.PhoneNumber), 20); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"phoneNumber", "body", o.PhoneNumber, 20); err != nil {
 		return err
 	}
 
@@ -3672,15 +4900,19 @@ func (o *OctCreatePaymentParamsBodyRecipientInformation) validatePhoneNumber(for
 }
 
 func (o *OctCreatePaymentParamsBodyRecipientInformation) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"postalCode", "body", string(o.PostalCode), 10); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"recipientInformation"+"."+"postalCode", "body", o.PostalCode, 10); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body recipient information based on context it is used
+func (o *OctCreatePaymentParamsBodyRecipientInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -3719,12 +4951,12 @@ type OctCreatePaymentParamsBodySenderInformation struct {
 	// Max Length: 50
 	Address1 string `json:"address1,omitempty"`
 
-	// Sender’s state. Use the State, Province, and Territory Codes for the United States and Canada.
+	// Sender’s state. Use the [State, Province, and Territory Codes for the United States and Canada](https://developer.cybersource.com/library/documentation/sbc/quickref/states_and_provinces.pdf).
 	//
 	// Max Length: 2
 	AdministrativeArea string `json:"administrativeArea,omitempty"`
 
-	// Country of sender. Use the ISO Standard Country Codes.
+	// Country of sender. Use the [ISO Standard Country Codes](https://developer.cybersource.com/library/documentation/sbc/quickref/countries_alpha_list.pdf).
 	// * CTV (3)
 	//
 	// Max Length: 2
@@ -3762,6 +4994,13 @@ type OctCreatePaymentParamsBodySenderInformation struct {
 	//
 	// Max Length: 1
 	MiddleInitial string `json:"middleInitial,omitempty"`
+
+	// Sender’s middle name. This field is a _passthrough_, which means that CyberSource does not verify the value or
+	// modify it in any way before sending it to the processor. If the field is not required for the transaction,
+	// CyberSource does not forward it to the processor.
+	//
+	// Max Length: 35
+	MiddleName string `json:"middleName,omitempty"`
 
 	// Name of sender.
 	//
@@ -3831,6 +5070,10 @@ func (o *OctCreatePaymentParamsBodySenderInformation) Validate(formats strfmt.Re
 		res = append(res, err)
 	}
 
+	if err := o.validateMiddleName(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validateName(formats); err != nil {
 		res = append(res, err)
 	}
@@ -3858,7 +5101,6 @@ func (o *OctCreatePaymentParamsBodySenderInformation) Validate(formats strfmt.Re
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateAccount(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Account) { // not required
 		return nil
 	}
@@ -3867,6 +5109,8 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateAccount(formats st
 		if err := o.Account.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("octCreatePaymentRequest" + "." + "senderInformation" + "." + "account")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "senderInformation" + "." + "account")
 			}
 			return err
 		}
@@ -3876,12 +5120,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateAccount(formats st
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateAddress1(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Address1) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"address1", "body", string(o.Address1), 50); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"address1", "body", o.Address1, 50); err != nil {
 		return err
 	}
 
@@ -3889,12 +5132,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateAddress1(formats s
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateAdministrativeArea(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.AdministrativeArea) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"administrativeArea", "body", string(o.AdministrativeArea), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"administrativeArea", "body", o.AdministrativeArea, 2); err != nil {
 		return err
 	}
 
@@ -3902,12 +5144,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateAdministrativeArea
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateCountryCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.CountryCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"countryCode", "body", string(o.CountryCode), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"countryCode", "body", o.CountryCode, 2); err != nil {
 		return err
 	}
 
@@ -3915,16 +5156,15 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateCountryCode(format
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateDateOfBirth(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DateOfBirth) { // not required
 		return nil
 	}
 
-	if err := validate.MinLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"dateOfBirth", "body", string(o.DateOfBirth), 8); err != nil {
+	if err := validate.MinLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"dateOfBirth", "body", o.DateOfBirth, 8); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"dateOfBirth", "body", string(o.DateOfBirth), 8); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"dateOfBirth", "body", o.DateOfBirth, 8); err != nil {
 		return err
 	}
 
@@ -3932,12 +5172,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateDateOfBirth(format
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateFirstName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FirstName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"firstName", "body", string(o.FirstName), 35); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"firstName", "body", o.FirstName, 35); err != nil {
 		return err
 	}
 
@@ -3945,12 +5184,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateFirstName(formats 
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateLastName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.LastName) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"lastName", "body", string(o.LastName), 35); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"lastName", "body", o.LastName, 35); err != nil {
 		return err
 	}
 
@@ -3958,12 +5196,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateLastName(formats s
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateLocality(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Locality) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"locality", "body", string(o.Locality), 25); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"locality", "body", o.Locality, 25); err != nil {
 		return err
 	}
 
@@ -3971,12 +5208,23 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateLocality(formats s
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateMiddleInitial(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.MiddleInitial) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"middleInitial", "body", string(o.MiddleInitial), 1); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"middleInitial", "body", o.MiddleInitial, 1); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodySenderInformation) validateMiddleName(formats strfmt.Registry) error {
+	if swag.IsZero(o.MiddleName) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"middleName", "body", o.MiddleName, 35); err != nil {
 		return err
 	}
 
@@ -3984,12 +5232,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateMiddleInitial(form
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateName(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Name) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"name", "body", string(o.Name), 24); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"name", "body", o.Name, 24); err != nil {
 		return err
 	}
 
@@ -3997,12 +5244,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateName(formats strfm
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validatePhoneNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PhoneNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"phoneNumber", "body", string(o.PhoneNumber), 20); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"phoneNumber", "body", o.PhoneNumber, 20); err != nil {
 		return err
 	}
 
@@ -4010,12 +5256,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validatePhoneNumber(format
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validatePostalCode(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PostalCode) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"postalCode", "body", string(o.PostalCode), 10); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"postalCode", "body", o.PostalCode, 10); err != nil {
 		return err
 	}
 
@@ -4023,12 +5268,11 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validatePostalCode(formats
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateReferenceNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReferenceNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"referenceNumber", "body", string(o.ReferenceNumber), 19); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"referenceNumber", "body", o.ReferenceNumber, 19); err != nil {
 		return err
 	}
 
@@ -4036,13 +5280,42 @@ func (o *OctCreatePaymentParamsBodySenderInformation) validateReferenceNumber(fo
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformation) validateVatRegistrationNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VatRegistrationNumber) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"vatRegistrationNumber", "body", string(o.VatRegistrationNumber), 13); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"vatRegistrationNumber", "body", o.VatRegistrationNumber, 13); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this oct create payment params body sender information based on the context it is used
+func (o *OctCreatePaymentParamsBodySenderInformation) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAccount(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *OctCreatePaymentParamsBodySenderInformation) contextValidateAccount(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Account != nil {
+		if err := o.Account.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("octCreatePaymentRequest" + "." + "senderInformation" + "." + "account")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("octCreatePaymentRequest" + "." + "senderInformation" + "." + "account")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -4139,16 +5412,15 @@ func (o *OctCreatePaymentParamsBodySenderInformationAccount) Validate(formats st
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformationAccount) validateFundsSource(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.FundsSource) { // not required
 		return nil
 	}
 
-	if err := validate.MinLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"account"+"."+"fundsSource", "body", string(o.FundsSource), 2); err != nil {
+	if err := validate.MinLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"account"+"."+"fundsSource", "body", o.FundsSource, 2); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"account"+"."+"fundsSource", "body", string(o.FundsSource), 2); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"account"+"."+"fundsSource", "body", o.FundsSource, 2); err != nil {
 		return err
 	}
 
@@ -4156,15 +5428,19 @@ func (o *OctCreatePaymentParamsBodySenderInformationAccount) validateFundsSource
 }
 
 func (o *OctCreatePaymentParamsBodySenderInformationAccount) validateNumber(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Number) { // not required
 		return nil
 	}
 
-	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"account"+"."+"number", "body", string(o.Number), 34); err != nil {
+	if err := validate.MaxLength("octCreatePaymentRequest"+"."+"senderInformation"+"."+"account"+"."+"number", "body", o.Number, 34); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this oct create payment params body sender information account based on context it is used
+func (o *OctCreatePaymentParamsBodySenderInformationAccount) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

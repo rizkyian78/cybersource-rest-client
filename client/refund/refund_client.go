@@ -25,11 +25,14 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	RefundCapture(params *RefundCaptureParams) (*RefundCaptureCreated, error)
+	RefundCapture(params *RefundCaptureParams, opts ...ClientOption) (*RefundCaptureCreated, error)
 
-	RefundPayment(params *RefundPaymentParams) (*RefundPaymentCreated, error)
+	RefundPayment(params *RefundPaymentParams, opts ...ClientOption) (*RefundPaymentCreated, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -37,27 +40,31 @@ type ClientService interface {
 /*
   RefundCapture refunds a capture
 
-  Include the capture ID in the POST request to refund the captured amount.
+  Refund a capture API is only used, if you have requested Capture independenlty using [/pts/v2/payments/{id}/captures](https://developer.cybersource.com/api-reference-assets/index.html#payments_capture) API call. Include the capture ID in the POST request to refund the captured amount.
 
 */
-func (a *Client) RefundCapture(params *RefundCaptureParams) (*RefundCaptureCreated, error) {
+func (a *Client) RefundCapture(params *RefundCaptureParams, opts ...ClientOption) (*RefundCaptureCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRefundCaptureParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "refundCapture",
 		Method:             "POST",
 		PathPattern:        "/pts/v2/captures/{id}/refunds",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ProducesMediaTypes: []string{"application/hal+json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &RefundCaptureReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -74,27 +81,31 @@ func (a *Client) RefundCapture(params *RefundCaptureParams) (*RefundCaptureCreat
 /*
   RefundPayment refunds a payment
 
-  Include the payment ID in the POST request to refund the payment amount.
+  Refund a Payment API is only used, if you have requested Authorization and Capture together in [/pts/v2/payments](https://developer.cybersource.com/api-reference-assets/index.html#payments_payments) API call. Include the payment ID in the POST request to refund the payment amount.
 
 */
-func (a *Client) RefundPayment(params *RefundPaymentParams) (*RefundPaymentCreated, error) {
+func (a *Client) RefundPayment(params *RefundPaymentParams, opts ...ClientOption) (*RefundPaymentCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRefundPaymentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "refundPayment",
 		Method:             "POST",
 		PathPattern:        "/pts/v2/payments/{id}/refunds",
-		ProducesMediaTypes: []string{"application/json;charset=utf-8"},
+		ProducesMediaTypes: []string{"application/hal+json;charset=utf-8"},
 		ConsumesMediaTypes: []string{"application/json;charset=utf-8"},
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &RefundPaymentReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

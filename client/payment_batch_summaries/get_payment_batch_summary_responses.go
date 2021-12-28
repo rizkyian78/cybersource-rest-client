@@ -6,6 +6,7 @@ package payment_batch_summaries
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *GetPaymentBatchSummaryReader) ReadResponse(response runtime.ClientRespo
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewGetPaymentBatchSummaryOK() *GetPaymentBatchSummaryOK {
 	return &GetPaymentBatchSummaryOK{}
 }
 
-/*GetPaymentBatchSummaryOK handles this case with default header values.
+/* GetPaymentBatchSummaryOK describes a response with status code 200, with default header values.
 
 Ok
 */
@@ -65,7 +65,6 @@ type GetPaymentBatchSummaryOK struct {
 func (o *GetPaymentBatchSummaryOK) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/payment-batch-summaries][%d] getPaymentBatchSummaryOK  %+v", 200, o.Payload)
 }
-
 func (o *GetPaymentBatchSummaryOK) GetPayload() *GetPaymentBatchSummaryOKBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewGetPaymentBatchSummaryBadRequest() *GetPaymentBatchSummaryBadRequest {
 	return &GetPaymentBatchSummaryBadRequest{}
 }
 
-/*GetPaymentBatchSummaryBadRequest handles this case with default header values.
+/* GetPaymentBatchSummaryBadRequest describes a response with status code 400, with default header values.
 
 Invalid request
 */
@@ -98,7 +97,6 @@ type GetPaymentBatchSummaryBadRequest struct {
 func (o *GetPaymentBatchSummaryBadRequest) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/payment-batch-summaries][%d] getPaymentBatchSummaryBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *GetPaymentBatchSummaryBadRequest) GetPayload() *GetPaymentBatchSummaryBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewGetPaymentBatchSummaryNotFound() *GetPaymentBatchSummaryNotFound {
 	return &GetPaymentBatchSummaryNotFound{}
 }
 
-/*GetPaymentBatchSummaryNotFound handles this case with default header values.
+/* GetPaymentBatchSummaryNotFound describes a response with status code 404, with default header values.
 
 Payment Batch Summary not found
 */
@@ -136,44 +134,6 @@ func (o *GetPaymentBatchSummaryNotFound) readResponse(response runtime.ClientRes
 	return nil
 }
 
-/*DetailsItems0 Provides failed validation input field detail
-//
-swagger:model DetailsItems0
-*/
-type DetailsItems0 struct {
-
-	// Field in request that caused an error
-	//
-	Field string `json:"field,omitempty"`
-
-	// Documented reason code
-	//
-	Reason string `json:"reason,omitempty"`
-}
-
-// Validate validates this details items0
-func (o *DetailsItems0) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DetailsItems0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DetailsItems0) UnmarshalBinary(b []byte) error {
-	var res DetailsItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
 /*GetPaymentBatchSummaryBadRequestBody reportingV3PaymentBatchSummariesGet200Response
 //
 // HTTP status code for client application
@@ -184,20 +144,23 @@ type GetPaymentBatchSummaryBadRequestBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*GetPaymentBatchSummaryBadRequestBodyDetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
+	// Example: One or more fields contains invalid data
 	// Required: true
 	Message *string `json:"message"`
 
 	// Documented reason code
 	//
+	// Example: INVALID_DATA
 	// Required: true
 	Reason *string `json:"reason"`
 
 	// Time of request in UTC.
 	//
+	// Example: 2016-08-11T22:47:57Z
 	// Required: true
 	// Format: date-time
 	SubmitTimeUtc *strfmt.DateTime `json:"submitTimeUtc"`
@@ -244,6 +207,8 @@ func (o *GetPaymentBatchSummaryBadRequestBody) validateDetails(formats strfmt.Re
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getPaymentBatchSummaryBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getPaymentBatchSummaryBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -285,6 +250,40 @@ func (o *GetPaymentBatchSummaryBadRequestBody) validateSubmitTimeUtc(formats str
 	return nil
 }
 
+// ContextValidate validate this get payment batch summary bad request body based on the context it is used
+func (o *GetPaymentBatchSummaryBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetPaymentBatchSummaryBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getPaymentBatchSummaryBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getPaymentBatchSummaryBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetPaymentBatchSummaryBadRequestBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -303,6 +302,49 @@ func (o *GetPaymentBatchSummaryBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*GetPaymentBatchSummaryBadRequestBodyDetailsItems0 Provides failed validation input field detail
+//
+swagger:model GetPaymentBatchSummaryBadRequestBodyDetailsItems0
+*/
+type GetPaymentBatchSummaryBadRequestBodyDetailsItems0 struct {
+
+	// Field in request that caused an error
+	//
+	Field string `json:"field,omitempty"`
+
+	// Documented reason code
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this get payment batch summary bad request body details items0
+func (o *GetPaymentBatchSummaryBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get payment batch summary bad request body details items0 based on context it is used
+func (o *GetPaymentBatchSummaryBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetPaymentBatchSummaryBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetPaymentBatchSummaryBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res GetPaymentBatchSummaryBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*GetPaymentBatchSummaryOKBody reportingV3PaymentBatchSummariesGet200Response
 swagger:model GetPaymentBatchSummaryOKBody
 */
@@ -313,7 +355,7 @@ type GetPaymentBatchSummaryOKBody struct {
 	EndTime strfmt.DateTime `json:"endTime,omitempty"`
 
 	// payment batch summaries
-	PaymentBatchSummaries []*PaymentBatchSummariesItems0 `json:"paymentBatchSummaries"`
+	PaymentBatchSummaries []*GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0 `json:"paymentBatchSummaries"`
 
 	// start time
 	// Format: date-time
@@ -343,7 +385,6 @@ func (o *GetPaymentBatchSummaryOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *GetPaymentBatchSummaryOKBody) validateEndTime(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.EndTime) { // not required
 		return nil
 	}
@@ -356,7 +397,6 @@ func (o *GetPaymentBatchSummaryOKBody) validateEndTime(formats strfmt.Registry) 
 }
 
 func (o *GetPaymentBatchSummaryOKBody) validatePaymentBatchSummaries(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.PaymentBatchSummaries) { // not required
 		return nil
 	}
@@ -370,6 +410,8 @@ func (o *GetPaymentBatchSummaryOKBody) validatePaymentBatchSummaries(formats str
 			if err := o.PaymentBatchSummaries[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getPaymentBatchSummaryOK" + "." + "paymentBatchSummaries" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getPaymentBatchSummaryOK" + "." + "paymentBatchSummaries" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -381,13 +423,46 @@ func (o *GetPaymentBatchSummaryOKBody) validatePaymentBatchSummaries(formats str
 }
 
 func (o *GetPaymentBatchSummaryOKBody) validateStartTime(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.StartTime) { // not required
 		return nil
 	}
 
 	if err := validate.FormatOf("getPaymentBatchSummaryOK"+"."+"startTime", "body", "date-time", o.StartTime.String(), formats); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get payment batch summary o k body based on the context it is used
+func (o *GetPaymentBatchSummaryOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidatePaymentBatchSummaries(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetPaymentBatchSummaryOKBody) contextValidatePaymentBatchSummaries(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.PaymentBatchSummaries); i++ {
+
+		if o.PaymentBatchSummaries[i] != nil {
+			if err := o.PaymentBatchSummaries[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getPaymentBatchSummaryOK" + "." + "paymentBatchSummaries" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getPaymentBatchSummaryOK" + "." + "paymentBatchSummaries" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -411,24 +486,29 @@ func (o *GetPaymentBatchSummaryOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*PaymentBatchSummariesItems0 payment batch summaries items0
-swagger:model PaymentBatchSummariesItems0
+/*GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0 get payment batch summary o k body payment batch summaries items0
+swagger:model GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0
 */
-type PaymentBatchSummariesItems0 struct {
+type GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0 struct {
 
 	// account Id
+	// Example: ubmerchant296_acct
 	AccountID string `json:"accountId,omitempty"`
 
 	// account name
+	// Example: ubmerchant296
 	AccountName string `json:"accountName,omitempty"`
 
 	// credit amount
+	// Example: 5000.01
 	CreditAmount string `json:"creditAmount,omitempty"`
 
 	// credit count
+	// Example: 10
 	CreditCount int32 `json:"creditCount,omitempty"`
 
 	// currency code
+	// Example: USD
 	CurrencyCode string `json:"currencyCode,omitempty"`
 
 	// end time
@@ -436,18 +516,23 @@ type PaymentBatchSummariesItems0 struct {
 	EndTime strfmt.DateTime `json:"endTime,omitempty"`
 
 	// merchant Id
+	// Example: ubmerchant296_3
 	MerchantID string `json:"merchantId,omitempty"`
 
 	// merchant name
+	// Example: ubmerchant296_3
 	MerchantName string `json:"merchantName,omitempty"`
 
 	// payment sub type description
+	// Example: Diners Club
 	PaymentSubTypeDescription string `json:"paymentSubTypeDescription,omitempty"`
 
 	// sales amount
+	// Example: 5000.01
 	SalesAmount string `json:"salesAmount,omitempty"`
 
 	// sales count
+	// Example: 10
 	SalesCount int32 `json:"salesCount,omitempty"`
 
 	// start time
@@ -455,8 +540,8 @@ type PaymentBatchSummariesItems0 struct {
 	StartTime strfmt.DateTime `json:"startTime,omitempty"`
 }
 
-// Validate validates this payment batch summaries items0
-func (o *PaymentBatchSummariesItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this get payment batch summary o k body payment batch summaries items0
+func (o *GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateEndTime(formats); err != nil {
@@ -473,8 +558,7 @@ func (o *PaymentBatchSummariesItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *PaymentBatchSummariesItems0) validateEndTime(formats strfmt.Registry) error {
-
+func (o *GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0) validateEndTime(formats strfmt.Registry) error {
 	if swag.IsZero(o.EndTime) { // not required
 		return nil
 	}
@@ -486,8 +570,7 @@ func (o *PaymentBatchSummariesItems0) validateEndTime(formats strfmt.Registry) e
 	return nil
 }
 
-func (o *PaymentBatchSummariesItems0) validateStartTime(formats strfmt.Registry) error {
-
+func (o *GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0) validateStartTime(formats strfmt.Registry) error {
 	if swag.IsZero(o.StartTime) { // not required
 		return nil
 	}
@@ -499,8 +582,13 @@ func (o *PaymentBatchSummariesItems0) validateStartTime(formats strfmt.Registry)
 	return nil
 }
 
+// ContextValidate validates this get payment batch summary o k body payment batch summaries items0 based on context it is used
+func (o *GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (o *PaymentBatchSummariesItems0) MarshalBinary() ([]byte, error) {
+func (o *GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -508,8 +596,8 @@ func (o *PaymentBatchSummariesItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *PaymentBatchSummariesItems0) UnmarshalBinary(b []byte) error {
-	var res PaymentBatchSummariesItems0
+func (o *GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0) UnmarshalBinary(b []byte) error {
+	var res GetPaymentBatchSummaryOKBodyPaymentBatchSummariesItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

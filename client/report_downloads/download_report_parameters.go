@@ -16,74 +16,95 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewDownloadReportParams creates a new DownloadReportParams object
-// with the default values initialized.
+// NewDownloadReportParams creates a new DownloadReportParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDownloadReportParams() *DownloadReportParams {
-	var ()
 	return &DownloadReportParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDownloadReportParamsWithTimeout creates a new DownloadReportParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDownloadReportParamsWithTimeout(timeout time.Duration) *DownloadReportParams {
-	var ()
 	return &DownloadReportParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDownloadReportParamsWithContext creates a new DownloadReportParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDownloadReportParamsWithContext(ctx context.Context) *DownloadReportParams {
-	var ()
 	return &DownloadReportParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDownloadReportParamsWithHTTPClient creates a new DownloadReportParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDownloadReportParamsWithHTTPClient(client *http.Client) *DownloadReportParams {
-	var ()
 	return &DownloadReportParams{
 		HTTPClient: client,
 	}
 }
 
-/*DownloadReportParams contains all the parameters to send to the API endpoint
-for the download report operation typically these are written to a http.Request
+/* DownloadReportParams contains all the parameters to send to the API endpoint
+   for the download report operation.
+
+   Typically these are written to a http.Request.
 */
 type DownloadReportParams struct {
 
-	/*OrganizationID
-	  Valid Cybersource Organization Id
+	/* OrganizationID.
 
+	   Valid Organization Id
 	*/
 	OrganizationID *string
-	/*ReportDate
-	  Valid date on which to download the report in **ISO 8601 format**
+
+	/* ReportDate.
+
+	     Valid date on which to download the report in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	**Example date format:**
-	  - yyyy-MM-dd
+	 yyyy-mm-dd
+	For reports that span multiple days, this value would be the end date of the report in the time zone of the report subscription.
+	Example 1: If your report start date is 2020-03-06 and the end date is 2020-03-09, the reportDate passed in the query is 2020-03-09.
+	Example 2: If your report runs from midnight to midnight on 2020-03-09, the reportDate passed in the query is 2020-03-10
 
 
+	     Format: date
 	*/
 	ReportDate strfmt.Date
-	/*ReportName
-	  Name of the report to download
 
+	/* ReportName.
+
+	   Name of the report to download
 	*/
 	ReportName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the download report params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DownloadReportParams) WithDefaults() *DownloadReportParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the download report params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DownloadReportParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the download report params
@@ -164,22 +185,24 @@ func (o *DownloadReportParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// query param reportDate
 	qrReportDate := o.ReportDate
 	qReportDate := qrReportDate.String()
 	if qReportDate != "" {
+
 		if err := r.SetQueryParam("reportDate", qReportDate); err != nil {
 			return err
 		}
@@ -189,6 +212,7 @@ func (o *DownloadReportParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 	qrReportName := o.ReportName
 	qReportName := qrReportName
 	if qReportName != "" {
+
 		if err := r.SetQueryParam("reportName", qReportName); err != nil {
 			return err
 		}

@@ -6,6 +6,7 @@ package report_definitions
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strconv"
@@ -43,9 +44,8 @@ func (o *GetResourceV2InfoReader) ReadResponse(response runtime.ClientResponse, 
 			return nil, err
 		}
 		return nil, result
-
 	default:
-		return nil, runtime.NewAPIError("unknown error", response, response.Code())
+		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
 }
 
@@ -54,7 +54,7 @@ func NewGetResourceV2InfoOK() *GetResourceV2InfoOK {
 	return &GetResourceV2InfoOK{}
 }
 
-/*GetResourceV2InfoOK handles this case with default header values.
+/* GetResourceV2InfoOK describes a response with status code 200, with default header values.
 
 Ok
 */
@@ -65,7 +65,6 @@ type GetResourceV2InfoOK struct {
 func (o *GetResourceV2InfoOK) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/report-definitions][%d] getResourceV2InfoOK  %+v", 200, o.Payload)
 }
-
 func (o *GetResourceV2InfoOK) GetPayload() *GetResourceV2InfoOKBody {
 	return o.Payload
 }
@@ -87,7 +86,7 @@ func NewGetResourceV2InfoBadRequest() *GetResourceV2InfoBadRequest {
 	return &GetResourceV2InfoBadRequest{}
 }
 
-/*GetResourceV2InfoBadRequest handles this case with default header values.
+/* GetResourceV2InfoBadRequest describes a response with status code 400, with default header values.
 
 Invalid request
 */
@@ -98,7 +97,6 @@ type GetResourceV2InfoBadRequest struct {
 func (o *GetResourceV2InfoBadRequest) Error() string {
 	return fmt.Sprintf("[GET /reporting/v3/report-definitions][%d] getResourceV2InfoBadRequest  %+v", 400, o.Payload)
 }
-
 func (o *GetResourceV2InfoBadRequest) GetPayload() *GetResourceV2InfoBadRequestBody {
 	return o.Payload
 }
@@ -120,7 +118,7 @@ func NewGetResourceV2InfoNotFound() *GetResourceV2InfoNotFound {
 	return &GetResourceV2InfoNotFound{}
 }
 
-/*GetResourceV2InfoNotFound handles this case with default header values.
+/* GetResourceV2InfoNotFound describes a response with status code 404, with default header values.
 
 Report not found
 */
@@ -146,20 +144,23 @@ type GetResourceV2InfoBadRequestBody struct {
 	// Error field list
 	//
 	// Required: true
-	Details []*DetailsItems0 `json:"details"`
+	Details []*GetResourceV2InfoBadRequestBodyDetailsItems0 `json:"details"`
 
 	// Short descriptive message to the user.
 	//
+	// Example: One or more fields contains invalid data
 	// Required: true
 	Message *string `json:"message"`
 
 	// Documented reason code
 	//
+	// Example: INVALID_DATA
 	// Required: true
 	Reason *string `json:"reason"`
 
 	// Time of request in UTC.
 	//
+	// Example: 2016-08-11T22:47:57Z
 	// Required: true
 	// Format: date-time
 	SubmitTimeUtc *strfmt.DateTime `json:"submitTimeUtc"`
@@ -206,6 +207,8 @@ func (o *GetResourceV2InfoBadRequestBody) validateDetails(formats strfmt.Registr
 			if err := o.Details[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getResourceV2InfoBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getResourceV2InfoBadRequest" + "." + "details" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -247,6 +250,40 @@ func (o *GetResourceV2InfoBadRequestBody) validateSubmitTimeUtc(formats strfmt.R
 	return nil
 }
 
+// ContextValidate validate this get resource v2 info bad request body based on the context it is used
+func (o *GetResourceV2InfoBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetResourceV2InfoBadRequestBody) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Details); i++ {
+
+		if o.Details[i] != nil {
+			if err := o.Details[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getResourceV2InfoBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getResourceV2InfoBadRequest" + "." + "details" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *GetResourceV2InfoBadRequestBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -265,13 +302,56 @@ func (o *GetResourceV2InfoBadRequestBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+/*GetResourceV2InfoBadRequestBodyDetailsItems0 Provides failed validation input field detail
+//
+swagger:model GetResourceV2InfoBadRequestBodyDetailsItems0
+*/
+type GetResourceV2InfoBadRequestBodyDetailsItems0 struct {
+
+	// Field in request that caused an error
+	//
+	Field string `json:"field,omitempty"`
+
+	// Documented reason code
+	//
+	Reason string `json:"reason,omitempty"`
+}
+
+// Validate validates this get resource v2 info bad request body details items0
+func (o *GetResourceV2InfoBadRequestBodyDetailsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get resource v2 info bad request body details items0 based on context it is used
+func (o *GetResourceV2InfoBadRequestBodyDetailsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetResourceV2InfoBadRequestBodyDetailsItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetResourceV2InfoBadRequestBodyDetailsItems0) UnmarshalBinary(b []byte) error {
+	var res GetResourceV2InfoBadRequestBodyDetailsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 /*GetResourceV2InfoOKBody reportingV3ReportDefinitionsGet200Response
 swagger:model GetResourceV2InfoOKBody
 */
 type GetResourceV2InfoOKBody struct {
 
 	// report definitions
-	ReportDefinitions []*ReportDefinitionsItems0 `json:"reportDefinitions"`
+	ReportDefinitions []*GetResourceV2InfoOKBodyReportDefinitionsItems0 `json:"reportDefinitions"`
 }
 
 // Validate validates this get resource v2 info o k body
@@ -289,7 +369,6 @@ func (o *GetResourceV2InfoOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *GetResourceV2InfoOKBody) validateReportDefinitions(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.ReportDefinitions) { // not required
 		return nil
 	}
@@ -303,6 +382,42 @@ func (o *GetResourceV2InfoOKBody) validateReportDefinitions(formats strfmt.Regis
 			if err := o.ReportDefinitions[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("getResourceV2InfoOK" + "." + "reportDefinitions" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getResourceV2InfoOK" + "." + "reportDefinitions" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get resource v2 info o k body based on the context it is used
+func (o *GetResourceV2InfoOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateReportDefinitions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetResourceV2InfoOKBody) contextValidateReportDefinitions(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.ReportDefinitions); i++ {
+
+		if o.ReportDefinitions[i] != nil {
+			if err := o.ReportDefinitions[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("getResourceV2InfoOK" + "." + "reportDefinitions" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("getResourceV2InfoOK" + "." + "reportDefinitions" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -331,10 +446,13 @@ func (o *GetResourceV2InfoOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-/*ReportDefinitionsItems0 report definitions items0
-swagger:model ReportDefinitionsItems0
+/*GetResourceV2InfoOKBodyReportDefinitionsItems0 get resource v2 info o k body report definitions items0
+swagger:model GetResourceV2InfoOKBodyReportDefinitionsItems0
 */
-type ReportDefinitionsItems0 struct {
+type GetResourceV2InfoOKBodyReportDefinitionsItems0 struct {
+
+	// default settings
+	DefaultSettings *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings `json:"defaultSettings,omitempty"`
 
 	// description
 	Description string `json:"description,omitempty"`
@@ -369,6 +487,15 @@ type ReportDefinitionsItems0 struct {
 	// report defintion name
 	ReportDefintionName string `json:"reportDefintionName,omitempty"`
 
+	// 'The subscription type for which report definition is required. By default the type will be CUSTOM.'
+	// Valid Values:
+	// - CLASSIC
+	// - CUSTOM
+	// - STANDARD
+	//
+	// Example: CLASSIC
+	SubscriptionType string `json:"subscriptionType,omitempty"`
+
 	// supported formats
 	// Unique: true
 	SupportedFormats []string `json:"supportedFormats"`
@@ -377,9 +504,13 @@ type ReportDefinitionsItems0 struct {
 	Type string `json:"type,omitempty"`
 }
 
-// Validate validates this report definitions items0
-func (o *ReportDefinitionsItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this get resource v2 info o k body report definitions items0
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := o.validateDefaultSettings(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := o.validateSupportedFormats(formats); err != nil {
 		res = append(res, err)
@@ -391,8 +522,26 @@ func (o *ReportDefinitionsItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *ReportDefinitionsItems0) validateSupportedFormats(formats strfmt.Registry) error {
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0) validateDefaultSettings(formats strfmt.Registry) error {
+	if swag.IsZero(o.DefaultSettings) { // not required
+		return nil
+	}
 
+	if o.DefaultSettings != nil {
+		if err := o.DefaultSettings.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("defaultSettings")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("defaultSettings")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0) validateSupportedFormats(formats strfmt.Registry) error {
 	if swag.IsZero(o.SupportedFormats) { // not required
 		return nil
 	}
@@ -404,8 +553,38 @@ func (o *ReportDefinitionsItems0) validateSupportedFormats(formats strfmt.Regist
 	return nil
 }
 
+// ContextValidate validate this get resource v2 info o k body report definitions items0 based on the context it is used
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateDefaultSettings(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0) contextValidateDefaultSettings(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.DefaultSettings != nil {
+		if err := o.DefaultSettings.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("defaultSettings")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("defaultSettings")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (o *ReportDefinitionsItems0) MarshalBinary() ([]byte, error) {
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -413,8 +592,181 @@ func (o *ReportDefinitionsItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *ReportDefinitionsItems0) UnmarshalBinary(b []byte) error {
-	var res ReportDefinitionsItems0
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0) UnmarshalBinary(b []byte) error {
+	var res GetResourceV2InfoOKBodyReportDefinitionsItems0
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings get resource v2 info o k body report definitions items0 default settings
+swagger:model GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings
+*/
+type GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings struct {
+
+	// List of filters to apply
+	// Example: {"Application.Name":["ics_auth","ics_bill"]}
+	ReportFilters map[string][]string `json:"reportFilters,omitempty"`
+
+	// Report Frequency Value
+	// Valid Values:
+	//   - DAILY
+	//   - WEEKLY
+	//   - MONTHLY
+	//   - ADHOC
+	//
+	// Example: DAILY
+	ReportFrequency string `json:"reportFrequency,omitempty"`
+
+	// Report Format
+	// Valid values:
+	//   - application/xml
+	//   - text/csv
+	//
+	// Example: application/xml
+	ReportMimeType string `json:"reportMimeType,omitempty"`
+
+	// Report Name
+	// Example: My Transaction Request Detail Report
+	ReportName string `json:"reportName,omitempty"`
+
+	// report preferences
+	ReportPreferences *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences `json:"reportPreferences,omitempty"`
+
+	// Start Day
+	// Example: 1
+	StartDay int32 `json:"startDay,omitempty"`
+
+	// Start Time
+	// Example: 0000
+	StartTime string `json:"startTime,omitempty"`
+
+	// Time Zone
+	// Example: America/Chicago
+	Timezone string `json:"timezone,omitempty"`
+}
+
+// Validate validates this get resource v2 info o k body report definitions items0 default settings
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateReportPreferences(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings) validateReportPreferences(formats strfmt.Registry) error {
+	if swag.IsZero(o.ReportPreferences) { // not required
+		return nil
+	}
+
+	if o.ReportPreferences != nil {
+		if err := o.ReportPreferences.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("defaultSettings" + "." + "reportPreferences")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("defaultSettings" + "." + "reportPreferences")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get resource v2 info o k body report definitions items0 default settings based on the context it is used
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateReportPreferences(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings) contextValidateReportPreferences(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.ReportPreferences != nil {
+		if err := o.ReportPreferences.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("defaultSettings" + "." + "reportPreferences")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("defaultSettings" + "." + "reportPreferences")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings) UnmarshalBinary(b []byte) error {
+	var res GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettings
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences Report Preferences
+swagger:model GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences
+*/
+type GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences struct {
+
+	// Specify the field naming convention to be followed in reports (applicable to only csv report formats)
+	//
+	// Valid values:
+	// - SOAPI
+	// - SCMP
+	//
+	FieldNameConvention string `json:"fieldNameConvention,omitempty"`
+
+	// Indicator to determine whether negative sign infront of amount for all refunded transaction
+	SignedAmounts bool `json:"signedAmounts,omitempty"`
+}
+
+// Validate validates this get resource v2 info o k body report definitions items0 default settings report preferences
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get resource v2 info o k body report definitions items0 default settings report preferences based on context it is used
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences) UnmarshalBinary(b []byte) error {
+	var res GetResourceV2InfoOKBodyReportDefinitionsItems0DefaultSettingsReportPreferences
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

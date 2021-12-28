@@ -16,74 +16,93 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetTransactionBatchesParams creates a new GetTransactionBatchesParams object
-// with the default values initialized.
+// NewGetTransactionBatchesParams creates a new GetTransactionBatchesParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetTransactionBatchesParams() *GetTransactionBatchesParams {
-	var ()
 	return &GetTransactionBatchesParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetTransactionBatchesParamsWithTimeout creates a new GetTransactionBatchesParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetTransactionBatchesParamsWithTimeout(timeout time.Duration) *GetTransactionBatchesParams {
-	var ()
 	return &GetTransactionBatchesParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetTransactionBatchesParamsWithContext creates a new GetTransactionBatchesParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetTransactionBatchesParamsWithContext(ctx context.Context) *GetTransactionBatchesParams {
-	var ()
 	return &GetTransactionBatchesParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetTransactionBatchesParamsWithHTTPClient creates a new GetTransactionBatchesParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetTransactionBatchesParamsWithHTTPClient(client *http.Client) *GetTransactionBatchesParams {
-	var ()
 	return &GetTransactionBatchesParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetTransactionBatchesParams contains all the parameters to send to the API endpoint
-for the get transaction batches operation typically these are written to a http.Request
+/* GetTransactionBatchesParams contains all the parameters to send to the API endpoint
+   for the get transaction batches operation.
+
+   Typically these are written to a http.Request.
 */
 type GetTransactionBatchesParams struct {
 
-	/*EndTime
-	  Valid report End Time in **ISO 8601 format**
+	/* EndTime.
+
+	     Valid report End Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	 **Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZZ
 
 
+	     Format: date-time
 	*/
 	EndTime strfmt.DateTime
-	/*StartTime
-	  Valid report Start Time in **ISO 8601 format**
+
+	/* StartTime.
+
+	     Valid report Start Time in **ISO 8601 format**
 	Please refer the following link to know more about ISO 8601 format.[Rfc Date Format](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
 
 	 **Example date format:**
 	  - yyyy-MM-dd'T'HH:mm:ss.SSSZZ
 
 
+	     Format: date-time
 	*/
 	StartTime strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get transaction batches params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTransactionBatchesParams) WithDefaults() *GetTransactionBatchesParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get transaction batches params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTransactionBatchesParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get transaction batches params
@@ -153,6 +172,7 @@ func (o *GetTransactionBatchesParams) WriteToRequest(r runtime.ClientRequest, re
 	qrEndTime := o.EndTime
 	qEndTime := qrEndTime.String()
 	if qEndTime != "" {
+
 		if err := r.SetQueryParam("endTime", qEndTime); err != nil {
 			return err
 		}
@@ -162,6 +182,7 @@ func (o *GetTransactionBatchesParams) WriteToRequest(r runtime.ClientRequest, re
 	qrStartTime := o.StartTime
 	qStartTime := qrStartTime.String()
 	if qStartTime != "" {
+
 		if err := r.SetQueryParam("startTime", qStartTime); err != nil {
 			return err
 		}

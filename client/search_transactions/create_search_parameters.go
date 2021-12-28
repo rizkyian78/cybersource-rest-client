@@ -16,56 +16,70 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewCreateSearchParams creates a new CreateSearchParams object
-// with the default values initialized.
+// NewCreateSearchParams creates a new CreateSearchParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCreateSearchParams() *CreateSearchParams {
-	var ()
 	return &CreateSearchParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCreateSearchParamsWithTimeout creates a new CreateSearchParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCreateSearchParamsWithTimeout(timeout time.Duration) *CreateSearchParams {
-	var ()
 	return &CreateSearchParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCreateSearchParamsWithContext creates a new CreateSearchParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCreateSearchParamsWithContext(ctx context.Context) *CreateSearchParams {
-	var ()
 	return &CreateSearchParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCreateSearchParamsWithHTTPClient creates a new CreateSearchParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCreateSearchParamsWithHTTPClient(client *http.Client) *CreateSearchParams {
-	var ()
 	return &CreateSearchParams{
 		HTTPClient: client,
 	}
 }
 
-/*CreateSearchParams contains all the parameters to send to the API endpoint
-for the create search operation typically these are written to a http.Request
+/* CreateSearchParams contains all the parameters to send to the API endpoint
+   for the create search operation.
+
+   Typically these are written to a http.Request.
 */
 type CreateSearchParams struct {
 
-	/*CreateSearchRequest*/
+	// CreateSearchRequest.
 	CreateSearchRequest CreateSearchBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the create search params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateSearchParams) WithDefaults() *CreateSearchParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the create search params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CreateSearchParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the create search params
@@ -119,7 +133,6 @@ func (o *CreateSearchParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.CreateSearchRequest); err != nil {
 		return err
 	}

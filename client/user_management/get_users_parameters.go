@@ -16,74 +16,91 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetUsersParams creates a new GetUsersParams object
-// with the default values initialized.
+// NewGetUsersParams creates a new GetUsersParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetUsersParams() *GetUsersParams {
-	var ()
 	return &GetUsersParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetUsersParamsWithTimeout creates a new GetUsersParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetUsersParamsWithTimeout(timeout time.Duration) *GetUsersParams {
-	var ()
 	return &GetUsersParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetUsersParamsWithContext creates a new GetUsersParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetUsersParamsWithContext(ctx context.Context) *GetUsersParams {
-	var ()
 	return &GetUsersParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetUsersParamsWithHTTPClient creates a new GetUsersParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetUsersParamsWithHTTPClient(client *http.Client) *GetUsersParams {
-	var ()
 	return &GetUsersParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetUsersParams contains all the parameters to send to the API endpoint
-for the get users operation typically these are written to a http.Request
+/* GetUsersParams contains all the parameters to send to the API endpoint
+   for the get users operation.
+
+   Typically these are written to a http.Request.
 */
 type GetUsersParams struct {
 
-	/*OrganizationID
-	  This is the orgId of the organization which the user belongs to.
+	/* OrganizationID.
 
+	   This is the orgId of the organization which the user belongs to.
 	*/
 	OrganizationID *string
-	/*PermissionID
-	  permission that you are trying to search user on.
 
+	/* PermissionID.
+
+	   permission that you are trying to search user on.
 	*/
 	PermissionID *string
-	/*RoleID
-	  role of the user you are trying to search on.
 
+	/* RoleID.
+
+	   role of the user you are trying to search on.
 	*/
 	RoleID *string
-	/*UserName
-	  User ID of the user you want to get details on.
 
+	/* UserName.
+
+	   User ID of the user you want to get details on.
 	*/
 	UserName *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get users params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetUsersParams) WithDefaults() *GetUsersParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get users params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetUsersParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get users params
@@ -175,64 +192,68 @@ func (o *GetUsersParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 
 		// query param organizationId
 		var qrOrganizationID string
+
 		if o.OrganizationID != nil {
 			qrOrganizationID = *o.OrganizationID
 		}
 		qOrganizationID := qrOrganizationID
 		if qOrganizationID != "" {
+
 			if err := r.SetQueryParam("organizationId", qOrganizationID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.PermissionID != nil {
 
 		// query param permissionId
 		var qrPermissionID string
+
 		if o.PermissionID != nil {
 			qrPermissionID = *o.PermissionID
 		}
 		qPermissionID := qrPermissionID
 		if qPermissionID != "" {
+
 			if err := r.SetQueryParam("permissionId", qPermissionID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.RoleID != nil {
 
 		// query param roleId
 		var qrRoleID string
+
 		if o.RoleID != nil {
 			qrRoleID = *o.RoleID
 		}
 		qRoleID := qrRoleID
 		if qRoleID != "" {
+
 			if err := r.SetQueryParam("roleId", qRoleID); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.UserName != nil {
 
 		// query param userName
 		var qrUserName string
+
 		if o.UserName != nil {
 			qrUserName = *o.UserName
 		}
 		qUserName := qrUserName
 		if qUserName != "" {
+
 			if err := r.SetQueryParam("userName", qUserName); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

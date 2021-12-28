@@ -16,61 +16,76 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewRefundCaptureParams creates a new RefundCaptureParams object
-// with the default values initialized.
+// NewRefundCaptureParams creates a new RefundCaptureParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewRefundCaptureParams() *RefundCaptureParams {
-	var ()
 	return &RefundCaptureParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewRefundCaptureParamsWithTimeout creates a new RefundCaptureParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewRefundCaptureParamsWithTimeout(timeout time.Duration) *RefundCaptureParams {
-	var ()
 	return &RefundCaptureParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewRefundCaptureParamsWithContext creates a new RefundCaptureParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewRefundCaptureParamsWithContext(ctx context.Context) *RefundCaptureParams {
-	var ()
 	return &RefundCaptureParams{
-
 		Context: ctx,
 	}
 }
 
 // NewRefundCaptureParamsWithHTTPClient creates a new RefundCaptureParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewRefundCaptureParamsWithHTTPClient(client *http.Client) *RefundCaptureParams {
-	var ()
 	return &RefundCaptureParams{
 		HTTPClient: client,
 	}
 }
 
-/*RefundCaptureParams contains all the parameters to send to the API endpoint
-for the refund capture operation typically these are written to a http.Request
+/* RefundCaptureParams contains all the parameters to send to the API endpoint
+   for the refund capture operation.
+
+   Typically these are written to a http.Request.
 */
 type RefundCaptureParams struct {
 
-	/*ID
-	  The capture ID. This ID is returned from a previous capture request.
+	/* ID.
 
+	   The capture ID. This ID is returned from a previous capture request.
 	*/
 	ID string
-	/*RefundCaptureRequest*/
+
+	// RefundCaptureRequest.
 	RefundCaptureRequest RefundCaptureBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the refund capture params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RefundCaptureParams) WithDefaults() *RefundCaptureParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the refund capture params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RefundCaptureParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the refund capture params
@@ -140,7 +155,6 @@ func (o *RefundCaptureParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
-
 	if err := r.SetBodyParam(o.RefundCaptureRequest); err != nil {
 		return err
 	}

@@ -16,55 +16,55 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewCapturePaymentParams creates a new CapturePaymentParams object
-// with the default values initialized.
+// NewCapturePaymentParams creates a new CapturePaymentParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewCapturePaymentParams() *CapturePaymentParams {
-	var ()
 	return &CapturePaymentParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewCapturePaymentParamsWithTimeout creates a new CapturePaymentParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewCapturePaymentParamsWithTimeout(timeout time.Duration) *CapturePaymentParams {
-	var ()
 	return &CapturePaymentParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewCapturePaymentParamsWithContext creates a new CapturePaymentParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewCapturePaymentParamsWithContext(ctx context.Context) *CapturePaymentParams {
-	var ()
 	return &CapturePaymentParams{
-
 		Context: ctx,
 	}
 }
 
 // NewCapturePaymentParamsWithHTTPClient creates a new CapturePaymentParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewCapturePaymentParamsWithHTTPClient(client *http.Client) *CapturePaymentParams {
-	var ()
 	return &CapturePaymentParams{
 		HTTPClient: client,
 	}
 }
 
-/*CapturePaymentParams contains all the parameters to send to the API endpoint
-for the capture payment operation typically these are written to a http.Request
+/* CapturePaymentParams contains all the parameters to send to the API endpoint
+   for the capture payment operation.
+
+   Typically these are written to a http.Request.
 */
 type CapturePaymentParams struct {
 
-	/*CapturePaymentRequest*/
+	// CapturePaymentRequest.
 	CapturePaymentRequest CapturePaymentBody
-	/*ID
-	  The payment ID returned from a previous payment request. This ID links the capture to the payment.
 
+	/* ID.
+
+	   The payment ID returned from a previous payment request. This ID links the capture to the payment.
 
 	*/
 	ID string
@@ -72,6 +72,21 @@ type CapturePaymentParams struct {
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the capture payment params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CapturePaymentParams) WithDefaults() *CapturePaymentParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the capture payment params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *CapturePaymentParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the capture payment params
@@ -136,7 +151,6 @@ func (o *CapturePaymentParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		return err
 	}
 	var res []error
-
 	if err := r.SetBodyParam(o.CapturePaymentRequest); err != nil {
 		return err
 	}

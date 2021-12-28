@@ -16,61 +16,76 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewVoidCreditParams creates a new VoidCreditParams object
-// with the default values initialized.
+// NewVoidCreditParams creates a new VoidCreditParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewVoidCreditParams() *VoidCreditParams {
-	var ()
 	return &VoidCreditParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewVoidCreditParamsWithTimeout creates a new VoidCreditParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewVoidCreditParamsWithTimeout(timeout time.Duration) *VoidCreditParams {
-	var ()
 	return &VoidCreditParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewVoidCreditParamsWithContext creates a new VoidCreditParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewVoidCreditParamsWithContext(ctx context.Context) *VoidCreditParams {
-	var ()
 	return &VoidCreditParams{
-
 		Context: ctx,
 	}
 }
 
 // NewVoidCreditParamsWithHTTPClient creates a new VoidCreditParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewVoidCreditParamsWithHTTPClient(client *http.Client) *VoidCreditParams {
-	var ()
 	return &VoidCreditParams{
 		HTTPClient: client,
 	}
 }
 
-/*VoidCreditParams contains all the parameters to send to the API endpoint
-for the void credit operation typically these are written to a http.Request
+/* VoidCreditParams contains all the parameters to send to the API endpoint
+   for the void credit operation.
+
+   Typically these are written to a http.Request.
 */
 type VoidCreditParams struct {
 
-	/*ID
-	  The credit ID returned from a previous credit request.
+	/* ID.
 
+	   The credit ID returned from a previous credit request.
 	*/
 	ID string
-	/*VoidCreditRequest*/
+
+	// VoidCreditRequest.
 	VoidCreditRequest VoidCreditBody
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the void credit params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *VoidCreditParams) WithDefaults() *VoidCreditParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the void credit params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *VoidCreditParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the void credit params
@@ -140,7 +155,6 @@ func (o *VoidCreditParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
-
 	if err := r.SetBodyParam(o.VoidCreditRequest); err != nil {
 		return err
 	}
