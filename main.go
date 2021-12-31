@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"gitea.brankas.dev/fauzias/cybersource-rest-client/client"
-	"gitea.brankas.dev/fauzias/cybersource-rest-client/client/payments"
-	"gitea.brankas.dev/fauzias/cybersource-rest-client/config"
+	"github.com/fauziasbrankas/cybersource-rest-client/client"
+	"github.com/fauziasbrankas/cybersource-rest-client/client/payments"
+	"github.com/fauziasbrankas/cybersource-rest-client/config"
 	"github.com/go-openapi/strfmt"
 )
 

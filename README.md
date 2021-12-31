@@ -14,7 +14,7 @@ The CyberSource Go client provides convenient access to the [CyberSource REST AP
 Go Modules:
 ```shell
 # In your project:
-go get gitea.brankas.dev/fauzias/cybersource-rest-client
+go get github.com/fauziasbrankas/cybersource-rest-client
 ```
 
 

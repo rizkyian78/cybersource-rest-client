@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gitea.brankas.dev/fauzias/cybersource-rest-client/client"
+	"github.com/fauziasbrankas/cybersource-rest-client/client"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
