@@ -11506,7 +11506,7 @@ type CreatePaymentCreatedBodyRiskInformation struct {
 	//
 	// For all possible values, see the `decision_case_priority` field description in the _Decision Manager Using the SCMP API Developer Guide_ on the [CyberSource Business Center.](https://ebc2.cybersource.com/ebc2/) Click **Decision Manager** > **Documentation** > **Guides** > _Decision Manager Using the SCMP API Developer Guide_ (PDF link).
 	//
-	CasePriority int64 `json:"casePriority,omitempty"`
+	CasePriority string `json:"casePriority,omitempty"`
 
 	// info codes
 	InfoCodes *CreatePaymentCreatedBodyRiskInformationInfoCodes `json:"infoCodes,omitempty"`
