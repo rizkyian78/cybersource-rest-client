@@ -15624,7 +15624,7 @@ type CreatePaymentParamsBodyConsumerAuthenticationInformation struct {
 	//
 	// Max Length: 2
 	EciRaw string `json:"eciRaw,omitempty"`
-	Eci string `json:"eci,omit`
+	Eci string `json:"eci,omit"`
 
 	// This field describes the type of 3DS transaction flow that took place.  It can be one of three possible flows;
 	// CH - Challenge
