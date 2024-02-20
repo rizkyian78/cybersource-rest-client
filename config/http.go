@@ -76,7 +76,7 @@ func generateDigest(body []byte) (string, error) {
 
 func (cfg Config) generateHTTPSignatureHeader(req HTTPRequest, skipDigest bool) (string, error) {
 
-	headerNames := []string{"host", "date", "(request-target)", "digest", "v-c-merchant-id"}
+	headerNames := []string{"host", "date", "request-target", "digest", "v-c-merchant-id"}
 	if skipDigest {
 		headerNames = append(headerNames[:3], headerNames[4:]...)
 	}
@@ -104,7 +104,7 @@ func generateHTTPSignatureValue(merchantSecretKey string, req HTTPRequest, heade
 		key := header
 		switch key {
 
-		case "(request-target)":
+		case "request-target":
 			u := url.URL{Path: req.GetPath(), RawQuery: req.GetQueryParams().Encode()}
 			requestTarget := fmt.Sprintf("%s %s", strings.ToLower(req.GetMethod()), u.String())
 			keyValuePairs = append(keyValuePairs, []string{key, requestTarget})
