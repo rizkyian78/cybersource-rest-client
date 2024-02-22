@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fauziasbrankas/cybersource-rest-client/client"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/rizkyian78/cybersource-rest-client/client"
 )
 
 const (
