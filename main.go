@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/fauziasbrankas/cybersource-rest-client/client"
-	"github.com/fauziasbrankas/cybersource-rest-client/client/payments"
-	"github.com/fauziasbrankas/cybersource-rest-client/config"
 	"github.com/go-openapi/strfmt"
+	"github.com/rizkyian78/cybersource-rest-client/client"
+	"github.com/rizkyian78/cybersource-rest-client/client/payments"
+	"github.com/rizkyian78/cybersource-rest-client/config"
 )
 
 func main() {
