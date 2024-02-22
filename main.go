@@ -42,6 +42,9 @@ func main() {
 				SecurityCode:    "123",
 			},
 		},
+		ConsumerAuthenticationInformation: &payments.CreatePaymentParamsBodyConsumerAuthenticationInformation{
+			Eci: "07",
+		},
 		OrderInformation: &payments.CreatePaymentParamsBodyOrderInformation{
 			AmountDetails: &payments.CreatePaymentParamsBodyOrderInformationAmountDetails{
 				TotalAmount: "13.37",
