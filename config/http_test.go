@@ -78,7 +78,7 @@ const body2 = `{"clientReferenceInformation":{"code":"TC50171_3ABC"},"merchantDe
 // Test the signature production against the website at: https://developer.cybersource.com/api-reference-assets/index.html#payments
 func TestGenerateSignatureValue(t *testing.T) {
 
-	// keyid="08c94330-f618-42a3-b09d-e1e43be5efda", algorithm="HmacSHA256", headers="host (request-target) digest v-c-merchant-id", signature="HBEajAuU2SR+ajr+Y++TBwJjBhEflZo6u0tvbNwF77Y="
+	// keyid="08c94330-f618-42a3-b09d-e1e43be5efda", algorithm="HmacSHA256", headers="host request-target digest v-c-merchant-id", signature="HBEajAuU2SR+ajr+Y++TBwJjBhEflZo6u0tvbNwF77Y="
 
 	key := "yBJxy6LjM2TmcPGu+GaJrHtkke25fPpUX+UY6/L/1tE="
 
@@ -96,7 +96,7 @@ func TestGenerateSignatureValue(t *testing.T) {
 		queryParams: nil,
 	}
 
-	headerNames := []string{"host", "(request-target)", "digest", "v-c-merchant-id"}
+	headerNames := []string{"host", "request-target", "digest", "v-c-merchant-id"}
 
 	signature, err := generateHTTPSignatureValue(key, req, headerNames...)
 	if err != nil {
